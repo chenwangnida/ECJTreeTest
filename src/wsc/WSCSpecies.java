@@ -42,18 +42,18 @@ public class WSCSpecies extends Species {
 
 	    WSCIndividual tree = new WSCIndividual(treeRoot);
 
-	    System.out.println("Create tree");
-	    try {
-	    	FileWriter writer = new FileWriter(new File("debug-graph.dot"));
-			writer.append(graph.toString());
-			writer.close();
-			FileWriter writer2 = new FileWriter(new File("debug-tree.dot"));
-			writer2.append(tree.toString());
-			writer2.close();
-			System.exit(0);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//	    System.out.println("Create tree");
+//	    try {
+//	    	FileWriter writer = new FileWriter(new File("debug-graph.dot"));
+//			writer.append(graph.toString());
+//			writer.close();
+//			FileWriter writer2 = new FileWriter(new File("debug-tree.dot"));
+//			writer2.append(tree.toString());
+//			writer2.close();
+//			System.exit(0);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 
 	    return tree;
 	}
