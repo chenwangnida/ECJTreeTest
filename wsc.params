@@ -21,16 +21,16 @@ gp.fs.0.name                                   = f0
 
 # We have three functions in the function set.  They are:
 gp.fs.0.size                                   = 3
-gp.fs.0.func.0                                 = wsc.ServiceGPNode
+gp.fs.0.func.0                                 = wsc.ecj.gp.ServiceGPNode
 gp.fs.0.func.0.nc                              = nc0
-gp.fs.0.func.1                                 = wsc.SequenceGPNode
+gp.fs.0.func.1                                 = wsc.ecj.gp.SequenceGPNode
 gp.fs.0.func.1.nc                              = nc2
-gp.fs.0.func.2                                 = wsc.ParallelGPNode
+gp.fs.0.func.2                                 = wsc.ecj.gp.ParallelGPNode
 gp.fs.0.func.2.nc                              = nc2
 
-eval.problem                                   = wsc.WSC
-init                                           = wsc.WSCInitializer
-eval.problem.data                              = wsc.WSCData
+eval.problem                                   = wsc.ecj.gp.WSC
+init                                           = wsc.ecj.gp.WSCInitializer
+eval.problem.data                              = wsc.ecj.gp.WSCData
 stat                                           = graph.GraphStatistics
 stat.file		                               = $out.stat
 stat.do-time                                   = true
@@ -41,8 +41,8 @@ generations                                    = 100
 pop.subpops		                               = 1
 pop.subpop.0.size 	                           = 10
 pop.subpop.0.duplicate-retries 	               = 0
-pop.subpop.0.species                           = wsc.WSCSpecies
-pop.subpop.0.species.ind                       = wsc.WSCIndividual
+pop.subpop.0.species                           = wsc.ecj.gp.WSCSpecies
+pop.subpop.0.species.ind                       = wsc.ecj.gp.WSCIndividual
 pop.subpop.0.species.fitness                   = ec.simple.SimpleFitness
 
 # Use simple fitness, and do not quit run early
@@ -52,10 +52,10 @@ checkpoint		                               = false
 
 pop.subpop.0.species.pipe                      = ec.breed.MultiBreedingPipeline
 pop.subpop.0.species.pipe.num-sources          = 3
-pop.subpop.0.species.pipe.source.0             = wsc.WSCCrossoverPipeline
+pop.subpop.0.species.pipe.source.0             = wsc.ecj.gp.WSCCrossoverPipeline
 pop.subpop.0.species.pipe.source.0.prob        = 0.1
 pop.subpop.0.species.pipe.source.0.num-sources = 2
-pop.subpop.0.species.pipe.source.1             = wsc.WSCMutationPipeline
+pop.subpop.0.species.pipe.source.1             = wsc.ecj.gp.WSCMutationPipeline
 pop.subpop.0.species.pipe.source.1.prob        = 0.0
 pop.subpop.0.species.pipe.source.1.num-sources = 1
 pop.subpop.0.species.pipe.source.2             = ec.breed.ReproductionPipeline

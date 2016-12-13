@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import ec.gp.GPNode;
-import wsc.ParallelGPNode;
-import wsc.SequenceGPNode;
-import wsc.Service;
-import wsc.ServiceGPNode;
-import wsc.TaxonomyNode;
+import wsc.ecj.gp.ParallelGPNode;
+import wsc.ecj.gp.SequenceGPNode;
+import wsc.ecj.gp.Service;
+import wsc.ecj.gp.ServiceGPNode;
+import wsc.ecj.gp.TaxonomyNode;
 
 public class GraphNode implements Cloneable {
 	private List<GraphEdge> incomingEdgeList = new ArrayList<GraphEdge>();
