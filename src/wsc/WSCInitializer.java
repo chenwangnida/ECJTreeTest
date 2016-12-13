@@ -395,6 +395,8 @@ public class WSCInitializer extends GPInitializer {
 	private void parseWSCServiceFile(String fileName) {
         Set<String> inputs = new HashSet<String>();
         Set<String> outputs = new HashSet<String>();
+        Set<String> precondition = new HashSet<String>();
+        Set<String> postcondition = new HashSet<String>();
         double[] qos = new double[4];
 
         try {

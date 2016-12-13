@@ -10,6 +10,9 @@ public class Service {
 	public double[] qos;
 	public Set<String> inputs;
 	public Set<String> outputs;
+	public Set<String> preconditions;
+	public Set<String> postconditions;
+	
 	public int layer;
 
 	public Service(String name, double[] qos, Set<String> inputs, Set<String> outputs) {

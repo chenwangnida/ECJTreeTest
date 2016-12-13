@@ -11,6 +11,8 @@ public class WSCData extends GPData {
 	Set<Service> seenServices;
 	public Set<String> inputs;
 	public Set<String> outputs;
+	public Set<String> preconditions;
+	public Set<String> postconditions;
 
 	public void copyTo(final GPData gpd) {
 		WSCData wscd = (WSCData) gpd;
@@ -18,5 +20,7 @@ public class WSCData extends GPData {
 		wscd.seenServices = seenServices;
 		wscd.inputs = inputs;
 		wscd.outputs = outputs;
+		wscd.preconditions = preconditions;
+		wscd.postconditions = postconditions;
 	}
 }

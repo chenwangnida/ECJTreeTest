@@ -17,22 +17,31 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 
 	private Set<String> inputs;
 	private Set<String> outputs;
+	private Set<String> preconditions;
+	private Set<String> postconditions;
 
 	public ServiceGPNode() {
 		children = new GPNode[0];
 	}
 
-	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem) {
+	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem) {		
+		
 		WSCData rd = ((WSCData) (input));
 		rd.maxTime = service.qos[WSCInitializer.TIME];
 		rd.seenServices = new HashSet<Service>();
 		rd.seenServices.add(service);
 		rd.inputs = service.inputs;
 		rd.outputs = service.outputs;
+		rd.preconditions = service.preconditions;
+		rd.postconditions = service.postconditions;
 
 	    // Store input and output information in this node
         inputs = rd.inputs;
         outputs = rd.outputs;
+        preconditions = rd.preconditions;
+        postconditions = rd.postconditions;
+        
+        
 	}
 
 	public void setService(Service s) {
@@ -96,4 +105,14 @@ public class ServiceGPNode extends GPNode implements InOutNode {
     public Set<String> getOutputs() {
         return outputs;
     }
+
+	@Override
+	public Set<String> getPrecondtion() {
+		return preconditions;
+	}
+
+	@Override
+	public Set<String> getPostcondtion() {
+		return postconditions;
+	}
 }
