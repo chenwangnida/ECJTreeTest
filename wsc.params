@@ -39,7 +39,7 @@ stat.do-final                                  = true
 generations                                    = 100
 
 pop.subpops		                               = 1
-pop.subpop.0.size 	                           = 5
+pop.subpop.0.size 	                           = 10
 pop.subpop.0.duplicate-retries 	               = 0
 pop.subpop.0.species                           = wsc.WSCSpecies
 pop.subpop.0.species.ind                       = wsc.WSCIndividual

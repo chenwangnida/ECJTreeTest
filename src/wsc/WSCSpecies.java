@@ -42,6 +42,10 @@ public class WSCSpecies extends Species {
 
 	    WSCIndividual tree = new WSCIndividual(treeRoot);
 
+	    state.output.println(graph.toString(), 0);
+	    state.output.println(tree.toString(), 0);
+
+
 //	    System.out.println("Create tree");
 //	    try {
 //	    	FileWriter writer = new FileWriter(new File("debug-graph.dot"));
