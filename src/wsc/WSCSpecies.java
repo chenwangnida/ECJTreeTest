@@ -42,8 +42,8 @@ public class WSCSpecies extends Species {
 
 	    WSCIndividual tree = new WSCIndividual(treeRoot);
 
-	    state.output.println(graph.toString(), 0);
-	    state.output.println(tree.toString(), 0);
+//	    state.output.println(graph.toString(), 0);
+//	    state.output.println(tree.toString(), 0);
 
 
 //	    System.out.println("Create tree");
@@ -190,6 +190,7 @@ public class WSCSpecies extends Species {
 
 	public void connectCandidateToGraphByInputs(GraphNode candidate, Map<String,GraphEdge> connections, Graph graph, Set<String> currentEndInputs, WSCInitializer init) {
 		graph.nodeMap.put(candidate.getName(), candidate);
+//		 int i = graph.nodeMap.size();
 		graph.edgeList.addAll(connections.values());
 		candidate.getIncomingEdgeList().addAll(connections.values());
 
