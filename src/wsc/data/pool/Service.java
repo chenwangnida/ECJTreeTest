@@ -14,7 +14,7 @@ import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.alg.NaiveLcaFinder;
 import org.jgrapht.graph.DefaultEdge;
 
-import ec.pso.GraphPSO;
+import wsc.ecj.gp.WSCInitializer;
 import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceInput;
@@ -228,13 +228,15 @@ public class Service implements Comparable<Service> {
 					if (foundmatched) {
 						serInput.setSatified(true);
 						pConn.setOutputInst(giveninput);
-						if (GraphPSO.taskInput.contains(giveninput)) {
+						// if (GraphPSO.taskInput.contains(giveninput)) {
+						if (WSCInitializer.taskInput.contains(giveninput)) {
+
 							pConn.setSourceServiceID("startNode");
 						} else {
 							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
 						}
-						double similarity = CalculateSimilarityMeasure(GraphPSO.ontologyDAG, giveninput,
-								existInput, semanticsPool);
+						double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, giveninput, existInput,
+								semanticsPool);
 						pConn.setSimilarity(similarity);
 						pConnList0.add(pConn);
 						break;// each inst can only be used for one time
@@ -314,9 +316,9 @@ public class Service implements Comparable<Service> {
 		// find the lowest common ancestor
 		String lca = new NaiveLcaFinder<String, DefaultEdge>(g).findLca(a, b);
 
-		double N = new DijkstraShortestPath(g, GraphPSO.rootconcept, lca).getPathLength();
-		double N1 = new DijkstraShortestPath(g, GraphPSO.rootconcept, a).getPathLength();
-		double N2 = new DijkstraShortestPath(g, GraphPSO.rootconcept, b).getPathLength();
+		double N = new DijkstraShortestPath(g, WSCInitializer.rootconcept, lca).getPathLength();
+		double N1 = new DijkstraShortestPath(g, WSCInitializer.rootconcept, a).getPathLength();
+		double N2 = new DijkstraShortestPath(g, WSCInitializer.rootconcept, b).getPathLength();
 
 		double sim = 2 * N / (N1 + N2);
 		// System.out.println("SemanticDistance:" + sim + "

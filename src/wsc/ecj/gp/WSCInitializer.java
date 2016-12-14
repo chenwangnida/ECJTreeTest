@@ -3,13 +3,9 @@ package wsc.ecj.gp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
@@ -23,15 +19,11 @@ import org.jgrapht.graph.DefaultEdge;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import ec.EvolutionState;
 import ec.gp.GPInitializer;
 import ec.util.Parameter;
-import graph.Graph;
-import graph.GraphEdge;
-import graph.GraphNode;
 import graph.GraphRandom;
 import wsc.InitialWSCPool;
 import wsc.data.pool.Service;
@@ -65,14 +57,16 @@ public class WSCInitializer extends GPInitializer {
 	Map<String, double[]> serviceQoSMap = new HashMap<String, double[]>();
 
 	public static DirectedGraph<String, DefaultEdge> ontologyDAG;
+	public static final String rootconcept = "TOPNODE";
+
 
 
 	public Map<String, Service> serviceMap = new HashMap<String, Service>();
 //	public Map<String, Integer> serviceToIndexMap = new HashMap<String, Integer>();
 	public Set<Service> relevant;
 	public Map<String, TaxonomyNode> taxonomyMap = new HashMap<String, TaxonomyNode>();
-	public List<String> taskInput;
-	public List<String> taskOutput;
+	public static List<String> taskInput;
+	public static List<String> taskOutput;
 //	public Service startServ;
 //	public Service endServ;
 	public GraphRandom random;

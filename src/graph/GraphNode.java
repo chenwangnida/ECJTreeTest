@@ -132,33 +132,23 @@ public class GraphNode implements Cloneable {
 			// If there is only one other child, create a sequence construct
 			if (outgoingEdges.size() == 1) {
 				rightChild = getNode(graph.getEdgeTarget(outgoingEdges.get(0)),graph);			
-//				rightChild = getNode(children.get(0).getToNode());
 				ServiceGPNode sgp = new ServiceGPNode();
-				sgp.setService(serv);
+				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
 			
-			
-			
-			
-			if (children.size() == 1) {
-				rightChild = getNode(children.get(0).getToNode());
-				ServiceGPNode sgp = new ServiceGPNode();
-				sgp.setService(serv);
-				root = createSequenceNode(sgp, rightChild);
-			}
 			// Else if there are no children at all, return a new leaf node
-			else if (children.size() == 0) {
+			else if (outgoingEdges.size() == 0) {
 				ServiceGPNode sgp = new ServiceGPNode();
-				sgp.setService(serv);
+				sgp.setSerName(vertice);
 				root = sgp;
 			}
 			// Else, create a new parallel construct wrapped in a sequence
 			// construct
 			else {
-				rightChild = createParallelNode(this, children);
+				rightChild = createParallelNode(outgoingEdges, graph);
 				ServiceGPNode sgp = new ServiceGPNode();
-				sgp.setService(serv);
+				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
 
@@ -284,7 +274,7 @@ public class GraphNode implements Cloneable {
 
 	/**
 	 * Represents a GraphNode with a single outgoing edge as a SequenceNode in
-	 * the tree (edges to the Output node are not counted). The left and right
+	 * the tree (edges to the endNode node are not counted). The left and right
 	 * children of this node are provided as arguments. If the GraphNode also
 	 * has an outgoing edge to the Output (i.e. the left child also contributes
 	 * with its output to the overall sequence outputs), its values should be

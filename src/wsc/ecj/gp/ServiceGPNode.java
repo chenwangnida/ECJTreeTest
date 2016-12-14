@@ -68,12 +68,20 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 	@Override
 	public String toString() {
 		String serviceName;
-		if (service == null)
+		if (serName == null)
 			serviceName = "null";
 		else
-			serviceName = service.name;
+			serviceName = serName;
 		return String.format("%d [label=\"%s\"]; ", hashCode(), serviceName);
 	}
+//	public String toString() {
+//		String serviceName;
+//		if (service == null)
+//			serviceName = "null";
+//		else
+//			serviceName = service.name;
+//		return String.format("%d [label=\"%s\"]; ", hashCode(), serviceName);
+//	}
 
 	@Override
 	public int expectedChildren() {

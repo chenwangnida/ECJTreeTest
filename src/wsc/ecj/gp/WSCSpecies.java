@@ -52,24 +52,17 @@ public class WSCSpecies extends Species {
 			removeCurrentdangle(graph, dangleVerticeList);
 		}
 
-
-		state.output.println("###########################", 0);
-		state.output.println(graph.toString(), 0);
-
+	    state.output.println(graph.toString(), 0);
+		
+		GPNode treeRoot= new GraphNode().toTree("startNode", graph);
 
 		//Mapping from String vertices to GraphNode
-
-
-
-
-	    GPNode treeRoot = graph.nodeMap.get("start").toTree();
-
 	    //GPNode treeRoot = createNewTree(state, init.taskInput, init.taskOutput); // XXX
 
 	    WSCIndividual tree = new WSCIndividual(treeRoot);
 
-//	    state.output.println(graph.toString(), 0);
-//	    state.output.println(tree.toString(), 0);
+	    state.output.println(graph.toString(), 0);
+	    state.output.println(tree.toString(), 0);
 
 
 //	    System.out.println("Create tree");
