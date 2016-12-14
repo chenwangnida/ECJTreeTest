@@ -11,11 +11,15 @@ import wsc.ecj.gp.Service;
 import wsc.ecj.gp.ServiceGPNode;
 import wsc.ecj.gp.TaxonomyNode;
 
+import wsc.graph.ServiceEdge;
+import org.jgrapht.graph.DefaultDirectedGraph;
+
 public class GraphNode implements Cloneable {
-	private List<GraphEdge> incomingEdgeList = new ArrayList<GraphEdge>();
-	private List<GraphEdge> outgoingEdgeList = new ArrayList<GraphEdge>();
-	private List<TaxonomyNode> taxonomyOutputs = new ArrayList<TaxonomyNode>();
-	private Service serv;
+	// private List<GraphEdge> incomingEdgeList = new ArrayList<GraphEdge>();
+	// private List<GraphEdge> outgoingEdgeList = new ArrayList<GraphEdge>();
+	// private List<TaxonomyNode> taxonomyOutputs = new
+	// ArrayList<TaxonomyNode>();
+	// private Service serv;
 
 	public GraphNode(Service serv) {
 		this.serv = serv;
@@ -58,7 +62,7 @@ public class GraphNode implements Cloneable {
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return serv.name;
 	}
 
@@ -72,8 +76,7 @@ public class GraphNode implements Cloneable {
 		if (other instanceof GraphNode) {
 			GraphNode o = (GraphNode) other;
 			return serv.name.equals(o.serv.name);
-		}
-		else
+		} else
 			return false;
 	}
 
@@ -84,32 +87,35 @@ public class GraphNode implements Cloneable {
 	 *
 	 * @return Tree root
 	 */
-	public GPNode toTree() {
+	public GPNode toTree(String vertice, DefaultDirectedGraph<String, ServiceEdge> graph) {
 		GPNode root = null;
-		if (serv.getName().equals("start")) {
+		if (vertice.equals("startNode")) {
 			// Start with sequence
-			if (outgoingEdgeList.size() == 1) {
+
+			if (graph.outDegreeOf("startNode") == 1) {
 				/*
 				 * If the next node points to the output, this is a
 				 * single-service composition, so return a service node
 				 */
-				GraphEdge next = outgoingEdgeList.get(0);
-				root = getNode(next.getToNode());
+
+				Set<ServiceEdge> outgoingEdges = graph.edgesOf("startNode");
+				ServiceEdge outgoingEdge = outgoingEdges.iterator().next();
+				String nextvertice = graph.getEdgeTarget(outgoingEdge);
+				root = getNode(nextvertice, graph);
 			}
 			// Start with parallel node
-			else if (outgoingEdgeList.size() > 1)
+			else if (graph.outDegreeOf("startNode") > 1)
 				root = createParallelNode(this, outgoingEdgeList);
 		} else {
 			// Begin by checking how many nodes are in the right child.
 			GPNode rightChild;
 
-			List<GraphEdge> children = new ArrayList<GraphEdge>(
-					outgoingEdgeList);
+			List<GraphEdge> children = new ArrayList<GraphEdge>(outgoingEdgeList);
 
 			// Find the end node in the list, if it is contained there
 			GraphEdge outputEdge = null;
 			for (GraphEdge ch : children) {
-				if (ch.getToNode().getName().equals("end")) {
+				if (ch.getToNode().getName().equals("endNode")) {
 					outputEdge = ch;
 					break;
 				}
@@ -143,6 +149,72 @@ public class GraphNode implements Cloneable {
 
 		return root;
 	}
+
+	/**
+	 * Indirectly recursive method that transforms this GraphNode and all nodes
+	 * that directly or indirectly receive its output into a tree
+	 * representation.
+	 *
+	 * @return Tree root
+	 */
+//	public GPNode toTree() {
+//		GPNode root = null;
+//		if (serv.getName().equals("startNode")) {
+//			// Start with sequence
+//			if (outgoingEdgeList.size() == 1) {
+//				/*
+//				 * If the next node points to the output, this is a
+//				 * single-service composition, so return a service node
+//				 */
+//				GraphEdge next = outgoingEdgeList.get(0);
+//				root = getNode(next.getToNode());
+//			}
+//			// Start with parallel node
+//			else if (outgoingEdgeList.size() > 1)
+//				root = createParallelNode(this, outgoingEdgeList);
+//		} else {
+//			// Begin by checking how many nodes are in the right child.
+//			GPNode rightChild;
+//
+//			List<GraphEdge> children = new ArrayList<GraphEdge>(outgoingEdgeList);
+//
+//			// Find the end node in the list, if it is contained there
+//			GraphEdge outputEdge = null;
+//			for (GraphEdge ch : children) {
+//				if (ch.getToNode().getName().equals("endNode")) {
+//					outputEdge = ch;
+//					break;
+//				}
+//			}
+//			// Remove the output node from the children list
+//			children.remove(outputEdge);
+//
+//			// If there is only one other child, create a sequence construct
+//			if (children.size() == 1) {
+//				rightChild = getNode(children.get(0).getToNode());
+//				ServiceGPNode sgp = new ServiceGPNode();
+//				sgp.setService(serv);
+//				root = createSequenceNode(sgp, rightChild);
+//			}
+//			// Else if there are no children at all, return a new leaf node
+//			else if (children.size() == 0) {
+//				ServiceGPNode sgp = new ServiceGPNode();
+//				sgp.setService(serv);
+//				root = sgp;
+//			}
+//			// Else, create a new parallel construct wrapped in a sequence
+//			// construct
+//			else {
+//				rightChild = createParallelNode(this, children);
+//				ServiceGPNode sgp = new ServiceGPNode();
+//				sgp.setService(serv);
+//				root = createSequenceNode(sgp, rightChild);
+//			}
+//
+//		}
+//
+//		return root;
+//	}
 
 	/**
 	 * Represents a GraphNode with multiple outgoing edges as a ParallelNode in
@@ -195,34 +267,76 @@ public class GraphNode implements Cloneable {
 	}
 
 	/**
-	 * Retrieves the tree representation for the provided GraphNode,
-	 * also checking if should translate to a leaf.
+	 * Retrieves the tree representation for the provided GraphNode, also
+	 * checking if should translate to a leaf.
 	 *
 	 * @param n
 	 * @return root of tree translation
 	 */
-	private GPNode getNode(GraphNode n) {
+	private GPNode getNode(String nextvertice, DefaultDirectedGraph<String, ServiceEdge> graph) {
 		GPNode result;
-		if (isLeaf(n)) {
+		if (isLeaf(nextvertice, graph)) {
 			ServiceGPNode sgp = new ServiceGPNode();
-			sgp.setService(n.serv);
+			sgp.setSerName(nextvertice);
 			result = sgp;
 		}
 		// Otherwise, make next node's subtree the right child
 		else
-			result = n.toTree();
+			result = toTree(nextvertice, graph);
 		return result;
 	}
 
 	/**
-	 * Verify whether the GraphNode provided translates into a
-	 * leaf node when converting the graph into a tree.
+	 * Retrieves the tree representation for the provided GraphNode, also
+	 * checking if should translate to a leaf.
+	 *
+	 * @param n
+	 * @return root of tree translation
+	 */
+//	private GPNode getNode(GraphNode n) {
+//		GPNode result;
+//		if (isLeaf(n)) {
+//			ServiceGPNode sgp = new ServiceGPNode();
+//			sgp.setService(n.serv);
+//			result = sgp;
+//		}
+//		// Otherwise, make next node's subtree the right child
+//		else
+//			result = n.toTree();
+//		return result;
+//	}
+
+	/**
+	 * Verify whether the GraphNode provided translates into a leaf node when
+	 * converting the graph into a tree.
 	 *
 	 * @param node
-	 * @return True if it translates into a leaf node,
-	 * false otherwise
+	 * @return True if it translates into a leaf node, false otherwise
 	 */
-	private boolean isLeaf(GraphNode node) {
-		return node.outgoingEdgeList.size() == 1 && node.outgoingEdgeList.get(0).getToNode().getName().equals("Output");
+	private boolean isLeaf(String verticeName, DefaultDirectedGraph<String, ServiceEdge> graph) {
+		boolean a = false;
+		boolean b = false;
+		if (graph.outDegreeOf(verticeName) == 1) {
+			a = true;
+		}
+		Set<ServiceEdge> outgoingEdges = graph.edgesOf(verticeName);
+		ServiceEdge outgoingEdge = outgoingEdges.iterator().next();
+		String nextedge = graph.getEdgeTarget(outgoingEdge);
+		if (nextedge.equals("endNode")) {
+			b = true;
+		}
+		return a && b;
+
 	}
+
+	/**
+	 * Verify whether the GraphNode provided translates into a leaf node when
+	 * converting the graph into a tree.
+	 *
+	 * @param node
+	 * @return True if it translates into a leaf node, false otherwise
+	 */
+//	private boolean isLeaf(GraphNode node) {
+//		return node.outgoingEdgeList.size() == 1 && node.outgoingEdgeList.get(0).getToNode().getName().equals("Output");
+//	}
 }

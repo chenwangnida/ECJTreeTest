@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 import org.jgrapht.DirectedGraph;
 
 import ec.pso.GraphPSO;
+import graph.GraphNode;
 import wsc.data.pool.SWSPool;
 import wsc.data.pool.SemanticsPool;
 import wsc.data.pool.Service;
@@ -176,6 +177,40 @@ public class InitialWSCPool {
 			serviceSequence.add(service);
 		} while (true);
 	}
+
+	public void createGraphService(List<String> taskInput, List<String> taskOutput,
+			DirectedGraph<String, ServiceEdge> directedGraph) {
+
+		graphOutputList.clear();
+		graphOutputListMap.clear();
+		serviceCandidates.clear();
+
+		graphOutputList.addAll(taskInput);
+
+		// SWSPool swsPool = new SWSPool();
+
+//		SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
+		serviceCandidates.addAll(serviceSequence);
+		Collections.sort(serviceCandidates);
+
+		boolean goalSatisfied;
+
+		directedGraph.addVertex("startNode");
+
+		do {
+			Service service = swsPool.createGraphService(graphOutputList, serviceCandidates, this.semanticsPool,
+					directedGraph, graphOutputListMap);
+			if (service == null) {
+				System.err.println("No service is usable now");
+				return;
+			}
+			goalSatisfied = this.checkOutputSet(directedGraph, taskOutput);
+
+		} while (!goalSatisfied);
+
+	}
+
+
 
 	public void createGraphService(List<String> taskInput, List<String> taskOutput,
 			DirectedGraph<String, ServiceEdge> directedGraph, float[] weights,

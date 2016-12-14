@@ -13,6 +13,7 @@ import ec.gp.GPNode;
 public class ServiceGPNode extends GPNode implements InOutNode {
 
 	private static final long serialVersionUID = 1L;
+	private String serName;
 	private Service service;
 
 	private Set<String> inputs;
@@ -24,8 +25,16 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 		children = new GPNode[0];
 	}
 
-	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem) {		
-		
+	public String getSerName() {
+		return serName;
+	}
+
+	public void setSerName(String serName) {
+		this.serName = serName;
+	}
+
+	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack, final GPIndividual individual, final Problem problem) {
+
 		WSCData rd = ((WSCData) (input));
 		rd.maxTime = service.qos[WSCInitializer.TIME];
 		rd.seenServices = new HashSet<Service>();
@@ -40,8 +49,8 @@ public class ServiceGPNode extends GPNode implements InOutNode {
         outputs = rd.outputs;
         preconditions = rd.preconditions;
         postconditions = rd.postconditions;
-        
-        
+
+
 	}
 
 	public void setService(Service s) {
