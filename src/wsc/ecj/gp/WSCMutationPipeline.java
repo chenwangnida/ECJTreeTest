@@ -12,8 +12,8 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.gp.GPNode;
 import ec.util.Parameter;
-import graph.Graph;
 import graph.GraphNode;
+import wsc.graph.ServiceGraph;
 
 public class WSCMutationPipeline extends BreedingPipeline {
 
@@ -85,7 +85,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
             mockQoS[WSCInitializer.RELIABILITY] = 1.0;
             Service startNode = new Service("start", mockQoS, new HashSet<String>(), combinedInputs);
             Service endNode = new Service("end", mockQoS, ioNode.getOutputs(), new HashSet<String>());
-            Graph newGraph = species.createNewGraph(state, startNode, endNode, init.relevant);
+            ServiceGraph newGraph = species.createNewGraph(state, startNode, endNode, init.relevant);
             GPNode newNode = newGraph.nodeMap.get("start").toTree();
 
             // Replace the old tree with the new one

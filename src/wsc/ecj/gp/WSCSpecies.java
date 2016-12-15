@@ -21,9 +21,9 @@ import ec.Individual;
 import ec.Species;
 import ec.gp.GPNode;
 import ec.util.Parameter;
-import graph.Graph;
-import graph.GraphEdge;
 import graph.GraphNode;
+import wsc.graph.ServiceGraph;
+import wsc.graph.ServiceGraph;
 import wsc.graph.ServiceEdge;
 
 public class WSCSpecies extends Species {
@@ -39,7 +39,7 @@ public class WSCSpecies extends Species {
 	public Individual newIndividual(EvolutionState state, int thread) {
 	    WSCInitializer init = (WSCInitializer) state.initializer;
 
-	    DefaultDirectedGraph<String, ServiceEdge> graph = new Graph<String, ServiceEdge>(
+	    DefaultDirectedGraph<String, ServiceEdge> graph = new ServiceGraph(
 				ServiceEdge.class);
 
 		init.initialWSCPool.createGraphService(init.taskInput, init.taskOutput, graph);

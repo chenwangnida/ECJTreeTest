@@ -69,8 +69,8 @@ public class ServiceEdge extends DefaultEdge implements Cloneable {
 
 	@Override
 	public String toString() {
-		return this.avgmt+";"+this.avgsdt + super.toString();
-//		return  super.toString();
+		return this.avgmt+";"+this.avgsdt + super.toString()+ super.source+ super.target;
+//		return String.format("%s->%s", this.getSource().toString(), this.getTarget().toString());
 
 	}
 
