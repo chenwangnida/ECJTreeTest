@@ -60,7 +60,7 @@ public class WSCInitializer extends GPInitializer {
 	public Map<String, double[]> serviceQoSMap = new HashMap<String, double[]>();
 	public Map<String, Service> serviceMap = new HashMap<String, Service>();
 	public Set<Service> relevant;
-	public Map<String, TaxonomyNode> taxonomyMap = new HashMap<String, TaxonomyNode>();
+//	public Map<String, TaxonomyNode> taxonomyMap = new HashMap<String, TaxonomyNode>();
 	public static List<String> taskInput;
 	public static List<String> taskOutput;
 	// public Service startServ;
