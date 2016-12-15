@@ -190,7 +190,8 @@ public class InitialWSCPool {
 
 //		SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
 		serviceCandidates.addAll(serviceSequence);
-		Collections.sort(serviceCandidates);
+		Collections.shuffle(serviceCandidates, WSCInitializer.random);
+//		Collections.sort(serviceCandidates);
 
 		boolean goalSatisfied;
 

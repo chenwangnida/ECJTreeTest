@@ -28,6 +28,7 @@ public class WSCIndividual extends GPIndividual {
 		super.trees = new GPTree[1];
 		GPTree t = new GPTree();
 		super.trees[0] = t;
+	    /** the root GPNode in the GPTree */
 		t.child = root;
 	}
 

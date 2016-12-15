@@ -69,7 +69,7 @@ public class WSCInitializer extends GPInitializer {
 	public static List<String> taskOutput;
 //	public Service startServ;
 //	public Service endServ;
-	public GraphRandom random;
+	public static GraphRandom random;
 
 //	public final double minAvailability = 0.0;
 //	public double maxAvailability = -1.0;

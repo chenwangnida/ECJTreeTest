@@ -24,26 +24,21 @@ public class ServiceEdge extends DefaultEdge implements Cloneable {
 		this.avgsdt = avgsdt;
 	}
 
-
 	public String getSourceService() {
 		return SourceService;
 	}
-
 
 	public void setSourceService(String sourceService) {
 		SourceService = sourceService;
 	}
 
-
 	public List<ParamterConn> getpConnList() {
 		return pConnList;
 	}
 
-
 	public void setpConnList(List<ParamterConn> pConnList) {
 		this.pConnList = pConnList;
 	}
-
 
 	public double getAvgmt() {
 		return avgmt;
@@ -69,9 +64,9 @@ public class ServiceEdge extends DefaultEdge implements Cloneable {
 
 	@Override
 	public String toString() {
-		return this.avgmt+";"+this.avgsdt + super.toString()+ super.source+ super.target;
-//		return String.format("%s->%s", this.getSource().toString(), this.getTarget().toString());
-
+		// return this.avgmt+";"+this.avgsdt + super.toString();
+		return this.avgmt+";"+this.avgsdt + super.toString();
+//		return super.toString();
 	}
 
 }
