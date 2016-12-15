@@ -4,6 +4,7 @@ import ec.util.*;
 import ec.*;
 import ec.gp.*;
 import ec.simple.*;
+import wsc.data.pool.Service;
 
 public class WSC extends GPProblem implements SimpleProblemForm {
 
@@ -15,11 +16,11 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 		// verify our input is the right class (or subclasses from it)
 		if (!(input instanceof WSCData))
-			state.output.fatal("GPData class must subclass from "
-					+ WSCData.class, base.push(P_DATA), null);
+			state.output.fatal("GPData class must subclass from " + WSCData.class, base.push(P_DATA), null);
 	}
 
-	public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation, final int threadnum) {
+	public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation,
+			final int threadnum) {
 		if (!ind.evaluated) {
 			WSCInitializer init = (WSCInitializer) state.initializer;
 			WSCData input = (WSCData) (this.input);
@@ -37,59 +38,137 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 				qos[WSCInitializer.RELIABILITY] *= s.qos[WSCInitializer.RELIABILITY];
 			}
 
-			double fitness = calculateFitness(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY], qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+			double fitness = calculateFitness(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
+					qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
 
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 			f.setFitness(state, fitness, false);
-			//f.setStandardizedFitness(state, fitness);
+			// f.setStandardizedFitness(state, fitness);
 			ind.evaluated = true;
 		}
 	}
 
-	private double calculateFitness(double a, double r, double t, double c, WSCInitializer init) {
-		a = normaliseAvailability(a, init);
-		r = normaliseReliability(r, init);
-		t = normaliseTime(t, init);
-		c = normaliseCost(c, init);
+	// private double calculateFitness(double a, double r, double t, double c,
+	// WSCInitializer init) {
+	// a = normaliseAvailability(a, init);
+	// r = normaliseReliability(r, init);
+	// t = normaliseTime(t, init);
+	// c = normaliseCost(c, init);
+	//
+	// double fitness = ((init.w1 * a) + (init.w2 * r) + (init.w3 * t) +
+	// (init.w4 * c));
+	// return fitness;
+	// }
 
-		double fitness = ((init.w1 * a) + (init.w2 * r) + (init.w3 * t) + (init.w4 * c));
+	private double calculateFitness(double a, double r, double t, double c, WSCInitializer init) {
+
+		// double mt = individual.getMatchingType();
+		// double dst = individual.getSemanticDistance();
+		// double a = individual.getAvailability();
+		// double r = individual.getReliability();
+		// double t = individual.getTime();
+		// double c = individual.getCost();
+
+		// mt = normaliseMatchType(mt);
+		// dst = normaliseDistanceValue(dst);
+		a = normaliseAvailability(a);
+		r = normaliseReliability(r);
+		t = normaliseTime(t);
+		c = normaliseCost(c);
+
+		// double fitness = ((W1 * mt) + (W2 * dst) + (W3 * a) + (W4 * r) + (W5
+		// * t) + (W6 * c));
+		double fitness = ((0.25 * a) + (0.25 * r) + (0.25 * t) + (0.25 * c));
+
 		return fitness;
 	}
 
-	private double normaliseAvailability(double availability, WSCInitializer init) {
-		if (init.maxAvailability - init.minAvailability == 0.0)
+	private double normaliseMatchType(double matchType) {
+		if (WSCInitializer.MAXINUM_MATCHTYPE - WSCInitializer.MINIMUM_MATCHTYPE == 0.0)
 			return 1.0;
 		else
-			return (availability - init.minAvailability)/(init.maxAvailability - init.minAvailability);
+			return (matchType - WSCInitializer.MINIMUM_MATCHTYPE)
+					/ (WSCInitializer.MAXINUM_MATCHTYPE - WSCInitializer.MINIMUM_MATCHTYPE);
 	}
 
-	private double normaliseReliability(double reliability, WSCInitializer init) {
-		if (init.maxReliability - init.minReliability == 0.0)
+	private double normaliseDistanceValue(double distanceValue) {
+		if (WSCInitializer.MAXINUM_SEMANTICDISTANCE - WSCInitializer.MININUM_SEMANTICDISTANCE == 0.0)
 			return 1.0;
 		else
-			return (reliability - init.minReliability)/(init.maxReliability - init.minReliability);
+			return (distanceValue - WSCInitializer.MININUM_SEMANTICDISTANCE)
+					/ (WSCInitializer.MAXINUM_SEMANTICDISTANCE - WSCInitializer.MININUM_SEMANTICDISTANCE);
 	}
 
-	private double normaliseTime(double time, WSCInitializer init) {
-		// If the time happens to go beyond the normalisation bound, set it to the normalisation bound
-		if (time > init.maxTime)
-			time = init.maxTime;
-
-		if (init.maxTime - init.minTime == 0.0)
+	public double normaliseAvailability(double availability) {
+		if (WSCInitializer.MAXIMUM_AVAILABILITY - WSCInitializer.MINIMUM_AVAILABILITY == 0.0)
 			return 1.0;
 		else
-			return (init.maxTime - time)/(init.maxTime - init.minTime);
+			return (availability - WSCInitializer.MINIMUM_AVAILABILITY)
+					/ (WSCInitializer.MAXIMUM_AVAILABILITY - WSCInitializer.MINIMUM_AVAILABILITY);
 	}
 
-	private double normaliseCost(double cost, WSCInitializer init) {
-		// If the cost happens to go beyond the normalisation bound, set it to the normalisation bound
-		if (cost > init.maxCost)
-			cost = init.maxCost;
-
-		if (init.maxCost - init.minCost == 0.0)
+	public double normaliseReliability(double reliability) {
+		if (WSCInitializer.MAXIMUM_RELIABILITY - WSCInitializer.MINIMUM_RELIABILITY == 0.0)
 			return 1.0;
 		else
-			return (init.maxCost - cost)/(init.maxCost - init.minCost);
+			return (reliability - WSCInitializer.MINIMUM_RELIABILITY)
+					/ (WSCInitializer.MAXIMUM_RELIABILITY - WSCInitializer.MINIMUM_RELIABILITY);
 	}
+
+	public double normaliseTime(double time) {
+		if (WSCInitializer.MAXIMUM_TIME - WSCInitializer.MINIMUM_TIME == 0.0)
+			return 1.0;
+		else
+			return (WSCInitializer.MAXIMUM_TIME - time) / (WSCInitializer.MAXIMUM_TIME - WSCInitializer.MINIMUM_TIME);
+	}
+
+	public double normaliseCost(double cost) {
+		if (WSCInitializer.MAXIMUM_COST - WSCInitializer.MINIMUM_COST == 0.0)
+			return 1.0;
+		else
+			return (WSCInitializer.MAXIMUM_COST - cost) / (WSCInitializer.MAXIMUM_COST - WSCInitializer.MINIMUM_COST);
+	}
+
+	// private double normaliseAvailability(double availability, WSCInitializer
+	// init) {
+	// if (init.maxAvailability - init.minAvailability == 0.0)
+	// return 1.0;
+	// else
+	// return (availability - init.minAvailability)/(init.maxAvailability -
+	// init.minAvailability);
+	// }
+	//
+	// private double normaliseReliability(double reliability, WSCInitializer
+	// init) {
+	// if (init.maxReliability - init.minReliability == 0.0)
+	// return 1.0;
+	// else
+	// return (reliability - init.minReliability)/(init.maxReliability -
+	// init.minReliability);
+	// }
+	//
+	// private double normaliseTime(double time, WSCInitializer init) {
+	// // If the time happens to go beyond the normalisation bound, set it to
+	// the normalisation bound
+	// if (time > init.maxTime)
+	// time = init.maxTime;
+	//
+	// if (init.maxTime - init.minTime == 0.0)
+	// return 1.0;
+	// else
+	// return (init.maxTime - time)/(init.maxTime - init.minTime);
+	// }
+	//
+	// private double normaliseCost(double cost, WSCInitializer init) {
+	// // If the cost happens to go beyond the normalisation bound, set it to
+	// the normalisation bound
+	// if (cost > init.maxCost)
+	// cost = init.maxCost;
+	//
+	// if (init.maxCost - init.minCost == 0.0)
+	// return 1.0;
+	// else
+	// return (init.maxCost - cost)/(init.maxCost - init.minCost);
+	// }
 }

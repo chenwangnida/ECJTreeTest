@@ -1,10 +1,15 @@
-package wsc.ecj.gp;
-
-import java.util.Set;
-
-public interface InOutNode {
-    public Set<String> getInputs();
-    public Set<String> getOutputs();
-    public Set<String> getPrecondtion();
-    public Set<String> getPostcondtion();
-}
+//package wsc.ecj.gp;
+//
+//import java.util.List;
+//
+//import wsc.graph.ServiceInput;
+//import wsc.graph.ServiceOutput;
+//import wsc.graph.ServicePostcondition;
+//import wsc.graph.ServicePrecondition;
+//
+//public interface InOutNode {
+//    public List<ServiceInput> getInputs();
+//    public List<ServiceOutput> getOutputs();
+//    public List<ServicePrecondition> getPrecondtion();
+//    public List<ServicePostcondition> getPostcondtion();
+//}

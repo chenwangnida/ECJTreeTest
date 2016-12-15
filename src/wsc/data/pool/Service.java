@@ -1,8 +1,6 @@
 package wsc.data.pool;
 
-import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +17,20 @@ import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
+import wsc.graph.ServicePostcondition;
+import wsc.graph.ServicePrecondition;
 import wsc.owl.bean.OWLClass;
 
 public class Service implements Comparable<Service> {
 
-	private final String serviceID;
+	public final String serviceID;
 	// list of inputInstances(individuals), rather than list of input parameter.
-	private double[] qos;
+	public double[] qos;
 
 	private List<ServiceInput> inputList = new ArrayList<ServiceInput>();
-	// list of outputInstances(individuals), ranther than list of output
 	private List<ServiceOutput> outputList = new ArrayList<ServiceOutput>();
+	private List<ServicePrecondition> preconditionList = new ArrayList<ServicePrecondition>();
+	private List<ServicePostcondition> postconditionList = new ArrayList<ServicePostcondition>();
 
 	private static List<ParamterConn> pConnList0 = new ArrayList<ParamterConn>();
 	private static List<ServiceInput> inputList0 = new ArrayList<ServiceInput>();
@@ -43,6 +44,33 @@ public class Service implements Comparable<Service> {
 		this.qos = qos;
 		this.inputList = inputList;
 		this.outputList = outputList;
+	}
+
+	public Service(String serviceID, double[] qos, List<ServiceInput> inputList, List<ServiceOutput> outputList,
+			List<ServicePrecondition> preconditionList, List<ServicePostcondition> postconditionList) {
+		super();
+		this.serviceID = serviceID;
+		this.qos = qos;
+		this.inputList = inputList;
+		this.outputList = outputList;
+		this.preconditionList = preconditionList;
+		this.postconditionList = postconditionList;
+	}
+
+	public List<ServicePrecondition> getPreconditionList() {
+		return preconditionList;
+	}
+
+	public void setPreconditionList(List<ServicePrecondition> preconditionList) {
+		this.preconditionList = preconditionList;
+	}
+
+	public List<ServicePostcondition> getPostconditionList() {
+		return postconditionList;
+	}
+
+	public void setPostconditionList(List<ServicePostcondition> postconditionList) {
+		this.postconditionList = postconditionList;
 	}
 
 	public List<ServiceInput> getInputList() {
@@ -235,8 +263,8 @@ public class Service implements Comparable<Service> {
 						} else {
 							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
 						}
-						double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, giveninput, existInput,
-								semanticsPool);
+						double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, giveninput,
+								existInput, semanticsPool);
 						pConn.setSimilarity(similarity);
 						pConnList0.add(pConn);
 						break;// each inst can only be used for one time

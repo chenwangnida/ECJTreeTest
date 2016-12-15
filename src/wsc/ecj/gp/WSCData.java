@@ -1,18 +1,23 @@
 package wsc.ecj.gp;
 
-import java.util.Set;
+import java.util.List;
 
 import ec.gp.*;
+import wsc.data.pool.Service;
+import wsc.graph.ServiceInput;
+import wsc.graph.ServiceOutput;
+import wsc.graph.ServicePostcondition;
+import wsc.graph.ServicePrecondition;
 
 public class WSCData extends GPData {
 
 	private static final long serialVersionUID = 1L;
 	public double maxTime;
-	Set<Service> seenServices;
-	public Set<String> inputs;
-	public Set<String> outputs;
-	public Set<String> preconditions;
-	public Set<String> postconditions;
+	List<Service> seenServices;
+	public List<ServiceInput> inputs;
+	public List<ServiceOutput> outputs;
+	public List<ServicePrecondition> preconditions;
+	public List<ServicePostcondition> postconditions;
 
 	public void copyTo(final GPData gpd) {
 		WSCData wscd = (WSCData) gpd;

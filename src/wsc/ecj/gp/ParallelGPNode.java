@@ -1,7 +1,7 @@
 package wsc.ecj.gp;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import ec.EvolutionState;
 import ec.Problem;
@@ -10,23 +10,30 @@ import ec.gp.GPData;
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 
-public class ParallelGPNode extends GPNode implements InOutNode {
+import wsc.data.pool.Service;
+import wsc.graph.ServiceInput;
+import wsc.graph.ServiceOutput;
+import wsc.graph.ServicePostcondition;
+import wsc.graph.ServicePrecondition;
+
+public class ParallelGPNode extends GPNode {
 
 	private static final long serialVersionUID = 1L;
-	private Set<String> inputs;
-	private Set<String> outputs;
-	private Set<String> preconditions;
-	private Set<String> postconditions;
+	private List<ServiceInput> inputs;
+	private List<ServiceOutput> outputs;
+	private List<ServicePrecondition> preconditions;
+	private List<ServicePostcondition> postconditions;
+
 
 	@Override
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,
 			final GPIndividual individual, final Problem problem) {
 		double maxTime = 0.0;
-		Set<Service> seenServices = new HashSet<Service>();
-		Set<String> overallInputs = new HashSet<String>();
-		Set<String> overallOutputs = new HashSet<String>();
-		Set<String> overallPreconditions = new HashSet<String>();
-		Set<String> overallPostconditions = new HashSet<String>();
+		List<Service> seenServices = new ArrayList<Service>();
+		List<ServiceInput> overallInputs = new ArrayList<ServiceInput>();
+		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
+		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
+		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
 
 		WSCData rd = ((WSCData) (input));
 
@@ -123,23 +130,5 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		newNode.preconditions = preconditions;
 		newNode.postconditions = postconditions;
 		return newNode;
-	}
-
-	public Set<String> getInputs() {
-		return inputs;
-	}
-
-	public Set<String> getOutputs() {
-		return outputs;
-	}
-
-	@Override
-	public Set<String> getPrecondtion() {
-		return preconditions;
-	}
-
-	@Override
-	public Set<String> getPostcondtion() {
-		return postconditions;
 	}
 }
