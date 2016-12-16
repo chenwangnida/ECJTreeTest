@@ -11,6 +11,7 @@ import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 
 import wsc.data.pool.Service;
+import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
@@ -23,6 +24,7 @@ public class ParallelGPNode extends GPNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
+	private List<ServiceEdge> semanticAggregation;
 
 
 	@Override
@@ -34,6 +36,7 @@ public class ParallelGPNode extends GPNode {
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
+
 
 		WSCData rd = ((WSCData) (input));
 

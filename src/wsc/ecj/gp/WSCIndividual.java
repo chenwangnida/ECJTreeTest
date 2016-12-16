@@ -10,6 +10,7 @@ import ec.gp.GPNode;
 import ec.gp.GPTree;
 import ec.simple.SimpleFitness;
 import ec.util.Parameter;
+import wsc.graph.ServiceGraph;
 
 public class WSCIndividual extends GPIndividual {
 
@@ -22,6 +23,16 @@ public class WSCIndividual extends GPIndividual {
 	}
 
 	public WSCIndividual(GPNode root) {
+		super();
+		super.fitness = new SimpleFitness();
+		super.species = new WSCSpecies();
+		super.trees = new GPTree[1];
+		GPTree t = new GPTree();
+		super.trees[0] = t;
+	    /** the root GPNode in the GPTree */
+		t.child = root;
+	}
+	public WSCIndividual(GPNode root, ServiceGraph graph) {
 		super();
 		super.fitness = new SimpleFitness();
 		super.species = new WSCSpecies();

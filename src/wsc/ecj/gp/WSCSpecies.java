@@ -36,7 +36,7 @@ public class WSCSpecies extends Species {
 
 	@Override
 	public Individual newIndividual(EvolutionState state, int thread) {
-	    WSCInitializer init = (WSCInitializer) state.initializer;	
+	    WSCInitializer init = (WSCInitializer) state.initializer;
 		//Generate Graph
 	    ServiceGraph graph = generateGraph(init);
 	    state.output.println(graph.toString(), 0);
@@ -67,9 +67,9 @@ public class WSCSpecies extends Species {
 	 *
 	 * @return graph
 	 */
-	
+
 	public ServiceGraph  generateGraph(WSCInitializer init){
-		
+
 		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
 
 		init.initialWSCPool.createGraphService(WSCInitializer.taskInput, WSCInitializer.taskOutput, graph);
@@ -81,7 +81,7 @@ public class WSCSpecies extends Species {
 			}
 			removeCurrentdangle(graph, dangleVerticeList);
 		}
-		
+
 		return graph;
 	}
 
@@ -119,10 +119,10 @@ public class WSCSpecies extends Species {
 		} else {
 			// Begin by checking how many nodes are in the right child.
 			GPNode rightChild;
-			
+
 			List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
 			outgoingEdges.addAll(graph.outgoingEdgesOf(vertice));
-			
+
 			// Find the end node in the list, if it is contained there
 			ServiceEdge outputEdge= null;
 			for(ServiceEdge outgoingedge: outgoingEdges){
@@ -133,15 +133,15 @@ public class WSCSpecies extends Species {
 					break;
 				}
 			}
-				
+
 			// If there is only one other child, create a sequence construct
 			if (outgoingEdges.size() == 1) {
-				rightChild = getNode(graph.getEdgeTarget(outgoingEdges.get(0)),graph);			
+				rightChild = getNode(graph.getEdgeTarget(outgoingEdges.get(0)),graph);
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
-			
+
 			// Else if there are no children at all, return a new leaf node
 			else if (outgoingEdges.size() == 0) {
 				ServiceGPNode sgp = new ServiceGPNode();
@@ -178,14 +178,14 @@ public class WSCSpecies extends Species {
 		GPNode[] children = new GPNode[length];
 
 		for (int i = 0; i < length; i++) {
-			String nextVertice = graph.getEdgeTarget(outgoingEdges.get(i));											
+			String nextVertice = graph.getEdgeTarget(outgoingEdges.get(i));
 			children[i] = getNode(nextVertice, graph);
 			children[i].parent = root;
 		}
 		root.children = children;
 		return root;
 	}
-	
+
 	/**
 	 * Represents a GraphNode with a single outgoing edge as a SequenceNode in
 	 * the tree (edges to the endNode node are not counted). The left and right
@@ -244,7 +244,7 @@ public class WSCSpecies extends Species {
 		if (graph.outDegreeOf(verticeName) == 1) {
 			a = true;
 		}
-		
+
 		List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
 		outgoingEdges.addAll(graph.outgoingEdgesOf(verticeName));
 		ServiceEdge outgoingEdge = outgoingEdges.get(0);
@@ -254,15 +254,15 @@ public class WSCSpecies extends Species {
 		}
 		return a && b;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 //	private DirectedGraph<String, ServiceEdge> graphRepresentation(List<String> taskInput, List<String> taskOutput,WSCInitializer init) {
 //
 //		DirectedGraph<GraphNode, ServiceEdge> directedGraph = new DefaultDirectedGraph<GraphNode, ServiceEdge>(
