@@ -84,6 +84,88 @@ public class WSCSpecies extends Species {
 
 		return graph;
 	}
+	
+	/**
+	 * Indirectly recursive method that transforms this GraphNode and all nodes
+	 * that directly or indirectly receive its output into a tree
+	 * representation.
+	 *
+	 * @return Tree root
+	 */
+	public GPNode toWeigtedTree(String vertice, ServiceGraph graph) {
+		GPNode root = null;
+		if (vertice.equals("startNode")) {
+			// Start with sequence
+			ServiceGPNode sgp = new ServiceGPNode();
+			sgp.setSerName("startNode");
+			GPNode rightChild;
+
+			if (graph.outDegreeOf("startNode") == 1) {
+				/*
+				 * If the next node points to the output, this is a
+				 * single-service composition, so return a service node
+				 */
+
+				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
+				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
+				ServiceEdge outgoingEdge = outgoingEdges.get(0);
+				String nextvertice = graph.getEdgeTarget(outgoingEdge);
+				root = getNode(nextvertice, graph);
+			}
+			// Start with parallel node
+			else if (graph.outDegreeOf("startNode") > 1) {
+				// root = createParallelNode(this, outgoingEdgeList);
+				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
+				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
+				rightChild = createParallelNode(outgoingEdges, graph);
+				root = createSequenceNode(sgp,rightChild);
+				
+			}
+		} else {
+			// Begin by checking how many nodes are in the right child.
+			GPNode rightChild;
+
+			List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
+			outgoingEdges.addAll(graph.outgoingEdgesOf(vertice));
+
+			// Find the end node in the list, if it is contained there
+			ServiceEdge outputEdge= null;
+			for(ServiceEdge outgoingedge: outgoingEdges){
+				if(graph.getEdgeTarget(outgoingedge).equals("endNode")){
+					outputEdge = outgoingedge;
+					//Remove the output node from the children list
+					outgoingEdges.remove(outputEdge);
+					break;
+				}
+			}
+
+			// If there is only one other child, create a sequence construct
+			if (outgoingEdges.size() == 1) {
+				rightChild = getNode(graph.getEdgeTarget(outgoingEdges.get(0)),graph);
+				ServiceGPNode sgp = new ServiceGPNode();
+				sgp.setSerName(vertice);
+				root = createSequenceNode(sgp, rightChild);
+			}
+
+			// Else if there are no children at all, return a new leaf node
+			else if (outgoingEdges.size() == 0) {
+				ServiceGPNode sgp = new ServiceGPNode();
+				sgp.setSerName(vertice);
+				root = sgp;
+			}
+			// Else, create a new parallel construct wrapped in a sequence
+			// construct
+			else {
+				rightChild = createParallelNode(outgoingEdges, graph);
+				ServiceGPNode sgp = new ServiceGPNode();
+				sgp.setSerName(vertice);
+				root = createSequenceNode(sgp, rightChild);
+			}
+
+		}
+
+		return root;
+	}
 
 	/**
 	 * Indirectly recursive method that transforms this GraphNode and all nodes

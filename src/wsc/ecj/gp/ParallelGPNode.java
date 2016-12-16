@@ -24,7 +24,6 @@ public class ParallelGPNode extends GPNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
-	private List<ServiceEdge> semanticAggregation;
 
 
 	@Override
