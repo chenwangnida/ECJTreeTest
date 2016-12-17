@@ -12,6 +12,7 @@ import ec.gp.GPData;
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import wsc.data.pool.Service;
+import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
@@ -24,6 +25,48 @@ public class SequenceGPNode extends GPNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
+	
+	private List<ServiceEdge> semanticEdge;
+
+	public List<ServiceInput> getInputs() {
+		return inputs;
+	}
+
+	public void setInputs(List<ServiceInput> inputs) {
+		this.inputs = inputs;
+	}
+
+	public List<ServiceOutput> getOutputs() {
+		return outputs;
+	}
+
+	public void setOutputs(List<ServiceOutput> outputs) {
+		this.outputs = outputs;
+	}
+
+	public List<ServicePrecondition> getPreconditions() {
+		return preconditions;
+	}
+
+	public void setPreconditions(List<ServicePrecondition> preconditions) {
+		this.preconditions = preconditions;
+	}
+
+	public List<ServicePostcondition> getPostconditions() {
+		return postconditions;
+	}
+
+	public void setPostconditions(List<ServicePostcondition> postconditions) {
+		this.postconditions = postconditions;
+	}
+
+	public List<ServiceEdge> getSemanticEdge() {
+		return semanticEdge;
+	}
+
+	public void setSemanticEdge(List<ServiceEdge> semanticEdge) {
+		this.semanticEdge = semanticEdge;
+	}
 
 	@Override
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,

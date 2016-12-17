@@ -111,7 +111,7 @@ public class WSCSpecies extends Species {
 				ServiceEdge outgoingEdge = outgoingEdges.get(0);
 				String nextvertice = graph.getEdgeTarget(outgoingEdge);
 				rightChild = getWeightedNode(nextvertice, graph);
-				root = createSequenceNode(startService,rightChild);
+				root = createSequenceTopNode(startService,rightChild,graph);
 
 			}
 			// Start with parallel node
@@ -120,7 +120,7 @@ public class WSCSpecies extends Species {
 				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
 				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
 				rightChild = createParallelNode(outgoingEdges, graph);
-				root = createSequenceNode(startService,rightChild);
+				root = createSequenceTopNode(startService,rightChild,graph);
 
 			}
 		} else {
@@ -297,6 +297,24 @@ public class WSCSpecies extends Species {
 		children[1].parent = root;
 
 		root.children = children;
+		return root;
+	}
+	
+	
+	private GPNode createSequenceTopNode(GPNode leftChild, GPNode rightChild, ServiceGraph graph) {
+		SequenceGPNode root = new SequenceGPNode();
+		GPNode[] children = new GPNode[2];
+		children[0] = leftChild;
+		children[0].parent = root;
+		children[1] = rightChild;
+		children[1].parent = root;
+
+		root.children = children;
+		
+		List<ServiceEdge> semanticEdge = new ArrayList<ServiceEdge>();
+		semanticEdge.addAll(graph.edgeSet());
+		root.setSemanticEdge(semanticEdge);
+		
 		return root;
 	}
 
