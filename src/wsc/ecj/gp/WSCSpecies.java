@@ -41,7 +41,7 @@ public class WSCSpecies extends Species {
 	    ServiceGraph graph = generateGraph(init);
 	    state.output.println(graph.toString(), 0);
 		//Generate Tree from Graph
-		GPNode treeRoot= toTree("startNode", graph);
+		GPNode treeRoot= toWeightedTree("startNode", graph);
 	    WSCIndividual tree = new WSCIndividual(treeRoot);
 	    state.output.println(tree.toString(), 0);
 
@@ -84,7 +84,7 @@ public class WSCSpecies extends Species {
 
 		return graph;
 	}
-	
+
 	/**
 	 * Indirectly recursive method that transforms this GraphNode and all nodes
 	 * that directly or indirectly receive its output into a tree
@@ -92,12 +92,12 @@ public class WSCSpecies extends Species {
 	 *
 	 * @return Tree root
 	 */
-	public GPNode toWeigtedTree(String vertice, ServiceGraph graph) {
+	public GPNode toWeightedTree(String vertice, ServiceGraph graph) {
 		GPNode root = null;
 		if (vertice.equals("startNode")) {
 			// Start with sequence
-			ServiceGPNode sgp = new ServiceGPNode();
-			sgp.setSerName("startNode");
+			ServiceGPNode startService = new ServiceGPNode();
+			startService.setSerName("startNode");
 			GPNode rightChild;
 
 			if (graph.outDegreeOf("startNode") == 1) {
@@ -110,7 +110,9 @@ public class WSCSpecies extends Species {
 				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
 				ServiceEdge outgoingEdge = outgoingEdges.get(0);
 				String nextvertice = graph.getEdgeTarget(outgoingEdge);
-				root = getNode(nextvertice, graph);
+				rightChild = getWeightedNode(nextvertice, graph);
+				root = createSequenceNode(startService,rightChild);
+
 			}
 			// Start with parallel node
 			else if (graph.outDegreeOf("startNode") > 1) {
@@ -118,8 +120,8 @@ public class WSCSpecies extends Species {
 				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
 				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
 				rightChild = createParallelNode(outgoingEdges, graph);
-				root = createSequenceNode(sgp,rightChild);
-				
+				root = createSequenceNode(startService,rightChild);
+
 			}
 		} else {
 			// Begin by checking how many nodes are in the right child.
@@ -141,7 +143,7 @@ public class WSCSpecies extends Species {
 
 			// If there is only one other child, create a sequence construct
 			if (outgoingEdges.size() == 1) {
-				rightChild = getNode(graph.getEdgeTarget(outgoingEdges.get(0)),graph);
+				rightChild = getWeightedNode(graph.getEdgeTarget(outgoingEdges.get(0)),graph);
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
@@ -228,7 +230,10 @@ public class WSCSpecies extends Species {
 			else if (outgoingEdges.size() == 0) {
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
-				root = sgp;
+				ServiceGPNode endNode = new ServiceGPNode();
+				endNode.setSerName("endNode");
+				root = createSequenceNode(sgp, endNode);
+
 			}
 			// Else, create a new parallel construct wrapped in a sequence
 			// construct
@@ -261,7 +266,8 @@ public class WSCSpecies extends Species {
 
 		for (int i = 0; i < length; i++) {
 			String nextVertice = graph.getEdgeTarget(outgoingEdges.get(i));
-			children[i] = getNode(nextVertice, graph);
+//			children[i] = getNode(nextVertice, graph);
+			children[i] = getWeightedNode(nextVertice, graph);
 			children[i].parent = root;
 		}
 		root.children = children;
@@ -294,6 +300,27 @@ public class WSCSpecies extends Species {
 		return root;
 	}
 
+	/**
+	 * Retrieves the tree representation for the provided GraphNode, also
+	 * checking if should translate to a leaf.
+	 *
+	 * @param n
+	 * @return root of tree translation
+	 */
+	private GPNode getWeightedNode(String nextvertice, ServiceGraph graph) {
+		GPNode result;
+		if (isLeaf(nextvertice, graph)) {
+			ServiceGPNode sgp = new ServiceGPNode();
+			sgp.setSerName(nextvertice);
+			ServiceGPNode endNode = new ServiceGPNode();
+			endNode.setSerName("endNode");
+			result = createSequenceNode(sgp, endNode);
+		}
+		// Otherwise, make next node's subtree the right child
+		else
+			result = toWeightedTree(nextvertice, graph);
+		return result;
+	}
 	/**
 	 * Retrieves the tree representation for the provided GraphNode, also
 	 * checking if should translate to a leaf.
@@ -336,14 +363,6 @@ public class WSCSpecies extends Species {
 		}
 		return a && b;
 	}
-
-
-
-
-
-
-
-
 
 //	private DirectedGraph<String, ServiceEdge> graphRepresentation(List<String> taskInput, List<String> taskOutput,WSCInitializer init) {
 //
@@ -562,144 +581,144 @@ public class WSCSpecies extends Species {
 //		}
 //	}
 
-	public GPNode createNewTree(EvolutionState state, Set<String> inputSet, Set<String> outputSet) {
-		WSCInitializer init = (WSCInitializer) state.initializer;
+//	public GPNode createNewTree(EvolutionState state, Set<String> inputSet, Set<String> outputSet) {
+//		WSCInitializer init = (WSCInitializer) state.initializer;
+//
+//		// Find nodes that satisfy the given output
+//		Set<Service> services = new HashSet<Service>();
+//		Set<String> outputsToSatisfy = new HashSet<String>(outputSet);
+//
+//		for (String o : outputSet) {
+//			if (outputsToSatisfy.contains(o)) {
+//				List<Service> candidates = init.taxonomyMap.get(o).servicesWithOutput;
+//				Collections.shuffle(candidates, init.random);
+//				Service chosen = null;
+//				candLoop:
+//				for (Service cand : candidates) {
+//					if (init.relevant.contains(cand)) {
+//						services.add(cand);
+//						chosen = cand;
+//						break candLoop;
+//					}
+//				}
+//				outputsToSatisfy.remove(o);
+//
+//				// Check if other outputs can also be fulfilled by the chosen candidate, and remove them also
+//				Set<String> subsumed = init.getInputsSubsumed(outputsToSatisfy, chosen.outputs);
+//				outputsToSatisfy.removeAll(subsumed);
+//			}
+//		}
+//
+//		GPNode root = recCreateNewTree(init, services, inputSet, outputSet);
+//		return root;
+//	}
 
-		// Find nodes that satisfy the given output
-		Set<Service> services = new HashSet<Service>();
-		Set<String> outputsToSatisfy = new HashSet<String>(outputSet);
+//	public GPNode recCreateNewTree(WSCInitializer init, Set<Service> services, Set<String> inputSet, Set<String> outputSet) {
+//
+//		GPNode root;
+//		List<Service> satisfiedByStart = new ArrayList<Service>();
+//
+//		// Check which nodes can be fully satisfied by the inputs provided
+//		checkSatisfiedByInputs(init, services, inputSet, satisfiedByStart);
+//
+//		// Add these inputs to the list of subtrees
+//		List<GPNode> subtrees = new ArrayList<GPNode>();
+//		for (Service satisfied : satisfiedByStart) {
+//			ServiceGPNode servNode = new ServiceGPNode();
+//			servNode.setService(satisfied);
+//			subtrees.add(servNode);
+//		}
+//
+//		// If not all nodes can be satisfied by the inputs provided
+//		Map<Service, Set<Service>> predecessorMap = new HashMap<Service, Set<Service>>();
+//
+//		// Find predecessors in previous layers for each node, checking if start satisfies them.
+//		for (Service s : services) {
+//			if (!satisfiedByStart.contains(s)) {
+//				Set<Service> predecessors = findPredecessors(init, inputSet, s);
+//				predecessorMap.put(s, predecessors);
+//			}
+//		}
+//
+//		// For each individual node, create a subtree with a sequence node root, and the node as the right child.
+//		for (Entry<Service, Set<Service>> entry : predecessorMap.entrySet()) {
+//			SequenceGPNode seq = new SequenceGPNode();
+//			subtrees.add(seq);
+//			GPNode[] children = new GPNode[2];
+//
+//			// The left-hand side contains the tree for the predecessor
+//			GPNode leftChild = recCreateNewTree(init, entry.getValue(), inputSet, outputSet);
+//			leftChild.parent = seq;
+//			children[0] = leftChild;
+//
+//			// The right-hand side contains the node satisfied
+//			ServiceGPNode rightChild = new ServiceGPNode();
+//			rightChild.setService(entry.getKey());
+//			rightChild.parent = seq;
+//			children[1] = rightChild;
+//
+//			seq.children = children;
+//		}
+//
+//		// If more than one subtree is created, put all of them under a parallel node parent.
+//		if (subtrees.size() > 1) {
+//			ParallelGPNode parNode = new ParallelGPNode();
+//			parNode.children = new GPNode[subtrees.size()];
+//			for (int i = 0; i < parNode.children.length; i++) {
+//				parNode.children[i] = subtrees.get(i);
+//				parNode.children[i].parent = parNode;
+//			}
+//			root = parNode;
+//		}
+//		else if (subtrees.size() == 1){
+//			root = subtrees.get(0);
+//		}
+//		else {
+//			throw new RuntimeException("No subtrees were created when recursing!");
+//		}
+//
+//		return root;
+//	}
+//
+//	public int checkSatisfiedByInputs(WSCInitializer init, Set<Service> services, Set<String> inputs, List<Service> satisfiedByStart) {
+//		for (Service s : services) {
+//			if (init.isSubsumed(s.getInputs(), inputs))
+//				satisfiedByStart.add(s);
+//		}
+//		return satisfiedByStart.size();
+//	}
 
-		for (String o : outputSet) {
-			if (outputsToSatisfy.contains(o)) {
-				List<Service> candidates = init.taxonomyMap.get(o).servicesWithOutput;
-				Collections.shuffle(candidates, init.random);
-				Service chosen = null;
-				candLoop:
-				for (Service cand : candidates) {
-					if (init.relevant.contains(cand)) {
-						services.add(cand);
-						chosen = cand;
-						break candLoop;
-					}
-				}
-				outputsToSatisfy.remove(o);
-
-				// Check if other outputs can also be fulfilled by the chosen candidate, and remove them also
-				Set<String> subsumed = init.getInputsSubsumed(outputsToSatisfy, chosen.outputs);
-				outputsToSatisfy.removeAll(subsumed);
-			}
-		}
-
-		GPNode root = recCreateNewTree(init, services, inputSet, outputSet);
-		return root;
-	}
-
-	public GPNode recCreateNewTree(WSCInitializer init, Set<Service> services, Set<String> inputSet, Set<String> outputSet) {
-
-		GPNode root;
-		List<Service> satisfiedByStart = new ArrayList<Service>();
-
-		// Check which nodes can be fully satisfied by the inputs provided
-		checkSatisfiedByInputs(init, services, inputSet, satisfiedByStart);
-
-		// Add these inputs to the list of subtrees
-		List<GPNode> subtrees = new ArrayList<GPNode>();
-		for (Service satisfied : satisfiedByStart) {
-			ServiceGPNode servNode = new ServiceGPNode();
-			servNode.setService(satisfied);
-			subtrees.add(servNode);
-		}
-
-		// If not all nodes can be satisfied by the inputs provided
-		Map<Service, Set<Service>> predecessorMap = new HashMap<Service, Set<Service>>();
-
-		// Find predecessors in previous layers for each node, checking if start satisfies them.
-		for (Service s : services) {
-			if (!satisfiedByStart.contains(s)) {
-				Set<Service> predecessors = findPredecessors(init, inputSet, s);
-				predecessorMap.put(s, predecessors);
-			}
-		}
-
-		// For each individual node, create a subtree with a sequence node root, and the node as the right child.
-		for (Entry<Service, Set<Service>> entry : predecessorMap.entrySet()) {
-			SequenceGPNode seq = new SequenceGPNode();
-			subtrees.add(seq);
-			GPNode[] children = new GPNode[2];
-
-			// The left-hand side contains the tree for the predecessor
-			GPNode leftChild = recCreateNewTree(init, entry.getValue(), inputSet, outputSet);
-			leftChild.parent = seq;
-			children[0] = leftChild;
-
-			// The right-hand side contains the node satisfied
-			ServiceGPNode rightChild = new ServiceGPNode();
-			rightChild.setService(entry.getKey());
-			rightChild.parent = seq;
-			children[1] = rightChild;
-
-			seq.children = children;
-		}
-
-		// If more than one subtree is created, put all of them under a parallel node parent.
-		if (subtrees.size() > 1) {
-			ParallelGPNode parNode = new ParallelGPNode();
-			parNode.children = new GPNode[subtrees.size()];
-			for (int i = 0; i < parNode.children.length; i++) {
-				parNode.children[i] = subtrees.get(i);
-				parNode.children[i].parent = parNode;
-			}
-			root = parNode;
-		}
-		else if (subtrees.size() == 1){
-			root = subtrees.get(0);
-		}
-		else {
-			throw new RuntimeException("No subtrees were created when recursing!");
-		}
-
-		return root;
-	}
-
-	public int checkSatisfiedByInputs(WSCInitializer init, Set<Service> services, Set<String> inputs, List<Service> satisfiedByStart) {
-		for (Service s : services) {
-			if (init.isSubsumed(s.getInputs(), inputs))
-				satisfiedByStart.add(s);
-		}
-		return satisfiedByStart.size();
-	}
-
-	public Set<Service> findPredecessors(WSCInitializer init, Set<String> inputs, Service s) {
-		Set<Service> predecessors = new HashSet<Service>();
-
-		// Get only inputs that are not subsumed by the given composition inputs
-		Set<String> inputsNotSatisfied = init.getInputsNotSubsumed(s.getInputs(), inputs);
-		Set<String> inputsToSatisfy = new HashSet<String>(inputsNotSatisfied);
-
-		// Find services to satisfy all inputs
-		for (String i : inputsNotSatisfied) {
-			if (inputsToSatisfy.contains(i)) {
-				List<Service> candidates = init.taxonomyMap.get(i).servicesWithOutput;
-				Collections.shuffle(candidates, init.random);
-
-				Service chosen = null;
-				candLoop:
-				for(Service cand : candidates) {
-					if (init.relevant.contains(cand) && cand.layer < s.layer) {
-						predecessors.add(cand);
-						chosen = cand;
-						break candLoop;
-					}
-				}
-
-				inputsToSatisfy.remove(i);
-
-				// Check if other outputs can also be fulfilled by the chosen candidate, and remove them also
-				Set<String> subsumed = init.getInputsSubsumed(inputsToSatisfy, chosen.outputs);
-				inputsToSatisfy.removeAll(subsumed);
-			}
-		}
-		return predecessors;
-	}
+//	public Set<Service> findPredecessors(WSCInitializer init, Set<String> inputs, Service s) {
+//		Set<Service> predecessors = new HashSet<Service>();
+//
+//		// Get only inputs that are not subsumed by the given composition inputs
+//		Set<String> inputsNotSatisfied = init.getInputsNotSubsumed(s.getInputs(), inputs);
+//		Set<String> inputsToSatisfy = new HashSet<String>(inputsNotSatisfied);
+//
+//		// Find services to satisfy all inputs
+//		for (String i : inputsNotSatisfied) {
+//			if (inputsToSatisfy.contains(i)) {
+//				List<Service> candidates = init.taxonomyMap.get(i).servicesWithOutput;
+//				Collections.shuffle(candidates, init.random);
+//
+//				Service chosen = null;
+//				candLoop:
+//				for(Service cand : candidates) {
+//					if (init.relevant.contains(cand) && cand.layer < s.layer) {
+//						predecessors.add(cand);
+//						chosen = cand;
+//						break candLoop;
+//					}
+//				}
+//
+//				inputsToSatisfy.remove(i);
+//
+//				// Check if other outputs can also be fulfilled by the chosen candidate, and remove them also
+//				Set<String> subsumed = init.getInputsSubsumed(inputsToSatisfy, chosen.outputs);
+//				inputsToSatisfy.removeAll(subsumed);
+//			}
+//		}
+//		return predecessors;
+//	}
 
 }

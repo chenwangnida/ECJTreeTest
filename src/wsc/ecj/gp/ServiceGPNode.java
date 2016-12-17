@@ -134,7 +134,7 @@ public class ServiceGPNode extends GPNode {
 
 	@Override
 	public int hashCode() {
-		if (service == null) {
+		if (serName == null) {
 			return "null".hashCode();
 		}
 		return super.hashCode();
