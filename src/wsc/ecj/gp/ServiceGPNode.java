@@ -19,9 +19,9 @@ import wsc.graph.ServicePrecondition;
 public class ServiceGPNode extends GPNode {
 
 	private static final long serialVersionUID = 1L;
-	private String serName;
 	private Service service;
 
+	private String serName;
 	private List<ServiceInput> inputs;
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
@@ -77,37 +77,16 @@ public class ServiceGPNode extends GPNode {
 		WSCData rd = ((WSCData) (input));
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		if (serName.equals("startNode") || serName.equals("endNode")) {
-			rd.maxTime = 0;
-			rd.seenServices = new ArrayList<Service>();
-			double[] mockQos = new double[4];
-			mockQos[0] = 0;
-			mockQos[1] = 0;
-			mockQos[2] = 1;
-			mockQos[3] = 1;
-			rd.seenServices
-					.add(new Service(serName, mockQos, new ArrayList<ServiceInput>(), new ArrayList<ServiceOutput>(),
-							new ArrayList<ServicePrecondition>(), new ArrayList<ServicePostcondition>()));
-//			rd.seenServices
-//			.add(new Service(serName, mockQos, null, null,null, null));
-//			rd.inputs = null;
-//			rd.outputs = null;
-//			rd.preconditions = null;
-//			rd.postconditions = null;
-			rd.serviceId = service.serviceID;
-			rd.inputs = service.getInputList();
-			rd.outputs = service.getOutputList();
-			rd.preconditions = service.getPreconditionList();
-			rd.postconditions = service.getPostconditionList();
+			// startNode and endNOde save only serviceName, which are not
+			// evaluated in their parentNodes
+			rd.serviceId = serName;
 
 			// Store input and output information in this node
-		 
-			inputs = rd.inputs;
-			outputs = rd.outputs;
-			preconditions = rd.preconditions;
-			postconditions = rd.postconditions;
+			serName = rd.serviceId;
 
 		} else {
 			Service service = init.serviceMap.get(serName);
+			rd.serviceId = serName;
 			rd.maxTime = service.getQos()[WSCInitializer.TIME];
 			rd.seenServices = new ArrayList<Service>();
 			rd.seenServices.add(service);
@@ -117,6 +96,7 @@ public class ServiceGPNode extends GPNode {
 			rd.postconditions = service.getPostconditionList();
 
 			// Store input and output information in this node
+			serName = rd.serviceId;
 			inputs = rd.inputs;
 			outputs = rd.outputs;
 			preconditions = rd.preconditions;
