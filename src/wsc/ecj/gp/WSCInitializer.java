@@ -79,6 +79,8 @@ public class WSCInitializer extends GPInitializer {
 	public double w2;
 	public double w3;
 	public double w4;
+	public double w5;
+	public double w6;
 
 	@Override
 	public void setup(EvolutionState state, Parameter base) {
@@ -92,11 +94,17 @@ public class WSCInitializer extends GPInitializer {
 		Parameter weight2Param = new Parameter("fitness-weight2");
 		Parameter weight3Param = new Parameter("fitness-weight3");
 		Parameter weight4Param = new Parameter("fitness-weight4");
+		Parameter weight5Param = new Parameter("fitness-weight5");
+		Parameter weight6Param = new Parameter("fitness-weight6");
+
 
 		w1 = state.parameters.getDouble(weight1Param, null);
 		w2 = state.parameters.getDouble(weight2Param, null);
 		w3 = state.parameters.getDouble(weight3Param, null);
 		w4 = state.parameters.getDouble(weight4Param, null);
+		w5 = state.parameters.getDouble(weight5Param, null);
+		w6 = state.parameters.getDouble(weight6Param, null);
+
 
 		// Initial all data related to Web service composition pools
 		try {
@@ -117,6 +125,8 @@ public class WSCInitializer extends GPInitializer {
 		MapServiceToQoS(initialWSCPool.getServiceSequence());
 		// mapServicesToIndex(initialWSCPool.getServiceSequence(),
 		// serviceToIndexMap);
+		calculateNormalisationBounds(initialWSCPool.getServiceSequence(),
+				initialWSCPool.getSemanticsPool().getOwlInstHashMap().size());
 
 		ontologyDAG = createOntologyDAG(initialWSCPool);
 
@@ -189,14 +199,6 @@ public class WSCInitializer extends GPInitializer {
 		for (Service service : serviceList) {
 			serviceMap.put(service.getServiceID(), service);
 			serviceQoSMap.put(service.getServiceID(), service.getQos());
-		}
-	}
-
-	private void mapServicesToIndex(List<Service> relevant, Map<String, Integer> serviceToIndexMap) {
-		int i = 0;
-		for (Service service : relevant) {
-			String serviceId = service.getServiceID();
-			serviceToIndexMap.put(serviceId, i++);
 		}
 	}
 

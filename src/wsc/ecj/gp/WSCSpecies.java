@@ -1,18 +1,10 @@
 package wsc.ecj.gp;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
 
 import java.util.Set;
 
@@ -21,7 +13,6 @@ import ec.Individual;
 import ec.Species;
 import ec.gp.GPNode;
 import ec.util.Parameter;
-import graph.GraphNode;
 import wsc.graph.ServiceGraph;
 import wsc.graph.ServiceEdge;
 
@@ -311,9 +302,9 @@ public class WSCSpecies extends Species {
 
 		root.children = children;
 		
-		List<ServiceEdge> semanticEdge = new ArrayList<ServiceEdge>();
-		semanticEdge.addAll(graph.edgeSet());
-		root.setSemanticEdge(semanticEdge);
+		List<ServiceEdge> semanticEdgeList = new ArrayList<ServiceEdge>();
+		semanticEdgeList.addAll(graph.edgeSet());
+		root.setSemanticEdges(semanticEdgeList);
 		
 		return root;
 	}

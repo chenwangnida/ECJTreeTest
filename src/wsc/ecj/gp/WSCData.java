@@ -4,6 +4,7 @@ import java.util.List;
 
 import ec.gp.*;
 import wsc.data.pool.Service;
+import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
@@ -18,7 +19,8 @@ public class WSCData extends GPData {
 	public List<ServiceOutput> outputs;
 	public List<ServicePrecondition> preconditions;
 	public List<ServicePostcondition> postconditions;
-
+	public List<ServiceEdge> semanticEdges; 
+	
 	public void copyTo(final GPData gpd) {
 		WSCData wscd = (WSCData) gpd;
 		wscd.maxTime = maxTime;
@@ -27,5 +29,6 @@ public class WSCData extends GPData {
 		wscd.outputs = outputs;
 		wscd.preconditions = preconditions;
 		wscd.postconditions = postconditions;
+		wscd.semanticEdges = semanticEdges;
 	}
 }

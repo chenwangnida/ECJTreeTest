@@ -5,6 +5,7 @@ import ec.*;
 import ec.gp.*;
 import ec.simple.*;
 import wsc.data.pool.Service;
+import wsc.graph.ServiceEdge;
 
 public class WSC extends GPProblem implements SimpleProblemForm {
 
@@ -32,6 +33,16 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			qos[WSCInitializer.AVAILABILITY] = 1.0;
 			qos[WSCInitializer.RELIABILITY] = 1.0;
 
+			double mt = 1.0;
+			double dst = 0.0; // Exact Match dst = 1 ; 0 < = dst < = 1
+			for (ServiceEdge semanticQuality : input.semanticEdges) {
+				mt *= semanticQuality.getAvgmt();
+				dst += semanticQuality.getAvgsdt();
+
+			}
+			
+			dst = dst/(input.semanticEdges.size());
+
 			for (Service s : input.seenServices) {
 				qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
 				qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
@@ -39,7 +50,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			}
 
 			double fitness = calculateFitness(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
-					qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+					qos[WSCInitializer.TIME], qos[WSCInitializer.COST], mt, dst, init);
 
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
@@ -61,25 +72,17 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 	// return fitness;
 	// }
 
-	private double calculateFitness(double a, double r, double t, double c, WSCInitializer init) {
+	private double calculateFitness(double a, double r, double t, double c, double mt, double dst,
+			WSCInitializer init) {
 
-		// double mt = individual.getMatchingType();
-		// double dst = individual.getSemanticDistance();
-		// double a = individual.getAvailability();
-		// double r = individual.getReliability();
-		// double t = individual.getTime();
-		// double c = individual.getCost();
-
-		// mt = normaliseMatchType(mt);
-		// dst = normaliseDistanceValue(dst);
 		a = normaliseAvailability(a);
 		r = normaliseReliability(r);
 		t = normaliseTime(t);
 		c = normaliseCost(c);
+		mt = normaliseMatchType(mt);
+		dst = normaliseDistanceValue(dst);
 
-		// double fitness = ((W1 * mt) + (W2 * dst) + (W3 * a) + (W4 * r) + (W5
-		// * t) + (W6 * c));
-		double fitness = ((0.25 * a) + (0.25 * r) + (0.25 * t) + (0.25 * c));
+		double fitness = init.w1 * a + init.w2 * r + init.w3 * t + init.w4 * c + init.w5 * mt + init.w6 * dst;
 
 		return fitness;
 	}

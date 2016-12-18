@@ -4,10 +4,12 @@ seed.0                                         = 1
 composition-task                               = problem.xml
 composition-taxonomy                           = taxonomy.owl
 composition-services                           = services-output.xml
-fitness-weight1                                = 0.25
-fitness-weight2                                = 0.25
-fitness-weight3                                = 0.25
-fitness-weight4                                = 0.25
+fitness-weight1                                = 0.125
+fitness-weight2                                = 0.125
+fitness-weight3                                = 0.125
+fitness-weight4                                = 0.125
+fitness-weight5								   = 0.25
+fitness-weight6                                = 0.25
 
 # We have one function set, of class GPFunctionSet
 gp.fs.size                                     = 1

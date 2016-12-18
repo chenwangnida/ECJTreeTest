@@ -1,9 +1,7 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import ec.EvolutionState;
 import ec.Problem;
@@ -25,8 +23,7 @@ public class SequenceGPNode extends GPNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
-	
-	private List<ServiceEdge> semanticEdge;
+	private List<ServiceEdge> semanticEdges;
 
 	public List<ServiceInput> getInputs() {
 		return inputs;
@@ -60,12 +57,12 @@ public class SequenceGPNode extends GPNode {
 		this.postconditions = postconditions;
 	}
 
-	public List<ServiceEdge> getSemanticEdge() {
-		return semanticEdge;
+	public List<ServiceEdge> getSemanticEdges() {
+		return semanticEdges;
 	}
 
-	public void setSemanticEdge(List<ServiceEdge> semanticEdge) {
-		this.semanticEdge = semanticEdge;
+	public void setSemanticEdges(List<ServiceEdge> semanticEdges) {
+		this.semanticEdges = semanticEdges;
 	}
 
 	@Override
@@ -77,6 +74,7 @@ public class SequenceGPNode extends GPNode {
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
+		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
 
 
 		WSCData rd = ((WSCData) (input));
@@ -94,6 +92,7 @@ public class SequenceGPNode extends GPNode {
 			overallOutputs.addAll(rd.outputs);						
 			overallPreconditions.addAll(rd.preconditions);
 			overallPostconditions.addAll(rd.postconditions);
+			overallServiceEdges.addAll(rd.semanticEdges);
 		
 		}
 				
@@ -110,9 +109,7 @@ public class SequenceGPNode extends GPNode {
 //		children[1].eval(state, thread, input, stack, individual, problem);
 //		rd.maxTime += maxTime;
 //		rd.seenServices.addAll(seenServices);
-//		rd.inputs = in;
-		
-		
+//		rd.inputs = in;		
 		
 		// Finally, set the data with the overall values before exiting the
 		// evaluation
@@ -122,14 +119,14 @@ public class SequenceGPNode extends GPNode {
 		rd.outputs = overallOutputs;
 		rd.preconditions = overallPreconditions;
 		rd.postconditions = overallPostconditions;
+		rd.semanticEdges = overallServiceEdges;
 
 		// Store input and output information in this node
 		inputs = rd.inputs;
 		outputs = rd.outputs;
 		preconditions = rd.preconditions;
 		postconditions = rd.postconditions;
-		
-		
+		semanticEdges = rd.semanticEdges;
 	}
 
 	@Override
