@@ -76,21 +76,52 @@ public class ServiceGPNode extends GPNode {
 
 		WSCData rd = ((WSCData) (input));
 		WSCInitializer init = (WSCInitializer) state.initializer;
-		Service service = init.serviceMap.get(serName);
+		if (serName.equals("startNode") || serName.equals("endNode")) {
+			rd.maxTime = 0;
+			rd.seenServices = new ArrayList<Service>();
+			double[] mockQos = new double[4];
+			mockQos[0] = 0;
+			mockQos[1] = 0;
+			mockQos[2] = 1;
+			mockQos[3] = 1;
+			rd.seenServices
+					.add(new Service(serName, mockQos, new ArrayList<ServiceInput>(), new ArrayList<ServiceOutput>(),
+							new ArrayList<ServicePrecondition>(), new ArrayList<ServicePostcondition>()));
+//			rd.seenServices
+//			.add(new Service(serName, mockQos, null, null,null, null));
+//			rd.inputs = null;
+//			rd.outputs = null;
+//			rd.preconditions = null;
+//			rd.postconditions = null;
+			rd.serviceId = service.serviceID;
+			rd.inputs = service.getInputList();
+			rd.outputs = service.getOutputList();
+			rd.preconditions = service.getPreconditionList();
+			rd.postconditions = service.getPostconditionList();
 
-		rd.maxTime = service.getQos()[WSCInitializer.TIME];
-		rd.seenServices = new ArrayList<Service>();
-		rd.seenServices.add(service);
-		rd.inputs = service.getInputList();
-		rd.outputs = service.getOutputList();
-		rd.preconditions = service.getPreconditionList();
-		rd.postconditions = service.getPostconditionList();
+			// Store input and output information in this node
+		 
+			inputs = rd.inputs;
+			outputs = rd.outputs;
+			preconditions = rd.preconditions;
+			postconditions = rd.postconditions;
 
-		// Store input and output information in this node
-		inputs = rd.inputs;
-		outputs = rd.outputs;
-		preconditions = rd.preconditions;
-		postconditions = rd.postconditions;
+		} else {
+			Service service = init.serviceMap.get(serName);
+			rd.maxTime = service.getQos()[WSCInitializer.TIME];
+			rd.seenServices = new ArrayList<Service>();
+			rd.seenServices.add(service);
+			rd.inputs = service.getInputList();
+			rd.outputs = service.getOutputList();
+			rd.preconditions = service.getPreconditionList();
+			rd.postconditions = service.getPostconditionList();
+
+			// Store input and output information in this node
+			inputs = rd.inputs;
+			outputs = rd.outputs;
+			preconditions = rd.preconditions;
+			postconditions = rd.postconditions;
+		}
 
 	}
 

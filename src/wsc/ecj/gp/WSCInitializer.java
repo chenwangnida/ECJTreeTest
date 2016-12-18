@@ -60,21 +60,14 @@ public class WSCInitializer extends GPInitializer {
 	public Map<String, double[]> serviceQoSMap = new HashMap<String, double[]>();
 	public Map<String, Service> serviceMap = new HashMap<String, Service>();
 	public Set<Service> relevant;
-//	public Map<String, TaxonomyNode> taxonomyMap = new HashMap<String, TaxonomyNode>();
+	// public Map<String, TaxonomyNode> taxonomyMap = new HashMap<String,
+	// TaxonomyNode>();
 	public static List<String> taskInput;
 	public static List<String> taskOutput;
-	// public Service startServ;
-	// public Service endServ;
+//	public Service startServ;
+//	public Service endServ;
 	public static GraphRandom random;
 
-	// public final double minAvailability = 0.0;
-	// public double maxAvailability = -1.0;
-	// public final double minReliability = 0.0;
-	// public double maxReliability = -1.0;
-	// public double minTime = Double.MAX_VALUE;
-	// public double maxTime = -1.0;
-	// public double minCost = Double.MAX_VALUE;
-	// public double maxCost = -1.0;
 	public double w1;
 	public double w2;
 	public double w3;
@@ -97,14 +90,12 @@ public class WSCInitializer extends GPInitializer {
 		Parameter weight5Param = new Parameter("fitness-weight5");
 		Parameter weight6Param = new Parameter("fitness-weight6");
 
-
 		w1 = state.parameters.getDouble(weight1Param, null);
 		w2 = state.parameters.getDouble(weight2Param, null);
 		w3 = state.parameters.getDouble(weight3Param, null);
 		w4 = state.parameters.getDouble(weight4Param, null);
 		w5 = state.parameters.getDouble(weight5Param, null);
 		w6 = state.parameters.getDouble(weight6Param, null);
-
 
 		// Initial all data related to Web service composition pools
 		try {
@@ -136,17 +127,15 @@ public class WSCInitializer extends GPInitializer {
 		// null));
 		// findConceptsForInstances();
 
-		// double[] mockQos = new double[4];
-		// mockQos[TIME] = 0;
-		// mockQos[COST] = 0;
-		// mockQos[AVAILABILITY] = 1;
-		// mockQos[RELIABILITY] = 1;
+//		 double[] mockQos = new double[4];
+//		 mockQos[TIME] = 0;
+//		 mockQos[COST] = 0;
+//		 mockQos[AVAILABILITY] = 1;
+//		 mockQos[RELIABILITY] = 1;
 		// Set<String> startOutput = new HashSet<String>();
 		// startOutput.addAll(taskInput);
-		// startServ = new Service("start", mockQos, new HashSet<String>(),
-		// taskInput);
-		// endServ = new Service("end", mockQos, taskOutput ,new
-		// HashSet<String>());
+//		startServ = new Service("start", mockQos, new ArrayList<String>(), taskInput);
+//		endServ = new Service("end", mockQos, taskOutput, new ArrayList<String>());
 
 		// populateTaxonomyTree();
 		// relevant = getRelevantServices(serviceMap, taskInput, taskOutput);

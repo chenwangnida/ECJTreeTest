@@ -79,7 +79,7 @@ public class SequenceGPNode extends GPNode {
 
 		WSCData rd = ((WSCData) (input));
 		for (GPNode child : children) {
-			child.eval(state, thread, input, stack, individual, problem);
+			child.eval(state, thread, input, stack, individual, problem);				
 			
 			// Update max. time
 			maxTime += rd.maxTime;

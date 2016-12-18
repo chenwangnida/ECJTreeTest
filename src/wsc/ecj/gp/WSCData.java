@@ -15,6 +15,8 @@ public class WSCData extends GPData {
 	private static final long serialVersionUID = 1L;
 	public double maxTime;
 	List<Service> seenServices;
+	
+	public String serviceId;
 	public List<ServiceInput> inputs;
 	public List<ServiceOutput> outputs;
 	public List<ServicePrecondition> preconditions;
@@ -23,6 +25,7 @@ public class WSCData extends GPData {
 	
 	public void copyTo(final GPData gpd) {
 		WSCData wscd = (WSCData) gpd;
+		wscd.serviceId = serviceId;
 		wscd.maxTime = maxTime;
 		wscd.seenServices = seenServices;
 		wscd.inputs = inputs;

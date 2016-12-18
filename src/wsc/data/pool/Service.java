@@ -38,12 +38,12 @@ public class Service implements Comparable<Service> {
 
 	private double score;
 
-	public Service(String serviceID, double[] qos, List<ServiceInput> inputList, List<ServiceOutput> outputList) {
+	public Service(String serviceID, double[] qos, List<ServiceInput> inputList, List<ServiceOutput> arrayList) {
 		super();
 		this.serviceID = serviceID;
 		this.qos = qos;
 		this.inputList = inputList;
-		this.outputList = outputList;
+		this.outputList = arrayList;
 	}
 
 	public Service(String serviceID, double[] qos, List<ServiceInput> inputList, List<ServiceOutput> outputList,
