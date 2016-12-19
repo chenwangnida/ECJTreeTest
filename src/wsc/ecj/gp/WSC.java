@@ -34,7 +34,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			qos[WSCInitializer.RELIABILITY] = 1.0;
 
 			double mt = 1.0;
-			double dst = 0.0; // Exact Match dst = 1 ; 0 < = dst < = 1
+			double dst = 0.0; // Exact Match dst = 1 ; 
 			for (ServiceEdge semanticQuality : input.semanticEdges) {
 				mt *= semanticQuality.getAvgmt();
 				dst += semanticQuality.getAvgsdt();
