@@ -2,6 +2,7 @@ package wsc.ecj.gp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import ec.EvolutionState;
 import ec.Problem;
@@ -11,6 +12,7 @@ import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 
 import wsc.data.pool.Service;
+import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
@@ -26,9 +28,15 @@ public class ServiceGPNode extends GPNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
+	private Set<ServiceEdge> semanticEdges;
 
 	public ServiceGPNode() {
 		children = new GPNode[0];
+	}
+
+	public ServiceGPNode(Set<ServiceEdge> semanticEdges) {
+		children = new GPNode[0];
+		this.setSemanticEdges(semanticEdges);;
 	}
 
 	public String getSerName() {
@@ -70,6 +78,15 @@ public class ServiceGPNode extends GPNode {
 	public void setPostconditions(List<ServicePostcondition> postconditions) {
 		this.postconditions = postconditions;
 	}
+	
+
+	public Set<ServiceEdge> getSemanticEdges() {
+		return semanticEdges;
+	}
+
+	public void setSemanticEdges(Set<ServiceEdge> semanticEdges) {
+		this.semanticEdges = semanticEdges;
+	}
 
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,
 			final GPIndividual individual, final Problem problem) {
@@ -80,9 +97,11 @@ public class ServiceGPNode extends GPNode {
 			// startNode and endNOde save only serviceName, which are not
 			// evaluated in their parentNodes
 			rd.serviceId = serName;
+			rd.semanticEdges = this.semanticEdges;
 
 			// Store input and output information in this node
 			serName = rd.serviceId;
+			semanticEdges =rd.semanticEdges;
 
 		} else {
 			Service service = init.serviceMap.get(serName);
@@ -94,6 +113,7 @@ public class ServiceGPNode extends GPNode {
 			rd.outputs = service.getOutputList();
 			rd.preconditions = service.getPreconditionList();
 			rd.postconditions = service.getPostconditionList();
+			rd.semanticEdges = this.semanticEdges;
 
 			// Store input and output information in this node
 			serName = rd.serviceId;
@@ -101,6 +121,7 @@ public class ServiceGPNode extends GPNode {
 			outputs = rd.outputs;
 			preconditions = rd.preconditions;
 			postconditions = rd.postconditions;
+			semanticEdges = rd.semanticEdges;
 		}
 
 	}

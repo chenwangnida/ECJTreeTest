@@ -1,6 +1,7 @@
 package wsc.ecj.gp;
 
 import java.util.List;
+import java.util.Set;
 
 import ec.gp.*;
 import wsc.data.pool.Service;
@@ -21,7 +22,7 @@ public class WSCData extends GPData {
 	public List<ServiceOutput> outputs;
 	public List<ServicePrecondition> preconditions;
 	public List<ServicePostcondition> postconditions;
-	public List<ServiceEdge> semanticEdges; 
+	public Set<ServiceEdge> semanticEdges; 
 	
 	public void copyTo(final GPData gpd) {
 		WSCData wscd = (WSCData) gpd;

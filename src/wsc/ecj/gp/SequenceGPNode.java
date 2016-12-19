@@ -1,7 +1,9 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ec.EvolutionState;
 import ec.Problem;
@@ -23,7 +25,7 @@ public class SequenceGPNode extends GPNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
-	private List<ServiceEdge> semanticEdges;
+	private Set<ServiceEdge> semanticEdges;
 
 	public List<ServiceInput> getInputs() {
 		return inputs;
@@ -57,11 +59,11 @@ public class SequenceGPNode extends GPNode {
 		this.postconditions = postconditions;
 	}
 
-	public List<ServiceEdge> getSemanticEdges() {
+	public Set<ServiceEdge> getSemanticEdges() {
 		return semanticEdges;
 	}
 
-	public void setSemanticEdges(List<ServiceEdge> semanticEdges) {
+	public void setSemanticEdges(Set<ServiceEdge> semanticEdges) {
 		this.semanticEdges = semanticEdges;
 	}
 
@@ -74,44 +76,50 @@ public class SequenceGPNode extends GPNode {
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
-		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
-
+		Set<ServiceEdge> overallServiceEdges = new HashSet<ServiceEdge>();
 
 		WSCData rd = ((WSCData) (input));
 		for (GPNode child : children) {
-			child.eval(state, thread, input, stack, individual, problem);				
-			if(rd.serviceId.equals("startNode") || rd.serviceId.equals("endNode"))
+			child.eval(state, thread, input, stack, individual, problem);
+			if (rd.serviceId.equals("startNode")) {
+				overallServiceEdges.addAll(rd.semanticEdges);
 				continue;
+			}
+			if (rd.serviceId.equals("endNode")) {
+				continue;
+			}
+			
 			// Update max. time
 			maxTime += rd.maxTime;
-			
+
 			// Update seen services
 			seenServices.addAll(rd.seenServices);
-			
-			// Load all Inputs, Outputs, Preconditions and Postconditions of Children
+
+			// Load all Inputs, Outputs, Preconditions and Postconditions of
+			// Children
 			overallInputs.addAll(rd.inputs);
-			overallOutputs.addAll(rd.outputs);						
+			overallOutputs.addAll(rd.outputs);
 			overallPreconditions.addAll(rd.preconditions);
 			overallPostconditions.addAll(rd.postconditions);
 			overallServiceEdges.addAll(rd.semanticEdges);
-		
+
 		}
-				
+
 		overallInputs.removeAll(overallOutputs);
 		overallOutputs.removeAll(overallInputs);
 		overallPreconditions.removeAll(overallPostconditions);
-		overallPostconditions.removeAll(overallPreconditions);		
+		overallPostconditions.removeAll(overallPreconditions);
 
-//		children[0].eval(state, thread, input, stack, individual, problem);
-//		maxTime = rd.maxTime;
-//		seenServices = rd.seenServices;
-//		Set<String> in = rd.inputs;
-//
-//		children[1].eval(state, thread, input, stack, individual, problem);
-//		rd.maxTime += maxTime;
-//		rd.seenServices.addAll(seenServices);
-//		rd.inputs = in;		
-		
+		// children[0].eval(state, thread, input, stack, individual, problem);
+		// maxTime = rd.maxTime;
+		// seenServices = rd.seenServices;
+		// Set<String> in = rd.inputs;
+		//
+		// children[1].eval(state, thread, input, stack, individual, problem);
+		// rd.maxTime += maxTime;
+		// rd.seenServices.addAll(seenServices);
+		// rd.inputs = in;
+
 		// Finally, set the data with the overall values before exiting the
 		// evaluation
 		rd.maxTime = maxTime;
