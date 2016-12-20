@@ -7,9 +7,7 @@ import java.util.Set;
 import ec.gp.GPNode;
 import wsc.ecj.gp.ParallelGPNode;
 import wsc.ecj.gp.SequenceGPNode;
-import wsc.ecj.gp.Service;
 import wsc.ecj.gp.ServiceGPNode;
-import wsc.ecj.gp.TaxonomyNode;
 
 import wsc.graph.ServiceEdge;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -248,30 +246,30 @@ public class GraphNode implements Cloneable {
 		return root;
 	}
 
-	/**
-	 * Represents a GraphNode with multiple outgoing edges as a ParallelNode in
-	 * the tree. The children of this node are explicitly provided as a list.
-	 *
-	 * @param n
-	 * @param childrenGraphNodes
-	 * @return parallel node
-	 */
-	 private GPNode createParallelNode(GraphNode n, List<GraphEdge>
-	 childrenGraphNodes) {
-	 GPNode root = new ParallelGPNode();
-
-	 // Create subtrees for children
-	 int length = childrenGraphNodes.size();
-	 GPNode[] children = new GPNode[length];
-
-	 for (int i = 0; i < length; i++) {
-	 GraphEdge child = childrenGraphNodes.get(i);
-	 children[i] = getNode(child.getToNode());
-	 children[i].parent = root;
-	 }
-	 root.children = children;
-	 return root;
-	 }
+//	/**
+//	 * Represents a GraphNode with multiple outgoing edges as a ParallelNode in
+//	 * the tree. The children of this node are explicitly provided as a list.
+//	 *
+//	 * @param n
+//	 * @param childrenGraphNodes
+//	 * @return parallel node
+//	 */
+//	 private GPNode createParallelNode(GraphNode n, List<GraphEdge>
+//	 childrenGraphNodes) {
+//	 GPNode root = new ParallelGPNode();
+//
+//	 // Create subtrees for children
+//	 int length = childrenGraphNodes.size();
+//	 GPNode[] children = new GPNode[length];
+//
+//	 for (int i = 0; i < length; i++) {
+//	 GraphEdge child = childrenGraphNodes.get(i);
+//	 children[i] = getNode(child.getToNode());
+//	 children[i].parent = root;
+//	 }
+//	 root.children = children;
+//	 return root;
+//	 }
 
 	/**
 	 * Represents a GraphNode with a single outgoing edge as a SequenceNode in
