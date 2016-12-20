@@ -1,7 +1,9 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ec.EvolutionState;
 import ec.Problem;
@@ -24,6 +26,7 @@ public class ParallelGPNode extends GPNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
+	private Set<ServiceEdge> semanticEdges;
 
 
 	@Override
@@ -35,6 +38,7 @@ public class ParallelGPNode extends GPNode {
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
+		Set<ServiceEdge> overallServiceEdges = new HashSet<ServiceEdge>();
 
 
 		WSCData rd = ((WSCData) (input));
@@ -52,6 +56,8 @@ public class ParallelGPNode extends GPNode {
 			// Update overall inputs and outputs
 			overallInputs.addAll(rd.inputs);
 			overallOutputs.addAll(rd.outputs);
+			overallServiceEdges.addAll(rd.semanticEdges);
+
 
 			// Update overall precondition and postcondition
 			if (rd.preconditions != null && rd.postconditions != null) {
@@ -69,12 +75,17 @@ public class ParallelGPNode extends GPNode {
 		rd.outputs = overallOutputs;
 		rd.preconditions = overallPreconditions;
 		rd.postconditions = overallPostconditions;
+		rd.serviceId = "Parallel";
+		rd.semanticEdges = overallServiceEdges;
+
 
 		// Store input and output information in this node
 		inputs = overallInputs;
 		outputs = overallOutputs;
 		preconditions = overallPreconditions;
 		postconditions = overallPostconditions;
+		semanticEdges = rd.semanticEdges;
+
 	}
 
 	// @Override

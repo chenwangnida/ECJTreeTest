@@ -80,15 +80,22 @@ public class SequenceGPNode extends GPNode {
 
 		WSCData rd = ((WSCData) (input));
 		for (GPNode child : children) {
+
+
 			child.eval(state, thread, input, stack, individual, problem);
+
+			System.out.println(""+rd.serviceId);
+
+
 			if (rd.serviceId.equals("startNode")) {
 				overallServiceEdges.addAll(rd.semanticEdges);
 				continue;
 			}
+
 			if (rd.serviceId.equals("endNode")) {
 				continue;
 			}
-			
+
 			// Update max. time
 			maxTime += rd.maxTime;
 
@@ -129,6 +136,7 @@ public class SequenceGPNode extends GPNode {
 		rd.preconditions = overallPreconditions;
 		rd.postconditions = overallPostconditions;
 		rd.semanticEdges = overallServiceEdges;
+		rd.serviceId = "Sequence";
 
 		// Store input and output information in this node
 		inputs = rd.inputs;

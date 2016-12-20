@@ -65,21 +65,21 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
     		// Find all nodes from both candidates
     		List<GPNode> allT1Nodes = t1.getAllTreeNodes();
             List<GPNode> allT2Nodes = t2.getAllTreeNodes();
-            
+
             // Shuffle them so that the crossover is random
             Collections.shuffle( allT1Nodes, init.random );
             Collections.shuffle( allT2Nodes, init.random );
-            
+
             // For each t1 node, see if it can be replaced by a t2 node
             GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);
             GPNode nodeT1 = nodes[0];
             GPNode replacementT2 = nodes[1];
-            
+
             // For each t2 node, see if it can be replaced by a t1 node
             nodes = findReplacement(init, allT2Nodes, allT1Nodes);
             GPNode nodeT2 = nodes[0];
             GPNode replacementT1 = nodes[1];
-            
+
             // Perform replacement in both individuals
             t1.replaceNode( nodeT1, replacementT2 );
             t2.replaceNode( nodeT2, replacementT1 );
@@ -94,7 +94,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
         }
         return n1;
 	}
-	
+
 	public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements) {
 	    GPNode[] result = new GPNode[2];
 	    for (GPNode node : nodes) {

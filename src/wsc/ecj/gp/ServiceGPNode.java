@@ -78,7 +78,7 @@ public class ServiceGPNode extends GPNode {
 	public void setPostconditions(List<ServicePostcondition> postconditions) {
 		this.postconditions = postconditions;
 	}
-	
+
 
 	public Set<ServiceEdge> getSemanticEdges() {
 		return semanticEdges;
@@ -105,6 +105,7 @@ public class ServiceGPNode extends GPNode {
 
 		} else {
 			Service service = init.serviceMap.get(serName);
+			this.setService(service);
 			rd.serviceId = serName;
 			rd.maxTime = service.getQos()[WSCInitializer.TIME];
 			rd.seenServices = new ArrayList<Service>();
