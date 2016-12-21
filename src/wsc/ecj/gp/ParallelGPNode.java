@@ -19,7 +19,7 @@ import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
 import wsc.graph.ServicePrecondition;
 
-public class ParallelGPNode extends GPNode {
+public class ParallelGPNode extends GPNode implements InOutNode {
 
 	private static final long serialVersionUID = 1L;
 	private List<ServiceInput> inputs;
@@ -28,6 +28,46 @@ public class ParallelGPNode extends GPNode {
 	private List<ServicePostcondition> postconditions;
 	private Set<ServiceEdge> semanticEdges;
 
+
+	public List<ServiceInput> getInputs() {
+		return inputs;
+	}
+
+	public void setInputs(List<ServiceInput> inputs) {
+		this.inputs = inputs;
+	}
+
+	public List<ServiceOutput> getOutputs() {
+		return outputs;
+	}
+
+	public void setOutputs(List<ServiceOutput> outputs) {
+		this.outputs = outputs;
+	}
+
+	public List<ServicePrecondition> getPreconditions() {
+		return preconditions;
+	}
+
+	public void setPreconditions(List<ServicePrecondition> preconditions) {
+		this.preconditions = preconditions;
+	}
+
+	public List<ServicePostcondition> getPostconditions() {
+		return postconditions;
+	}
+
+	public void setPostconditions(List<ServicePostcondition> postconditions) {
+		this.postconditions = postconditions;
+	}
+
+	public Set<ServiceEdge> getSemanticEdges() {
+		return semanticEdges;
+	}
+
+	public void setSemanticEdges(Set<ServiceEdge> semanticEdges) {
+		this.semanticEdges = semanticEdges;
+	}
 
 	@Override
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,

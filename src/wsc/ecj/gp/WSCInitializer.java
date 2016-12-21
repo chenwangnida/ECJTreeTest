@@ -24,9 +24,9 @@ import org.xml.sax.SAXException;
 import ec.EvolutionState;
 import ec.gp.GPInitializer;
 import ec.util.Parameter;
-import graph.GraphRandom;
 import wsc.InitialWSCPool;
 import wsc.data.pool.Service;
+import wsc.graph.GraphRandom;
 import wsc.owl.bean.OWLClass;
 
 public class WSCInitializer extends GPInitializer {

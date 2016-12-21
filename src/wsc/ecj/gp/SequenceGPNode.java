@@ -18,7 +18,7 @@ import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
 import wsc.graph.ServicePrecondition;
 
-public class SequenceGPNode extends GPNode {
+public class SequenceGPNode extends GPNode implements InOutNode {
 
 	private static final long serialVersionUID = 1L;
 	private List<ServiceInput> inputs;

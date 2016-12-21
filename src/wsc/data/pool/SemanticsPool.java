@@ -135,6 +135,26 @@ public class SemanticsPool {
 		return pConn;
 	}
 
+
+	public boolean isSemanticMatchFromInst(String givenInst, String existInst) {
+
+		OWLClass givenClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(givenInst).getRdfType().getResource().substring(1));
+		OWLClass relatedClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(existInst).getRdfType().getResource().substring(1));
+		while (true) {
+			// Exact and PlugIn matching types
+			if (givenClass.getID().equals(relatedClass.getID())) {
+				return true;
+			}
+			if (givenClass.getSubClassOf() == null || givenClass.getSubClassOf().getResource().equals("")) {
+				break;
+			}
+			givenClass = this.owlClassHashMap.get(givenClass.getSubClassOf().getResource().substring(1));
+		}
+		return false;
+	}
+
 	// /** Test data from unmarshalling process
 	// * @param args
 	// */

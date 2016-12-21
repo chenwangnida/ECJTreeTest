@@ -1,4 +1,4 @@
-package graph;
+package wsc.graph;
 
 import java.util.Random;
 

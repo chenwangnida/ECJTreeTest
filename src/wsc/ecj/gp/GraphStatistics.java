@@ -1,4 +1,4 @@
-package graph;
+package wsc.ecj.gp;
 
 import ec.EvolutionState;
 import ec.Individual;

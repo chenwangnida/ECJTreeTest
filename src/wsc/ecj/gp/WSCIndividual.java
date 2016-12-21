@@ -79,6 +79,7 @@ public class WSCIndividual extends GPIndividual {
 		return wsci;
 	}
 
+	//Get AllTreeNodes not including startNodes and endNodes
 	public List<GPNode> getAllTreeNodes() {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
 		Queue<GPNode> queue = new LinkedList<GPNode>();
@@ -90,7 +91,16 @@ public class WSCIndividual extends GPIndividual {
 			allNodes.add(current);
 			if (current.children != null) {
 				for (GPNode child : current.children)
-					allNodes.add(child);
+
+					if (child instanceof ServiceGPNode) {
+						ServiceGPNode sgp = (ServiceGPNode) child;
+						if (!sgp.getSerName().equals("startNode") && !sgp.getSerName().equals("endNode")) {
+							allNodes.add(child);
+						}
+					} else {
+						allNodes.add(child);
+					}
+
 			}
 		}
 
@@ -112,7 +122,7 @@ public class WSCIndividual extends GPIndividual {
 						parentNode.children[i] = replacement;
 						// wonder whether to break while considering the
 						// redundant nodes in the tree transfered from the graph
-						// break;
+						break;
 					}
 				}
 			}

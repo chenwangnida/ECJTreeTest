@@ -78,6 +78,24 @@ public class WSCSpecies extends Species {
 		return graph;
 	}
 
+
+	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> iNode, List<String> oNode) {
+
+		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
+
+		init.initialWSCPool.createGraphService(iNode, oNode, graph);
+
+		while (true) {
+			List<String> dangleVerticeList = dangleVerticeList(graph);
+			if (dangleVerticeList.size() == 0) {
+				break;
+			}
+			removeCurrentdangle(graph, dangleVerticeList);
+		}
+
+		return graph;
+	}
+
 	/**
 	 * Indirectly recursive method that transforms this GraphNode and all nodes
 	 * that directly or indirectly receive its output into a tree
@@ -138,7 +156,16 @@ public class WSCSpecies extends Species {
 			for (ServiceEdge outgoingedge : outgoingEdges) {
 				if (graph.getEdgeTarget(outgoingedge).equals("endNode")) {
 					outputEdge = outgoingedge;
+					//Create sequenceNode associated with endNode
+					Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>();
+					outgoingEdgeSet.add(outputEdge);
+					ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
+					ServiceGPNode endNode = new ServiceGPNode();
+					endNode.setSerName("endNode");
+					root = createSequenceNode(sgp, endNode);
+
 					// Remove the output node from the children list
+
 					outgoingEdges.remove(outputEdge);
 					break;
 				}
