@@ -79,7 +79,7 @@ public class WSCIndividual extends GPIndividual {
 		return wsci;
 	}
 
-	//Get AllTreeNodes not including startNodes and endNodes
+	// Get AllTreeNodes not including startNodes and endNodes
 	public List<GPNode> getAllTreeNodes() {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
 		Queue<GPNode> queue = new LinkedList<GPNode>();
@@ -90,7 +90,7 @@ public class WSCIndividual extends GPIndividual {
 			GPNode current = queue.poll();
 			allNodes.add(current);
 			if (current.children != null) {
-				for (GPNode child : current.children)
+				for (GPNode child : current.children) {
 
 					if (child instanceof ServiceGPNode) {
 						ServiceGPNode sgp = (ServiceGPNode) child;
@@ -100,6 +100,7 @@ public class WSCIndividual extends GPIndividual {
 					} else {
 						allNodes.add(child);
 					}
+				}
 
 			}
 		}

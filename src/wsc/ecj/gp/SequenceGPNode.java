@@ -84,7 +84,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 			child.eval(state, thread, input, stack, individual, problem);
 
-			System.out.println(""+rd.serviceId);
+//			System.out.println(""+rd.serviceId);
 
 
 			if (rd.serviceId.equals("startNode")) {
