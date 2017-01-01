@@ -28,8 +28,7 @@ public class WSCIndividual extends GPIndividual {
 		super.species = new WSCSpecies();
 		super.trees = new GPTree[1];
 		GPTree t = new GPTree();
-		super.trees[0] = t;
-		/** the root GPNode in the GPTree */
+		super.trees[0] = t;/** the root GPNode in the GPTree */
 		t.child = root;
 	}
 
@@ -39,8 +38,7 @@ public class WSCIndividual extends GPIndividual {
 		super.species = new WSCSpecies();
 		super.trees = new GPTree[1];
 		GPTree t = new GPTree();
-		super.trees[0] = t;
-		/** the root GPNode in the GPTree */
+		super.trees[0] = t;/** the root GPNode in the GPTree */
 		t.child = root;
 	}
 
@@ -80,32 +78,76 @@ public class WSCIndividual extends GPIndividual {
 	}
 
 	// Get AllTreeNodes not including startNodes and endNodes
+//	public List<GPNode> getFiltedTreeNodes() {
+//		List<GPNode> allNodes = new ArrayList<GPNode>();
+//		Queue<GPNode> queue = new LinkedList<GPNode>();
+//		// insert into the queue without violating the capacity
+//		queue.offer(trees[0].child);
+//
+//		while (!queue.isEmpty()) {
+//			GPNode current = queue.poll();
+//			allNodes.add(current);
+//			if (current.children != null) {
+//				for (GPNode child : current.children) {
+//
+//					if (child instanceof ServiceGPNode) {
+//						ServiceGPNode sgp = (ServiceGPNode) child;
+//						if (!sgp.getSerName().equals("startNode") && !sgp.getSerName().equals("endNode")) {
+//							allNodes.add(child);
+//						}
+//					} else {
+//						allNodes.add(child);
+//					}
+//				}
+//
+//			}
+//		}
+//
+//		return allNodes;
+//	}
+
+	// Get FiltedTreeNodes not including startNodes and endNodes
+	public List<GPNode> getFiltedTreeNodes() {
+		List<GPNode> allNodes = new ArrayList<GPNode>();
+		Queue<GPNode> queue = new LinkedList<GPNode>();
+		AddFiltedChildNodes(trees[0].child, allNodes);
+
+		return allNodes;
+	}
+
+	public List<GPNode> AddFiltedChildNodes(GPNode gpChild, List<GPNode> allNodes) {
+
+		GPNode current = gpChild;
+		allNodes.add(current);
+		if (current.children != null) {
+			for (GPNode child : current.children)
+				AddChildNodes(child, allNodes);
+		}
+		return allNodes;
+
+	}
+
+
+	// Get AllTreeNodes
+
 	public List<GPNode> getAllTreeNodes() {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
 		Queue<GPNode> queue = new LinkedList<GPNode>();
-		// insert into the queue without violating the capacity
-		queue.offer(trees[0].child);
-
-		while (!queue.isEmpty()) {
-			GPNode current = queue.poll();
-			allNodes.add(current);
-			if (current.children != null) {
-				for (GPNode child : current.children) {
-
-					if (child instanceof ServiceGPNode) {
-						ServiceGPNode sgp = (ServiceGPNode) child;
-						if (!sgp.getSerName().equals("startNode") && !sgp.getSerName().equals("endNode")) {
-							allNodes.add(child);
-						}
-					} else {
-						allNodes.add(child);
-					}
-				}
-
-			}
-		}
+		AddChildNodes(trees[0].child, allNodes);
 
 		return allNodes;
+	}
+
+	public List<GPNode> AddChildNodes(GPNode gpChild, List<GPNode> allNodes) {
+
+		GPNode current = gpChild;
+		allNodes.add(current);
+		if (current.children != null) {
+			for (GPNode child : current.children)
+				AddChildNodes(child, allNodes);
+		}
+		return allNodes;
+
 	}
 
 	public void replaceNode(GPNode node, GPNode replacement) {
