@@ -128,66 +128,16 @@ public class Service implements Comparable<Service> {
 		return "(" + score + ", " + serviceID + ")";
 	}
 
-	// /**
-	// * Initial service from SemMessageExt
-	// *
-	// * @param request
-	// * @param response
-	// * @return
-	// */
-	// public static Service initialServicefromMECE(SemMessageExt request,
-	// SemMessageExt response) {
-	// String serviceID = request.getServiceID();
-	// // verify request and response from same service.
-	// if (response.getServiceID().equals(serviceID) == false) {
-	// System.err.println("Service ID does not match");
-	// return null;
-	// }
-	// // valid request and response
-	// if (!request.isRequestMessage() || response.isRequestMessage()) {
-	// System.err.println("SemMessageExt type does not match");
-	// return null;
-	// }
-	// // initial data for service
-	// Service service = new Service(serviceID);
-	// for (SemExt se : request.getSemExt()) {
-	// int instBeginPos = se.getOntologyRef().indexOf("inst");
-	// service.inputList.add(se.getOntologyRef().substring(instBeginPos));
-	// }
-	// for (SemExt se : response.getSemExt()) {
-	// int instBeginPos = se.getOntologyRef().indexOf("inst");
-	// service.outputList.add(se.getOntologyRef().substring(instBeginPos));
-	// }
-	// return service;
-	// }
 
+	
 	/**
-	 * search for services matched with current inputSet
+	 * search for all potential services matched with current inputSet
 	 *
 	 * @param semanticsPool
+	 * @param graphOutputSetMap
 	 * @param intputList
 	 * @return boolean
 	 */
-	// public boolean searchServiceMatchFromInputSet(SemanticsPool
-	// semanticsPool, HashSet<String> inputSet) {
-	// int inputMatchCount = 0;
-	// // check if the inputSet contains all the required inputs from services
-	// for (String giveninput : inputSet) {
-	// for (int i = 0; i < this.inputList.size(); i++) {
-	//
-	// String existInput = this.inputList.get(i).getInput();
-	// if (semanticsPool.searchSemanticMatchFromInst(giveninput, existInput)) {
-	// inputMatchCount++;
-	// // contain complete match from a single service
-	// if (inputMatchCount == this.inputList.size()) {
-	// return true;
-	// }
-	// }
-	// }
-	// }
-	// return false;
-	// }
-
 	public boolean searchServiceMatchFromInputSet(SemanticsPool semanticsPool, HashSet<String> inputSet) {
 		int relevantServiceCount = 0;
 		for (String giveninput : inputSet) {

@@ -177,7 +177,7 @@ public class ServiceGPNode extends GPNode implements InOutNode  {
 	public boolean equals(Object other) {
 		if (other instanceof ServiceGPNode) {
 			ServiceGPNode o = (ServiceGPNode) other;
-			return service.getServiceID().equals(o.service.getServiceID());
+			return this.getSerName().equals(o.getSerName());
 		} else
 			return false;
 	}

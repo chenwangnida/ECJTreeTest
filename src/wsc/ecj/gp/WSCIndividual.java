@@ -77,41 +77,21 @@ public class WSCIndividual extends GPIndividual {
 		return wsci;
 	}
 
-	// Get AllTreeNodes not including startNodes and endNodes
-//	public List<GPNode> getFiltedTreeNodes() {
-//		List<GPNode> allNodes = new ArrayList<GPNode>();
-//		Queue<GPNode> queue = new LinkedList<GPNode>();
-//		// insert into the queue without violating the capacity
-//		queue.offer(trees[0].child);
-//
-//		while (!queue.isEmpty()) {
-//			GPNode current = queue.poll();
-//			allNodes.add(current);
-//			if (current.children != null) {
-//				for (GPNode child : current.children) {
-//
-//					if (child instanceof ServiceGPNode) {
-//						ServiceGPNode sgp = (ServiceGPNode) child;
-//						if (!sgp.getSerName().equals("startNode") && !sgp.getSerName().equals("endNode")) {
-//							allNodes.add(child);
-//						}
-//					} else {
-//						allNodes.add(child);
-//					}
-//				}
-//
-//			}
-//		}
-//
-//		return allNodes;
-//	}
-
 	// Get FiltedTreeNodes not including startNodes and endNodes
 	public List<GPNode> getFiltedTreeNodes() {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
-		Queue<GPNode> queue = new LinkedList<GPNode>();
 		AddFiltedChildNodes(trees[0].child, allNodes);
 
+		for(int i=0; i< allNodes.size();i++){			
+			GPNode filteredChild = allNodes.get(i);
+			if(filteredChild instanceof ServiceGPNode){
+				ServiceGPNode sgp = (ServiceGPNode) filteredChild;
+				if (sgp.getSerName().equals("startNode") || sgp.getSerName().equals("endNode")){
+					allNodes.remove(i);
+				}
+			}
+		}
+		
 		return allNodes;
 	}
 
@@ -132,7 +112,6 @@ public class WSCIndividual extends GPIndividual {
 
 	public List<GPNode> getAllTreeNodes() {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
-		Queue<GPNode> queue = new LinkedList<GPNode>();
 		AddChildNodes(trees[0].child, allNodes);
 
 		return allNodes;

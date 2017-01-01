@@ -1,6 +1,7 @@
 package wsc.ecj.gp;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import ec.BreedingPipeline;
@@ -8,6 +9,10 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.gp.GPNode;
 import ec.util.Parameter;
+import wsc.data.pool.SemanticsPool;
+import wsc.graph.ParamterConn;
+import wsc.graph.ServiceInput;
+import wsc.graph.ServiceOutput;
 
 public class WSCCrossoverPipeline extends BreedingPipeline {
 
@@ -65,8 +70,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			WSCIndividual t2 = ((WSCIndividual) inds2[x]);
 
 			// Find all nodes from both candidates
-			List<GPNode> allT1Nodes = t1.getAllTreeNodes();
-			List<GPNode> allT2Nodes = t2.getAllTreeNodes();
+			List<GPNode> allT1Nodes = t1.getFiltedTreeNodes();
+			List<GPNode> allT2Nodes = t2.getFiltedTreeNodes();
 
 			// Shuffle them so that the crossover is random
 			Collections.shuffle(allT1Nodes, init.random);
@@ -99,7 +104,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 
 	public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements) {
 		GPNode[] result = new GPNode[2];
-		for (GPNode node : nodes) {
+		outterLoop: for (GPNode node : nodes) {
 			for (GPNode replacement : replacements) {
 				/*
 				 * Check if the inputs of replacement are subsumed by the inputs
@@ -113,53 +118,119 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				if (IsReplacementFound(init, ioNode, ioReplacement)) {
 					result[0] = node;
 					result[1] = replacement;
-					break;
+					break outterLoop;
 				}
 			}
 		}
 		return result;
 	}
 
+	// check both the inputs and outputs from node and replacement node are
+	// matched.
+
 	private boolean IsReplacementFound(WSCInitializer init, InOutNode ioNode, InOutNode ioReplacement) {
 		boolean isInputFound = false;
 		boolean isOutputFound = false;
 
-		for (int i = 0; i < ioNode.getInputs().size(); i++) {
-			for (int j = 0; j < ioReplacement.getInputs().size(); j++) {
-				isInputFound = init.initialWSCPool.getSemanticsPool().isSemanticMatchFromInst(
-						ioNode.getInputs().get(i).getInput(), ioReplacement.getInputs().get(j).getInput());
-			}
-		}
+		isInputFound = searchReplacement4Inputs(init.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
+				ioReplacement.getInputs());
+		isOutputFound = searchReplacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
+				ioReplacement.getOutputs());
 
-		for (int i = 0; i < ioNode.getInputs().size(); i++) {
-			for (int j = 0; j < ioReplacement.getInputs().size(); j++) {
-				isOutputFound = init.initialWSCPool.getSemanticsPool().isSemanticMatchFromInst(
-						ioNode.getOutputs().get(i).getOutput(), ioReplacement.getOutputs().get(j).getOutput());
-			}
-		}
 		return isInputFound && isOutputFound;
 
 	}
 
-	// public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes,
-	// List<GPNode> replacements) {
-	// GPNode[] result = new GPNode[2];
-	// for (GPNode node : nodes) {
-	// for (GPNode replacement : replacements) {
-	// /* Check if the inputs of replacement are subsumed by the inputs of the
-	// * node and the outputs of the node are subsumed by the outputs of the
-	// * replacement. This will ensure that the replacement has equivalent
-	// * functionality to the replacement.*/
-	// InOutNode ioNode = (InOutNode) node;
-	// InOutNode ioReplacement = (InOutNode) replacement;
-	// if (init.isSubsumed( ioReplacement.getInputs(), ioNode.getInputs() ) &&
-	// init.isSubsumed( ioNode.getOutputs(), ioReplacement.getOutputs() )) {
-	// result[0] = node;
-	// result[1] = replacement;
-	// break;
-	// }
-	// }
-	// }
-	// return result;
-	// }
+	/**
+	 * search input functional correctness for replacements
+	 *
+	 * @param semanticsPool
+	 * @param graphOutputSetMap
+	 * @param intputList
+	 * @return boolean
+	 */
+	// public boolean searchReplacement(SemanticsPool semanticsPool,
+	// HashSet<String> inputSet, HashSet<String> inputList) {
+	public boolean searchReplacement4Inputs(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs,
+			List<ServiceInput> inputSet) {
+		int relevantServiceCount = 0;
+		for (int i = 0; i < inputSet.size(); i++) {
+			String giveninput = inputSet.get(i).getInput();
+			for (int j = 0; j < ioNodeInputs.size(); j++) {
+				ServiceInput serInput = ioNodeInputs.get(j);
+				if (!serInput.isSatified()) {
+					String existInput = ioNodeInputs.get(j).getInput();
+					ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst(giveninput, existInput);
+					boolean foundmatched = pConn.isConsidered();
+					if (foundmatched) {
+						serInput.setSatified(true);
+						break;// each inst can only be used for one time
+					}
+
+				}
+
+			}
+
+		}
+
+		for (ServiceInput sInput : ioNodeInputs) {
+			boolean sf = sInput.isSatified();
+			if (sf == true) {
+				relevantServiceCount++;
+			}
+		}
+
+		if (relevantServiceCount == ioNodeInputs.size()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * search input functional correctness for replacements
+	 *
+	 * @param semanticsPool
+	 * @param graphOutputSetMap
+	 * @param intputList
+	 * @return boolean
+	 */
+	// public boolean searchReplacement(SemanticsPool semanticsPool,
+	// HashSet<String> inputSet, HashSet<String> inputList) {
+	public boolean searchReplacement4Outputs(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
+			List<ServiceOutput> outputSet) {
+		int relevantServiceCount = 0;
+		for (int i = 0; i < outputSet.size(); i++) {
+			String givenOutput = outputSet.get(i).getOutput();
+			for (int j = 0; j < ioNodeOutputs.size(); j++) {
+				ServiceOutput serOutput = ioNodeOutputs.get(j);
+				if (!serOutput.isSatified()) {
+					String existOutput = ioNodeOutputs.get(j).getOutput();
+					ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst(givenOutput, existOutput);
+					boolean foundmatched = pConn.isConsidered();
+					if (foundmatched) {
+						serOutput.setSatified(true);
+						break;// each inst can only be used for one time
+					}
+
+				}
+
+			}
+
+		}
+
+		for (ServiceOutput sInput : ioNodeOutputs) {
+			boolean sf = sInput.isSatified();
+			if (sf == true) {
+				relevantServiceCount++;
+			}
+		}
+
+		if (relevantServiceCount == ioNodeOutputs.size()) {
+			return true;
+		}
+
+		return false;
+	}
+
 }
