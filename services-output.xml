@@ -8,7 +8,15 @@
       <instance name="StreetMap"/>
     </outputs>
   </service>
-    <service name="GenerateMapService02" Res="2036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="13.17">
+  <service name="GenerateMapService02" Res="2036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="13.17">
+    <inputs>
+      <instance name="MappedLocation"/>
+    </inputs>
+    <outputs>
+      <instance name="StreetMap"/>
+    </outputs>
+  </service>
+  <service name="GenerateMapService03" Res="4036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="8.17">
     <inputs>
       <instance name="MappedLocation"/>
     </inputs>

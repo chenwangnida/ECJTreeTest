@@ -1,8 +1,6 @@
 package wsc.ecj.gp;
 
-import java.lang.Thread.State;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import ec.BreedingPipeline;
@@ -134,8 +132,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				InOutNode ioNode = (InOutNode) node;
 				InOutNode ioReplacement = (InOutNode) replacement;
 				if (IsReplacementFound(init, ioNode, ioReplacement)) {
-					System.out.println("selected Node ******" + ioNode.toString());
-					System.out.println("replaced Node ******" + ioReplacement.toString());
+//					System.out.println("selected Node ******" + ioNode.toString());
+//					System.out.println("replaced Node ******" + ioReplacement.toString());
 					result[0] = node;
 					result[1] = replacement;
 					break outterLoop;

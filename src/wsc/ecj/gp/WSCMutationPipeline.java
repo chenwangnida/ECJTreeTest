@@ -50,22 +50,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			WSCSpecies species = (WSCSpecies) tree.species;
 
 			// Randomly select a node in the tree to be mutation
-
-			List<GPNode> allNodes = tree.getAllTreeNodes();
-			// List<GPNode> allNodes = new ArrayList<GPNode>();
-			// Queue<GPNode> queue = new LinkedList<GPNode>();
-			//
-			// queue.offer(tree.trees[0].child);
-			//
-			// while(!queue.isEmpty()) {
-			// GPNode current = queue.poll();
-			// allNodes.add(current);
-			// if (current.children != null) {
-			// for (GPNode child : current.children)
-			// allNodes.add( child );
-			// }
-			// }
-
+			List<GPNode> allNodes = tree.getFiltedTreeNodes();
 			int selectedIndex = init.random.nextInt(allNodes.size());
 			GPNode selectedNode = allNodes.get(selectedIndex);
 			InOutNode ioNode = (InOutNode) selectedNode;
