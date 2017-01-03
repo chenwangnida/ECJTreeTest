@@ -1,7 +1,9 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ec.BreedingPipeline;
 import ec.EvolutionState;
@@ -57,14 +59,20 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// Combine the input from the node with the overall task input, as
 			// the latter is available from anywhere
+
 			List<String> combinedInputs = new ArrayList<String>();
 			List<String> combinedoutputs = new ArrayList<String>();
 
 			for (ServiceInput iNode :ioNode.getInputs()) {
 				combinedInputs.add(iNode.getInput());
 			}
-			combinedInputs.addAll(init.taskInput);
 
+			for(String tskInp :init.taskInput){
+				if(!combinedInputs.contains(tskInp)){
+					combinedInputs.add(tskInp);
+				}
+
+			}
 
 			for (ServiceOutput oNode :ioNode.getOutputs()) {
 				combinedoutputs.add(oNode.getOutput());
