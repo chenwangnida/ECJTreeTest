@@ -1,5 +1,6 @@
 package wsc.ecj.gp;
 
+import java.lang.Thread.State;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -73,6 +74,22 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			List<GPNode> allT1Nodes = t1.getFiltedTreeNodes();
 			List<GPNode> allT2Nodes = t2.getFiltedTreeNodes();
 
+			// Test whether constains startNode or endNodes;
+			// for (GPNode gpNode : allT1Nodes) {
+			// if (gpNode instanceof ServiceGPNode) {
+			// ServiceGPNode sgp = (ServiceGPNode) gpNode;
+			// if (sgp.getSerName().equals("startNode")) {
+			// // initial variable rootNode
+			// System.out.println("contains startNode");
+			// }
+			// if (sgp.getSerName().equals("endNode")) {
+			// // remove endNode
+			// System.out.println("contains endNode");
+			// }
+			//
+			// }
+			// }
+
 			// Shuffle them so that the crossover is random
 			Collections.shuffle(allT1Nodes, init.random);
 			Collections.shuffle(allT2Nodes, init.random);
@@ -83,13 +100,14 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			GPNode replacementT2 = nodes[1];
 
 			// For each t2 node, see if it can be replaced by a t1 node
-			nodes = findReplacement(init, allT2Nodes, allT1Nodes);
-			GPNode nodeT2 = nodes[0];
-			GPNode replacementT1 = nodes[1];
+			// nodes = findReplacement(init, allT2Nodes, allT1Nodes);
+			// GPNode nodeT2 = nodes[0];
+			// GPNode replacementT1 = nodes[1];
 
 			// Perform replacement in both individuals
 			t1.replaceNode(nodeT1, replacementT2);
-			t2.replaceNode(nodeT2, replacementT1);
+			t2.replaceNode(replacementT2, nodeT1);
+			// t2.replaceNode(nodeT2, replacementT1);
 
 			inds[q] = t1;
 			inds[q].evaluated = false;
@@ -100,6 +118,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			}
 		}
 		return n1;
+
 	}
 
 	public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements) {
@@ -114,8 +133,9 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				 */
 				InOutNode ioNode = (InOutNode) node;
 				InOutNode ioReplacement = (InOutNode) replacement;
-
 				if (IsReplacementFound(init, ioNode, ioReplacement)) {
+					System.out.println("selected Node ******" + ioNode.toString());
+					System.out.println("replaced Node ******" + ioReplacement.toString());
 					result[0] = node;
 					result[1] = replacement;
 					break outterLoop;
@@ -131,7 +151,11 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 	private boolean IsReplacementFound(WSCInitializer init, InOutNode ioNode, InOutNode ioReplacement) {
 		boolean isInputFound = false;
 		boolean isOutputFound = false;
-
+		// if (ioNode.getInputs() == null) {
+		// System.out.println("toString"+ioNode.toString());
+		//
+		// System.out.println("NULLLLLLLLLLLLLLLLL");
+		// }
 		isInputFound = searchReplacement4Inputs(init.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
 				ioReplacement.getInputs());
 		isOutputFound = searchReplacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
@@ -152,36 +176,40 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 	// public boolean searchReplacement(SemanticsPool semanticsPool,
 	// HashSet<String> inputSet, HashSet<String> inputList) {
 	public boolean searchReplacement4Inputs(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs,
-			List<ServiceInput> inputSet) {
-		int relevantServiceCount = 0;
-		for (int i = 0; i < inputSet.size(); i++) {
-			String giveninput = inputSet.get(i).getInput();
-			for (int j = 0; j < ioNodeInputs.size(); j++) {
-				ServiceInput serInput = ioNodeInputs.get(j);
-				if (!serInput.isSatified()) {
-					String existInput = ioNodeInputs.get(j).getInput();
-					ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst(giveninput, existInput);
-					boolean foundmatched = pConn.isConsidered();
-					if (foundmatched) {
-						serInput.setSatified(true);
-						break;// each inst can only be used for one time
+			List<ServiceInput> ioReplacement) {
+
+		if (ioNodeInputs.size() == ioReplacement.size()) {
+			int relevantServiceCount = 0;
+			for (int i = 0; i < ioReplacement.size(); i++) {
+				String giveninput = ioReplacement.get(i).getInput();
+				for (int j = 0; j < ioNodeInputs.size(); j++) {
+					ServiceInput serInput = ioNodeInputs.get(j);
+					if (!serInput.isSatified()) {
+						String existInput = ioNodeInputs.get(j).getInput();
+						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst(giveninput, existInput);
+						boolean foundmatched = pConn.isConsidered();
+						if (foundmatched) {
+							serInput.setSatified(true);
+							break;// each inst can only be used for one time
+						}
+
 					}
 
 				}
 
 			}
 
-		}
-
-		for (ServiceInput sInput : ioNodeInputs) {
-			boolean sf = sInput.isSatified();
-			if (sf == true) {
-				relevantServiceCount++;
+			for (ServiceInput sInput : ioNodeInputs) {
+				boolean sf = sInput.isSatified();
+				if (sf == true) {
+					relevantServiceCount++;
+				}
 			}
-		}
 
-		if (relevantServiceCount == ioNodeInputs.size()) {
-			return true;
+			if (relevantServiceCount == ioNodeInputs.size()) {
+				return true;
+			}
+
 		}
 
 		return false;
@@ -198,36 +226,38 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 	// public boolean searchReplacement(SemanticsPool semanticsPool,
 	// HashSet<String> inputSet, HashSet<String> inputList) {
 	public boolean searchReplacement4Outputs(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
-			List<ServiceOutput> outputSet) {
-		int relevantServiceCount = 0;
-		for (int i = 0; i < outputSet.size(); i++) {
-			String givenOutput = outputSet.get(i).getOutput();
-			for (int j = 0; j < ioNodeOutputs.size(); j++) {
-				ServiceOutput serOutput = ioNodeOutputs.get(j);
-				if (!serOutput.isSatified()) {
-					String existOutput = ioNodeOutputs.get(j).getOutput();
-					ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst(givenOutput, existOutput);
-					boolean foundmatched = pConn.isConsidered();
-					if (foundmatched) {
-						serOutput.setSatified(true);
-						break;// each inst can only be used for one time
+			List<ServiceOutput> ioReplacement) {
+		if (ioNodeOutputs.size() == ioReplacement.size()) {
+			int relevantServiceCount = 0;
+			for (int i = 0; i < ioReplacement.size(); i++) {
+				String givenOutput = ioReplacement.get(i).getOutput();
+				for (int j = 0; j < ioNodeOutputs.size(); j++) {
+					ServiceOutput serOutput = ioNodeOutputs.get(j);
+					if (!serOutput.isSatified()) {
+						String existOutput = ioNodeOutputs.get(j).getOutput();
+						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst(givenOutput, existOutput);
+						boolean foundmatched = pConn.isConsidered();
+						if (foundmatched) {
+							serOutput.setSatified(true);
+							break;// each inst can only be used for one time
+						}
+
 					}
 
 				}
 
 			}
 
-		}
-
-		for (ServiceOutput sInput : ioNodeOutputs) {
-			boolean sf = sInput.isSatified();
-			if (sf == true) {
-				relevantServiceCount++;
+			for (ServiceOutput sInput : ioNodeOutputs) {
+				boolean sf = sInput.isSatified();
+				if (sf == true) {
+					relevantServiceCount++;
+				}
 			}
-		}
 
-		if (relevantServiceCount == ioNodeOutputs.size()) {
-			return true;
+			if (relevantServiceCount == ioNodeOutputs.size()) {
+				return true;
+			}
 		}
 
 		return false;

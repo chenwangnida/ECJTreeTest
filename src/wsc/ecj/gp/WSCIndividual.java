@@ -82,16 +82,28 @@ public class WSCIndividual extends GPIndividual {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
 		AddFiltedChildNodes(trees[0].child, allNodes);
 
-		for(int i=0; i< allNodes.size();i++){			
+		List<GPNode> removedNodeList = new ArrayList<GPNode>();
+		for (int i = 0; i < allNodes.size(); i++) {
 			GPNode filteredChild = allNodes.get(i);
-			if(filteredChild instanceof ServiceGPNode){
+			if (filteredChild instanceof ServiceGPNode) {
 				ServiceGPNode sgp = (ServiceGPNode) filteredChild;
-				if (sgp.getSerName().equals("startNode") || sgp.getSerName().equals("endNode")){
-					allNodes.remove(i);
+				if (sgp.getSerName().equals("startNode")) {
+					// initial variable rootNode
+					removedNodeList.add((GPNode) sgp.parent);
+					// remove startNode
+					removedNodeList.add(allNodes.get(i));
+				}
+				if (sgp.getSerName().equals("endNode")) {
+					// initial variable endParentNodeList
+					removedNodeList.add((GPNode) sgp.parent);
+					// remove endNode
+					removedNodeList.add(allNodes.get(i));
 				}
 			}
 		}
-		
+
+		allNodes.removeAll(removedNodeList);
+
 		return allNodes;
 	}
 
@@ -106,7 +118,6 @@ public class WSCIndividual extends GPIndividual {
 		return allNodes;
 
 	}
-
 
 	// Get AllTreeNodes
 
@@ -130,24 +141,24 @@ public class WSCIndividual extends GPIndividual {
 	}
 
 	public void replaceNode(GPNode node, GPNode replacement) {
-		// Perform replacement if neither node is null
+		// Perform replacement if neither node is not null
 		if (node != null && replacement != null) {
 			replacement = (GPNode) replacement.clone();
 			GPNode parentNode = (GPNode) node.parent;
-			if (parentNode == null) {
-				// the selected node is the topNode in the tree
-				super.trees[0].child = replacement;
-			} else {
-				replacement.parent = node.parent;
-				for (int i = 0; i < parentNode.children.length; i++) {
-					if (parentNode.children[i] == node) {
-						parentNode.children[i] = replacement;
-						// wonder whether to break while considering the
-						// redundant nodes in the tree transfered from the graph
-						break;
-					}
+			// if (parentNode == null) {
+			// the selected node is the topNode in the tree
+			// super.trees[0].child = replacement;
+			// } else {
+			replacement.parent = node.parent;
+			for (int i = 0; i < parentNode.children.length; i++) {
+				if (parentNode.children[i] == node) {
+					parentNode.children[i] = replacement;
+					// wonder whether to break while considering the
+					// redundant nodes in the tree transfered from the graph
+					break;
 				}
 			}
+			// }
 		}
 	}
 }
