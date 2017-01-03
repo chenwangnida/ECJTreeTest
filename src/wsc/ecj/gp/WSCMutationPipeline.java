@@ -69,14 +69,13 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			for (ServiceOutput oNode :ioNode.getOutputs()) {
 				combinedoutputs.add(oNode.getOutput());
 			}
-			combinedoutputs.addAll(init.taskOutput);
 
 			// Generate a new tree based on the input/output information of the
 			// current node
 
 			ServiceGraph graph4Mutation = species.Graph4Mutation(init, combinedInputs, combinedoutputs);
 
-			GPNode tree4Mutation = species.toWeightedTree("startNode", graph4Mutation);
+			GPNode tree4Mutation = species.toTree4Mutation("startNode", graph4Mutation);
 
 			// Replace the old tree with the new one
 			tree.replaceNode(selectedNode, tree4Mutation);

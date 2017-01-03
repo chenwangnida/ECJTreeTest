@@ -210,7 +210,38 @@ public class InitialWSCPool {
 
 	}
 
+	public void createGraphService4Mutation(List<String> combinedInputs, List<String> combinedOutputs,
+			DirectedGraph<String, ServiceEdge> directedGraph) {
 
+		graphOutputList.clear();
+		graphOutputListMap.clear();
+		serviceCandidates.clear();
+
+		graphOutputList.addAll(combinedInputs);
+
+		// SWSPool swsPool = new SWSPool();
+
+//		SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
+		serviceCandidates.addAll(serviceSequence);
+		Collections.shuffle(serviceCandidates, WSCInitializer.random);
+//		Collections.sort(serviceCandidates);
+
+		boolean goalSatisfied;
+
+		directedGraph.addVertex("startNode");
+
+		do {
+			Service service = swsPool.createGraphService4Mutation(graphOutputList, serviceCandidates, this.semanticsPool,
+					directedGraph, graphOutputListMap, combinedInputs);
+			if (service == null) {
+				System.err.println("No service is usable now");
+				return;
+			}
+			goalSatisfied = this.checkOutputSet(directedGraph, combinedOutputs);
+
+		} while (!goalSatisfied);
+
+	}
 
 	public void createGraphService(List<String> taskInput, List<String> taskOutput,
 			DirectedGraph<String, ServiceEdge> directedGraph, float[] weights,

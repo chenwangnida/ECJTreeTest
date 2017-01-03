@@ -129,7 +129,7 @@ public class Service implements Comparable<Service> {
 	}
 
 
-	
+
 	/**
 	 * search for all potential services matched with current inputSet
 	 *
@@ -173,7 +173,7 @@ public class Service implements Comparable<Service> {
 	}
 
 	/**
-	 * search for services matched with current inputSet
+	 * search for services matched with Task inputSet
 	 *
 	 * @param semanticsPool
 	 * @param graphOutputSetMap
@@ -208,6 +208,112 @@ public class Service implements Comparable<Service> {
 						pConn.setOutputInst(giveninput);
 						// if (GraphPSO.taskInput.contains(giveninput)) {
 						if (WSCInitializer.taskInput.contains(giveninput)) {
+
+							pConn.setSourceServiceID("startNode");
+						} else {
+							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
+						}
+						double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, giveninput,
+								existInput, semanticsPool);
+						pConn.setSimilarity(similarity);
+						pConnList0.add(pConn);
+						break;// each inst can only be used for one time
+					}
+
+				}
+
+			}
+
+		}
+
+		for (ServiceInput sInput : inputList0) {
+			boolean sf = sInput.isSatified();
+			if (sf == true) {
+				inputMatchCount++;
+			}
+		}
+
+		if (inputMatchCount == inputList0.size()) {
+
+			directedGraph.addVertex(service.getServiceID());
+			sourceSerIdSet.clear();
+			// how many sourceService are connected
+			for (ParamterConn p : pConnList0) {
+				String sourceSerID = p.getSourceServiceID();
+				sourceSerIdSet.add(sourceSerID);
+			}
+			List<ServiceEdge> serEdgeList = new ArrayList<ServiceEdge>();
+			// Edge are needed for each sourceService
+			for (String sourceSerID : sourceSerIdSet) {
+				ServiceEdge serEdge = new ServiceEdge(0, 0);
+				serEdge.setSourceService(sourceSerID);
+				// how many parameter connection needed for each Edge
+				for (ParamterConn p : pConnList0) {
+					if (p.getSourceServiceID().equals(sourceSerID)) {
+						serEdge.getpConnList().add(p);
+					}
+				}
+				// add Edge to a EdgeList to calcute each edge aggregation
+				// and buld edge for graph
+				serEdgeList.add(serEdge);
+			}
+
+			for (ServiceEdge edge : serEdgeList) {
+				summt = 0.00;
+				sumdst = 0.00;
+				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
+					ParamterConn pCo = edge.getpConnList().get(i1);
+					summt += pCo.getMatchType();
+					sumdst += pCo.getSimilarity();
+
+				}
+				int count = edge.getpConnList().size();
+				edge.setAvgmt(summt / count);
+				edge.setAvgsdt(sumdst / count);
+				directedGraph.addEdge(edge.getSourceService(), service.getServiceID(), edge);
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * search for services matched with defined inputSet
+	 *
+	 * @param semanticsPool
+	 * @param graphOutputSetMap
+	 * @param intputList
+	 * @return boolean
+	 */
+	public boolean searchServiceGraphMatchFromDefinedInputSet(SemanticsPool semanticsPool, Service service,
+			List<String> graphOutputList, DirectedGraph<String, ServiceEdge> directedGraph,
+			Map<String, Service> graphOutputListMap, List<String> ioNodeInputs) {
+		pConnList0.clear();
+		inputList0.clear();
+		double summt = 0.00;
+		double sumdst = 0.00;
+
+		int inputMatchCount = 0;
+
+		for (ServiceInput serinput : service.getInputList()) {
+			serinput.setSatified(false);
+			inputList0.add(serinput);
+		}
+
+		for (int i = 0; i < graphOutputList.size(); i++) {
+			String giveninput = graphOutputList.get(i);
+			for (int j = 0; j < inputList0.size(); j++) {
+				ServiceInput serInput = inputList0.get(j);
+				if (!serInput.isSatified()) {
+					String existInput = inputList0.get(j).getInput();
+					ParamterConn pConn = semanticsPool.searchSemanticMatchTypeFromInst(giveninput, existInput);
+					boolean foundmatched = pConn.isConsidered();
+					if (foundmatched) {
+						serInput.setSatified(true);
+						pConn.setOutputInst(giveninput);
+						// if (GraphPSO.taskInput.contains(giveninput)) {
+						if (ioNodeInputs.contains(giveninput)) {
 
 							pConn.setSourceServiceID("startNode");
 						} else {
