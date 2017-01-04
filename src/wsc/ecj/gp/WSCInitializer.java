@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilder;
@@ -27,6 +29,7 @@ import ec.util.Parameter;
 import wsc.InitialWSCPool;
 import wsc.data.pool.Service;
 import wsc.graph.GraphRandom;
+import wsc.graph.ServiceEdge;
 import wsc.owl.bean.OWLClass;
 
 public class WSCInitializer extends GPInitializer {
@@ -59,6 +62,8 @@ public class WSCInitializer extends GPInitializer {
 
 	public Map<String, double[]> serviceQoSMap = new HashMap<String, double[]>();
 	public Map<String, Service> serviceMap = new HashMap<String, Service>();
+	public Table<String, String, ServiceEdge> semanticMatrix = HashBasedTable.create();
+	
 	public Set<Service> relevant;
 	// public Map<String, TaxonomyNode> taxonomyMap = new HashMap<String,
 	// TaxonomyNode>();
