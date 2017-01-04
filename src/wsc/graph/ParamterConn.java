@@ -6,6 +6,7 @@ public class ParamterConn {
 	String outputInst;
 	String outputrequ;
 	String SourceServiceID;
+	String TargetServiceID;
 	boolean isConsidered;
 
 	public double getSimilarity() {
@@ -18,6 +19,14 @@ public class ParamterConn {
 
 	public String getSourceServiceID() {
 		return SourceServiceID;
+	}
+
+	public String getTargetServiceID() {
+		return TargetServiceID;
+	}
+
+	public void setTargetServiceID(String targetServiceID) {
+		TargetServiceID = targetServiceID;
 	}
 
 	public void setSourceServiceID(String sourceServiceID) {

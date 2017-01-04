@@ -82,6 +82,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			// current node
 
 			ServiceGraph graph4Mutation = species.Graph4Mutation(init, combinedInputs, combinedoutputs);
+			System.out.println(graph4Mutation.toString());;
 
 			GPNode tree4Mutation = species.toTree4Mutation("startNode", graph4Mutation);
 

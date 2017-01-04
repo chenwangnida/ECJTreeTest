@@ -35,10 +35,10 @@ stat.file		                               = $out.stat
 stat.do-time                                   = true
 stat.do-final                                  = true
 
-generations                                    = 3
+generations                                    = 50
 
 pop.subpops		                               = 1
-pop.subpop.0.size 	                           = 3
+pop.subpop.0.size 	                           = 30
 pop.subpop.0.duplicate-retries 	               = 0
 pop.subpop.0.species                           = wsc.ecj.gp.WSCSpecies
 pop.subpop.0.species.ind                       = wsc.ecj.gp.WSCIndividual

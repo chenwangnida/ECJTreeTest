@@ -148,6 +148,7 @@ public class InitialWSCPool {
 				int count = edge.getpConnList().size();
 				edge.setAvgmt(summt / count);
 				edge.setAvgsdt(sumdst / count);
+				edge.setTargetService("endNode");
 				directedGraph.addEdge(edge.getSourceService(), "endNode", edge);
 			}
 			return true;

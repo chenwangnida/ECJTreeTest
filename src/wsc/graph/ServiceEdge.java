@@ -8,6 +8,7 @@ import org.jgraph.graph.DefaultEdge;
 public class ServiceEdge extends DefaultEdge implements Cloneable {
 
 	String SourceService;
+	String TargetService;
 
 	List<ParamterConn> pConnList = new ArrayList<ParamterConn>();
 
@@ -23,6 +24,16 @@ public class ServiceEdge extends DefaultEdge implements Cloneable {
 		this.avgmt = avgmt;
 		this.avgsdt = avgsdt;
 	}
+	
+
+	public String getTargetService() {
+		return TargetService;
+	}
+
+	public void setTargetService(String targetService) {
+		TargetService = targetService;
+	}
+
 
 	public String getSourceService() {
 		return SourceService;

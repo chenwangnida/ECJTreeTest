@@ -1,15 +1,18 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import ec.gp.GPTree;
 import ec.simple.SimpleFitness;
 import ec.util.Parameter;
+import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
 
 public class WSCIndividual extends GPIndividual {
@@ -143,7 +146,28 @@ public class WSCIndividual extends GPIndividual {
 	public void replaceNode(GPNode node, GPNode replacement) {
 		// Perform replacement if neither node is not null
 		if (node != null && replacement != null) {
+			// clone replacement
 			replacement = (GPNode) replacement.clone();
+
+			// reassign SemanticWeights if a single service Node selected
+			if (node instanceof ServiceGPNode) {
+				
+				String targetService = ((ServiceGPNode) node).getSemanticEdges().iterator().next().getTargetService();
+				System.out.println("SingleService"+node.toString()+" OurgoingEdge NO.:"
+						+ ((ServiceGPNode) node).getSemanticEdges().size() + "TargetService:");
+				String sourceService= ((ServiceGPNode)replacement).getSerName();
+				
+				Set<ServiceEdge> updatedSemanticEdges = new HashSet<ServiceEdge>();
+
+				ServiceEdge updatedServiceEdge = new ServiceEdge(0.11, 0.11);
+				updatedServiceEdge.setTargetService(targetService);
+				updatedServiceEdge.setSourceService(sourceService);
+				updatedSemanticEdges.add(updatedServiceEdge);
+				((ServiceGPNode)replacement).setSemanticEdges(updatedSemanticEdges);
+				
+			}
+			
+
 			GPNode parentNode = (GPNode) node.parent;
 			// if (parentNode == null) {
 			// the selected node is the topNode in the tree

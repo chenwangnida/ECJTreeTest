@@ -270,6 +270,7 @@ public class Service implements Comparable<Service> {
 				int count = edge.getpConnList().size();
 				edge.setAvgmt(summt / count);
 				edge.setAvgsdt(sumdst / count);
+				edge.setTargetService(service.getServiceID());
 				directedGraph.addEdge(edge.getSourceService(), service.getServiceID(), edge);
 			}
 			return true;
@@ -376,6 +377,7 @@ public class Service implements Comparable<Service> {
 				int count = edge.getpConnList().size();
 				edge.setAvgmt(summt / count);
 				edge.setAvgsdt(sumdst / count);
+				edge.setTargetService(service.getServiceID());
 				directedGraph.addEdge(edge.getSourceService(), service.getServiceID(), edge);
 			}
 			return true;
