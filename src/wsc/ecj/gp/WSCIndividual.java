@@ -149,24 +149,26 @@ public class WSCIndividual extends GPIndividual {
 			// clone replacement
 			replacement = (GPNode) replacement.clone();
 
-			// reassign SemanticWeights if a single service Node selected
+			// Reassign SemanticWeights if a single service Node selected.
+			// Otherwise, semanticWeights are not needed to considered as a
+			// weighted graph 4 mutation generated
+
 			if (node instanceof ServiceGPNode) {
-				
+
 				String targetService = ((ServiceGPNode) node).getSemanticEdges().iterator().next().getTargetService();
-				System.out.println("SingleService"+node.toString()+" OurgoingEdge NO.:"
+				System.out.println("SingleService" + node.toString() + " OurgoingEdge NO.:"
 						+ ((ServiceGPNode) node).getSemanticEdges().size() + "TargetService:");
-				String sourceService= ((ServiceGPNode)replacement).getSerName();
-				
+				String sourceService = ((ServiceGPNode) replacement).getSerName();
+
 				Set<ServiceEdge> updatedSemanticEdges = new HashSet<ServiceEdge>();
 
-				ServiceEdge updatedServiceEdge = new ServiceEdge(0.11, 0.11);
+				ServiceEdge updatedServiceEdge = new ServiceEdge(0.11, 0.91);
 				updatedServiceEdge.setTargetService(targetService);
 				updatedServiceEdge.setSourceService(sourceService);
 				updatedSemanticEdges.add(updatedServiceEdge);
-				((ServiceGPNode)replacement).setSemanticEdges(updatedSemanticEdges);
-				
+				((ServiceGPNode) replacement).setSemanticEdges(updatedSemanticEdges);
+
 			}
-			
 
 			GPNode parentNode = (GPNode) node.parent;
 			// if (parentNode == null) {
