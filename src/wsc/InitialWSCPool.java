@@ -96,7 +96,7 @@ public class InitialWSCPool {
 					boolean foundmatched = pConn.isConsidered();
 					if (foundmatched) {
 						serOutputReq.setSatified(true);
-						double similarity = Service.CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, outputInst,
+						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, outputInst,
 								outputrequ, this.semanticsPool);
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);

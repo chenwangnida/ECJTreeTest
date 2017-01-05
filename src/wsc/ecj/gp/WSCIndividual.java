@@ -157,9 +157,12 @@ public class WSCIndividual extends GPIndividual {
 
 				String targetService = ((ServiceGPNode) node).getSemanticEdges().iterator().next().getTargetService();
 				System.out.println("SingleService" + node.toString() + " OurgoingEdge NO.:"
-						+ ((ServiceGPNode) node).getSemanticEdges().size() + "TargetService:");
+						+ ((ServiceGPNode) node).getSemanticEdges().size() + "TargetService:"+ targetService);
 				String sourceService = ((ServiceGPNode) replacement).getSerName();
 
+				
+				
+				
 				Set<ServiceEdge> updatedSemanticEdges = new HashSet<ServiceEdge>();
 
 				ServiceEdge updatedServiceEdge = new ServiceEdge(0.11, 0.91);

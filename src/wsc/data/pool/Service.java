@@ -128,8 +128,6 @@ public class Service implements Comparable<Service> {
 		return "(" + score + ", " + serviceID + ")";
 	}
 
-
-
 	/**
 	 * search for all potential services matched with current inputSet
 	 *
@@ -149,6 +147,7 @@ public class Service implements Comparable<Service> {
 					boolean foundmatched = pConn.isConsidered();
 					if (foundmatched) {
 						serInput.setSatified(true);
+
 						break;// each inst can only be used for one time
 					}
 
@@ -213,8 +212,9 @@ public class Service implements Comparable<Service> {
 						} else {
 							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
 						}
-						double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, giveninput,
+						double similarity = CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, giveninput,
 								existInput, semanticsPool);
+
 						pConn.setSimilarity(similarity);
 						pConnList0.add(pConn);
 						break;// each inst can only be used for one time
@@ -320,8 +320,9 @@ public class Service implements Comparable<Service> {
 						} else {
 							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
 						}
-						double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, giveninput,
+						double similarity = CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, giveninput,
 								existInput, semanticsPool);
+
 						pConn.setSimilarity(similarity);
 						pConnList0.add(pConn);
 						break;// each inst can only be used for one time
@@ -425,6 +426,22 @@ public class Service implements Comparable<Service> {
 		// }
 
 		return sim;
+	}
+
+	public static double CalculateSimilarityMeasure4Concepts(DirectedGraph<String, DefaultEdge> g, String giveninput,
+			String existInput, SemanticsPool semanticsPool) {
+		// find instance related concept
+		OWLClass givenClass = semanticsPool.getOwlClassHashMap()
+				.get(semanticsPool.getOwlInstHashMap().get(giveninput).getRdfType().getResource().substring(1));
+		OWLClass relatedClass = semanticsPool.getOwlClassHashMap()
+				.get(semanticsPool.getOwlInstHashMap().get(existInput).getRdfType().getResource().substring(1));
+
+		String a = givenClass.getID();
+		String b = relatedClass.getID();
+//		System.out.println(giveninput+"  concept of "+a+";"+existInput+"  concept of" +b);
+
+		double similarity = WSCInitializer.semanticMatrix.get(a, b);
+		return similarity;
 	}
 
 	private static boolean isNeighbourConcept(DirectedGraph<String, DefaultEdge> g, String a, String b) {
