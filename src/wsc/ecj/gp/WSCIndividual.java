@@ -14,6 +14,7 @@ import ec.simple.SimpleFitness;
 import ec.util.Parameter;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
+import wsc.graph.ServiceOutput;
 
 public class WSCIndividual extends GPIndividual {
 
@@ -155,11 +156,26 @@ public class WSCIndividual extends GPIndividual {
 
 			if (node instanceof ServiceGPNode) {
 
+				//obtain targetService from selected service outgoingedge's target
 				String targetService = ((ServiceGPNode) node).getSemanticEdges().iterator().next().getTargetService();
-				System.out.println("SingleService" + node.toString() + " OurgoingEdge NO.:"
-						+ ((ServiceGPNode) node).getSemanticEdges().size() + "TargetService:"+ targetService);
+				//obtain sourceService from replaceNode serviceName
 				String sourceService = ((ServiceGPNode) replacement).getSerName();
 
+				//get required inputSet
+				
+				if(!targetService.equals("endNode")){
+					WSCInitializer.serviceMap.get(targetService).getInputList();
+				}else{
+					
+				}
+				
+				//get offerred outputSet
+				
+				WSCInitializer.serviceMap.get(sourceService).getOutputList();
+
+				
+				System.out.println("SingleService is selected 4 mutation" + node.toString() + " OurgoingEdge NO.:"
+						+ ((ServiceGPNode) node).getSemanticEdges().size() + "TargetService:"+ targetService);
 				
 				
 				

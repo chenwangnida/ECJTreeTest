@@ -85,6 +85,8 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			System.out.println(graph4Mutation.toString());;
 
 			GPNode tree4Mutation = species.toTree4Mutation("startNode", graph4Mutation);
+			System.out.println(tree4Mutation.toString());;
+
 
 			// Replace the old tree with the new one
 			tree.replaceNode(selectedNode, tree4Mutation);

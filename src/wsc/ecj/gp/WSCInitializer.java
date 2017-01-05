@@ -67,7 +67,7 @@ public class WSCInitializer extends GPInitializer {
 	public static final String rootconcept = "TOPNODE";
 
 	public Map<String, double[]> serviceQoSMap = new HashMap<String, double[]>();
-	public Map<String, Service> serviceMap = new HashMap<String, Service>();
+	public static Map<String, Service> serviceMap = new HashMap<String, Service>();
 	public static Table<String, String, Double> semanticMatrix;
 
 	// public Set<Service> relevant;

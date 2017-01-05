@@ -36,6 +36,7 @@ public class InitialWSCPool {
 	private static Map<String, Service> graphOutputListMap = new HashMap<String, Service>();
 	private static List<ParamterConn> pConnList = new ArrayList<ParamterConn>();
 	private static List<ServiceOutput> taskOutputList = new ArrayList<ServiceOutput>();
+	private static List<ServiceOutput> requiredOutputList = new ArrayList<ServiceOutput>();
 	private static Set<String> sourceSerIdSet = new HashSet<String>();
 
 	// set and get
@@ -157,6 +158,94 @@ public class InitialWSCPool {
 		return false;
 
 	}
+	/**
+	 * check whether output is required by the defined required Output
+	 *
+	 * @param givenoutput
+	 * @return
+	 */
+	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph, List<String> requiredOutput) {
+		pConnList.clear();
+		requiredOutputList.clear();
+		int taskMatchCount = 0;
+		double summt;
+		double sumdst;
+		for (String taskOutputStr : requiredOutput) {
+			ServiceOutput taskSerOutput = new ServiceOutput(taskOutputStr, false);
+			requiredOutputList.add(taskSerOutput);
+		}
+
+		for (int i = 0; i < this.graphOutputList.size(); i++) {
+			String outputInst = this.graphOutputList.get(i);
+			for (int j = 0; j < requiredOutputList.size(); j++) {
+				ServiceOutput serOutputReq = requiredOutputList.get(j);
+				if (!serOutputReq.isSatified()) {
+					String outputrequ = requiredOutputList.get(j).getOutput();
+					ParamterConn pConn = this.semanticsPool.searchSemanticMatchTypeFromInst(outputInst, outputrequ);
+					boolean foundmatched = pConn.isConsidered();
+					if (foundmatched) {
+						serOutputReq.setSatified(true);
+						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, outputInst,
+								outputrequ, this.semanticsPool);
+						pConn.setOutputInst(outputInst);
+						pConn.setOutputrequ(outputrequ);
+						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+						pConn.setSimilarity(similarity);
+						pConnList.add(pConn);
+						break;
+					}
+				}
+			}
+		}
+
+		for (ServiceOutput tOutput : requiredOutputList) {
+			boolean sf = tOutput.isSatified();
+			if (sf == true) {
+				taskMatchCount++;
+			}
+		}
+
+		if (taskMatchCount == requiredOutputList.size()) {
+			directedGraph.addVertex("endNode");
+			sourceSerIdSet.clear();
+			for (ParamterConn p : pConnList) {
+				String sourceSerID = p.getSourceServiceID();
+				sourceSerIdSet.add(sourceSerID);
+			}
+
+			List<ServiceEdge> serEdgeList = new ArrayList<ServiceEdge>();
+			for (String sourceSerID : sourceSerIdSet) {
+				ServiceEdge serEdge = new ServiceEdge(0, 0);
+				serEdge.setSourceService(sourceSerID);
+				for (ParamterConn p : pConnList) {
+					if (p.getSourceServiceID().equals(sourceSerID)) {
+						serEdge.getpConnList().add(p);
+					}
+				}
+				serEdgeList.add(serEdge);
+			}
+
+			for (ServiceEdge edge : serEdgeList) {
+				summt = 0.00;
+				sumdst = 0.00;
+				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
+					ParamterConn pCo = edge.getpConnList().get(i1);
+					summt += pCo.getMatchType();
+					sumdst += pCo.getSimilarity();
+
+				}
+				int count = edge.getpConnList().size();
+				edge.setAvgmt(summt / count);
+				edge.setAvgsdt(sumdst / count);
+				edge.setTargetService("endNode");
+				directedGraph.addEdge(edge.getSourceService(), "endNode", edge);
+			}
+			return true;
+		}
+
+		return false;
+
+	}
 
 	/**
 	 * given a task associated with input and output to find a potential
@@ -238,7 +327,7 @@ public class InitialWSCPool {
 				System.err.println("No service is usable now");
 				return;
 			}
-			goalSatisfied = this.checkOutputSet(directedGraph, combinedOutputs);
+			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs);
 
 		} while (!goalSatisfied);
 
