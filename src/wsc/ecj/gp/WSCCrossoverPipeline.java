@@ -103,8 +103,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			// GPNode replacementT1 = nodes[1];
 
 			// Perform replacement in both individuals
-			t1.replaceNode(nodeT1, replacementT2);
-			t2.replaceNode(replacementT2, nodeT1);
+			t1.replaceNode4Crossover(nodeT1, replacementT2);
+			t2.replaceNode4Crossover(replacementT2, nodeT1);
 			// t2.replaceNode(nodeT2, replacementT1);
 
 			inds[q] = t1;
