@@ -259,7 +259,8 @@ public class WSCIndividual extends GPIndividual {
 				// obtain the appedixNode to tailed as the deleted endNode in
 				// replacement
 				GPNode appedixNode = null;
-				GPNode endNode = null;
+//				GPNode endNode = null;
+				List<GPNode> endNodeList = new ArrayList<GPNode>();
 				GPNode[] appedix = pNode.children;
 				for (GPNode aNode : appedix) {
 					if (aNode != node) {
@@ -271,13 +272,17 @@ public class WSCIndividual extends GPIndividual {
 				for (GPNode gpn : allNodeofReplacement) {
 					if (gpn instanceof ServiceGPNode) {
 						if (((ServiceGPNode) gpn).getSerName().equals("endNode")) {
-							endNode = gpn;
+//							endNode = gpn;
+							endNodeList.add(gpn);
 						}
 						;
 					}
 				}
 				// replace the endNode with appedixNode
-				replaceNode(endNode, appedixNode);
+//				replaceNode(endNode, appedixNode);
+				for(GPNode endNode:endNodeList){
+					replaceNode(endNode, appedixNode);
+				}
 
 				// replace replacement in the graph
 				replacement.parent = pNode.parent;
