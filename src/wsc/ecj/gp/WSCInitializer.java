@@ -156,7 +156,7 @@ public class WSCInitializer extends GPInitializer {
 
 	private void createSemanticMatrix() {
 
-		Set<String> parameterconcepts = new HashSet<String>();
+		Set<OWLClass> parameterconcepts = new HashSet<OWLClass>();
 
 		// Load all parameter-related concepts from task-relevant web services
 
@@ -166,7 +166,7 @@ public class WSCInitializer extends GPInitializer {
 				OWLClass pConcept = initialWSCPool.getSemanticsPool().getOwlClassHashMap()
 						.get(initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serInput.getInput()).getRdfType()
 								.getResource().substring(1));
-				parameterconcepts.add(pConcept.getID());
+				parameterconcepts.add(pConcept);
 
 			}
 
@@ -175,7 +175,7 @@ public class WSCInitializer extends GPInitializer {
 				OWLClass pConcept = initialWSCPool.getSemanticsPool().getOwlClassHashMap()
 						.get(initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
 								.getRdfType().getResource().substring(1));
-				parameterconcepts.add(pConcept.getID());
+				parameterconcepts.add(pConcept);
 
 			}
 		}
@@ -186,25 +186,29 @@ public class WSCInitializer extends GPInitializer {
 		for (String tskInput : WSCInitializer.taskInput) {
 			OWLClass pConcept = initialWSCPool.getSemanticsPool().getOwlClassHashMap().get(initialWSCPool
 					.getSemanticsPool().getOwlInstHashMap().get(tskInput).getRdfType().getResource().substring(1));
-			parameterconcepts.add(pConcept.getID());
+			parameterconcepts.add(pConcept);
 		}
 
 		for (String tskOutput : WSCInitializer.taskOutput) {
 			OWLClass pConcept = initialWSCPool.getSemanticsPool().getOwlClassHashMap().get(initialWSCPool
 					.getSemanticsPool().getOwlInstHashMap().get(tskOutput).getRdfType().getResource().substring(1));
-			parameterconcepts.add(pConcept.getID());
+			parameterconcepts.add(pConcept);
 		}
 
 		System.out.println("All concepts involved in semantic calcu NO.: " + parameterconcepts.size());
 
-		for (String pCon : parameterconcepts) {
-			for (String pCon0 : parameterconcepts) {
+		for (OWLClass pCon : parameterconcepts) {
+			for (OWLClass pCon0 : parameterconcepts) {
+				// if the pCon or PCon all parent class equal to pCon0
+				if (initialWSCPool.getSemanticsPool().isSemanticMatchFromConcept(pCon, pCon0)) {
 
-				double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, pCon, pCon0);
+					double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, pCon.getID(), pCon0.getID());
 
-				semanticMatrix.put(pCon, pCon0, similarity);
-//				System.out.println(
-//						"givenInput:  " + pCon + "   existInput:  " + pCon0 + "   Semantic Quality: " + similarity);
+					semanticMatrix.put(pCon.getID(), pCon0.getID(), similarity);
+				}
+				// System.out.println(
+				// "givenInput: " + pCon + " existInput: " + pCon0 + " Semantic
+				// Quality: " + similarity);
 			}
 		}
 

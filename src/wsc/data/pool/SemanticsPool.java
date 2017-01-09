@@ -154,6 +154,22 @@ public class SemanticsPool {
 		}
 		return false;
 	}
+	
+	
+	public boolean isSemanticMatchFromConcept(OWLClass givenClass, OWLClass relatedClass) {
+
+		while (true) {
+			// Exact and PlugIn matching types
+			if (givenClass.getID().equals(relatedClass.getID())) {
+				return true;
+			}
+			if (givenClass.getSubClassOf() == null || givenClass.getSubClassOf().getResource().equals("")) {
+				break;
+			}
+			givenClass = this.owlClassHashMap.get(givenClass.getSubClassOf().getResource().substring(1));
+		}
+		return false;
+	}
 
 	// /** Test data from unmarshalling process
 	// * @param args

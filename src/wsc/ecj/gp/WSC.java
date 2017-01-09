@@ -27,6 +27,10 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			WSCData input = (WSCData) (this.input);
 
 			GPIndividual gpInd = (GPIndividual) ind;
+			
+			state.output.println("Evaluate new Individual:"+gpInd.toString(), 0);
+
+			
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
 			double[] qos = new double[4];
 			qos[WSCInitializer.TIME] = input.maxTime;

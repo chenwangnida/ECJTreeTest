@@ -136,7 +136,8 @@ public class WSCIndividual extends GPIndividual {
 
 	public List<GPNode> getAllTreeNodes(GPNode gpNode) {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
-		AddChildNodes(trees[0].child, allNodes);
+//		AddChildNodes(trees[0].child, allNodes);
+		AddChildNodes(gpNode, allNodes);
 
 		return allNodes;
 	}
@@ -283,16 +284,32 @@ public class WSCIndividual extends GPIndividual {
 				for (GPNode gpn : allNodeofReplacement) {
 					if (gpn instanceof ServiceGPNode) {
 						if (((ServiceGPNode) gpn).getSerName().equals("endNode")) {
-							// endNode = gpn;
+//							 endNode = gpn;
 							endNodeList.add(gpn);
+//							replacement.cloneReplacingAtomic(appedixNode, gpn);
+
 						}
-						;
 					}
 				}
+				
+				
 				// replace the endNode with appedixNode
 				// replaceNode(endNode, appedixNode);
 				for (GPNode endNode : endNodeList) {
-					replaceNode(endNode, appedixNode);
+					
+					GPNode parentEndNode = (GPNode) endNode.parent;
+					appedixNode.parent = endNode.parent;
+					for (int i = 0; i < parentEndNode.children.length; i++) {
+						if (parentEndNode.children[i] == endNode) {
+							parentEndNode.children[i] = appedixNode;
+							// wonder whether to break while considering the
+							// redundant nodes in the tree transfered from the
+							// graph
+							break;
+						}
+					}
+					
+					
 				}
 
 				// replace replacement in the graph
@@ -322,7 +339,7 @@ public class WSCIndividual extends GPIndividual {
 		}
 	}
 
-	private void replaceNode(GPNode endNode, GPNode appedixNode) {
+	private GPNode replaceNode(GPNode endNode, GPNode appedixNode) {
 
 		if (endNode != null && appedixNode != null) {
 			// clone replacement
@@ -340,6 +357,6 @@ public class WSCIndividual extends GPIndividual {
 				}
 			}
 		}
-
+		return endNode;
 	}
 }

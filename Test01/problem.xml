@@ -6,6 +6,7 @@
         </provided>
         <wanted>
             <instance name="TouristMap" />
+            <instance name="TravelArrivalDate" />
         </wanted>
     </task>
     <solutions />
