@@ -2,10 +2,7 @@
 <problemStructure>
     <task>
         <provided>
-            <instance name="TravelDepartureDate" />
-            <instance name="HomeCity" />
-            <instance name="ConferenceCity" />
-            <instance name="TravelReturnDate" />
+            <instance name="TouristAgencyPromotion" />
         </provided>
         <wanted>
             <instance name="TouristMap" />

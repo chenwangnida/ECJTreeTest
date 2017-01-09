@@ -157,8 +157,9 @@ public class WSCIndividual extends GPIndividual {
 	public void replaceNode4Crossover(GPNode node, GPNode replacement) {
 		// Perform replacement if neither node is not null
 		if (node != null && replacement != null) {
-			// clone replacement that would not clone the parents, which is wrong
-//			replacement = (GPNode) replacement.clone();
+			// clone replacement that would not clone the parents, which is
+			// wrong
+			// replacement = (GPNode) replacement.clone();
 
 			// SourceNode of selected Node obtained
 			GPNode sourceOfNode = getSourceGPNode(node);
@@ -201,11 +202,21 @@ public class WSCIndividual extends GPIndividual {
 		if (node instanceof ServiceGPNode) {
 
 			GPNode pOperatorNode = (GPNode) parentNode.parent;
-			GPNode ppOperatorNode = (GPNode) pOperatorNode.parent;
-			GPNode[] ppOpratorNodeChild = ppOperatorNode.children;
-			for (GPNode ppOpChild : ppOpratorNodeChild) {
+			GPNode[] pOperatorNodeChild = pOperatorNode.children;
+
+			for (GPNode ppOpChild : pOperatorNodeChild) {
 				if (ppOpChild instanceof ServiceGPNode) {
 					sourceGPNode = ppOpChild;
+				}
+			}
+
+			if (sourceGPNode == null) {
+				GPNode ppOperatorNode = (GPNode) pOperatorNode.parent;
+				GPNode[] ppOpratorNodeChild = ppOperatorNode.children;
+				for (GPNode ppOpChild : ppOpratorNodeChild) {
+					if (ppOpChild instanceof ServiceGPNode) {
+						sourceGPNode = ppOpChild;
+					}
 				}
 			}
 		} else {
@@ -259,7 +270,7 @@ public class WSCIndividual extends GPIndividual {
 				// obtain the appedixNode to tailed as the deleted endNode in
 				// replacement
 				GPNode appedixNode = null;
-//				GPNode endNode = null;
+				// GPNode endNode = null;
 				List<GPNode> endNodeList = new ArrayList<GPNode>();
 				GPNode[] appedix = pNode.children;
 				for (GPNode aNode : appedix) {
@@ -272,15 +283,15 @@ public class WSCIndividual extends GPIndividual {
 				for (GPNode gpn : allNodeofReplacement) {
 					if (gpn instanceof ServiceGPNode) {
 						if (((ServiceGPNode) gpn).getSerName().equals("endNode")) {
-//							endNode = gpn;
+							// endNode = gpn;
 							endNodeList.add(gpn);
 						}
 						;
 					}
 				}
 				// replace the endNode with appedixNode
-//				replaceNode(endNode, appedixNode);
-				for(GPNode endNode:endNodeList){
+				// replaceNode(endNode, appedixNode);
+				for (GPNode endNode : endNodeList) {
 					replaceNode(endNode, appedixNode);
 				}
 

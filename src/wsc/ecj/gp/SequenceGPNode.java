@@ -17,6 +17,7 @@ import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
 import wsc.graph.ServicePrecondition;
+import wsc.owl.bean.OWLClass;
 
 public class SequenceGPNode extends GPNode implements InOutNode {
 
@@ -78,14 +79,14 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
 		Set<ServiceEdge> overallServiceEdges = new HashSet<ServiceEdge>();
 
+		WSCInitializer init = (WSCInitializer) state.initializer;
+
 		WSCData rd = ((WSCData) (input));
 		for (GPNode child : children) {
 
-
 			child.eval(state, thread, input, stack, individual, problem);
 
-//			System.out.println(""+rd.serviceId);
-
+			// System.out.println(""+rd.serviceId);
 
 			if (rd.serviceId.equals("startNode")) {
 				overallServiceEdges.addAll(rd.semanticEdges);
@@ -112,8 +113,24 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 		}
 
-		overallInputs.removeAll(overallOutputs);
-		overallOutputs.removeAll(overallInputs);
+		// remove inputs produced by proccesor web services
+		for (ServiceOutput serOutput : overallOutputs) {
+
+			if (isContained(serOutput, overallInputs, init)) {
+				overallInputs.remove(serOutput);
+			}
+		}
+
+		// remove the outputs required by successor web serivces
+		for (ServiceInput serInput : overallInputs) {
+
+			if (isContained(serInput, overallOutputs, init)) {
+				overallOutputs.remove(serInput);
+			}
+		}
+
+		// overallInputs.removeAll(overallOutputs);
+		// overallOutputs.removeAll(overallInputs);
 		overallPreconditions.removeAll(overallPostconditions);
 		overallPostconditions.removeAll(overallPreconditions);
 
@@ -144,6 +161,53 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		preconditions = rd.preconditions;
 		postconditions = rd.postconditions;
 		semanticEdges = rd.semanticEdges;
+	}
+
+	// check there is inputs produced by the services Outputs or not
+	private boolean isContained(ServiceOutput serOutput, List<ServiceInput> overallInputs, WSCInitializer init) {
+		String output = serOutput.getOutput();
+		for (ServiceInput serInputs : overallInputs) {
+
+			OWLClass givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap().get(init.initialWSCPool
+					.getSemanticsPool().getOwlInstHashMap().get(output).getRdfType().getResource().substring(1));
+			OWLClass relatedClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap().get(init.initialWSCPool
+					.getSemanticsPool().getOwlInstHashMap().get(serInputs).getRdfType().getResource().substring(1));
+
+			String a = givenClass.getID();
+			String b = relatedClass.getID();
+			// System.out.println(giveninput+" concept of "+a+";"+existInput+"
+			// concept of" +b);
+
+			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	// check there is inputs produced by the services Outputs or not
+	private boolean isContained(ServiceInput serInput, List<ServiceOutput> overallOutput, WSCInitializer init) {
+		String input = serInput.getInput();
+		for (ServiceOutput serOutput : overallOutput) {
+
+			OWLClass givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap().get(init.initialWSCPool
+					.getSemanticsPool().getOwlInstHashMap().get(input).getRdfType().getResource().substring(1));
+			OWLClass relatedClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap().get(init.initialWSCPool
+					.getSemanticsPool().getOwlInstHashMap().get(serOutput).getRdfType().getResource().substring(1));
+
+			String a = givenClass.getID();
+			String b = relatedClass.getID();
+			// System.out.println(giveninput+" concept of "+a+";"+existInput+"
+			// concept of" +b);
+
+			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override

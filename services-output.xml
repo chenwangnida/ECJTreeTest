@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services>
+  <service name="TouristAgencyPromotion01" Res="3036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="7.17">
+    <inputs>
+      <instance name="TouristAgencyPromotion"/>
+    </inputs>
+    <outputs>
+      <instance name="TravelDepartureDate" />
+      <instance name="HomeCity" />
+      <instance name="ConferenceCity" />
+      <instance name="TravelReturnDate" />
+    </outputs>
+  </service>
+  <service name="TouristAgencyPromotion02" Res="6036.15" Ava="0.51" Suc="0.70" Rel="0.34" Lat="2464.34" Pri="9.17">
+    <inputs>
+      <instance name="TouristAgencyPromotion"/>
+    </inputs>
+    <outputs>
+      <instance name="TravelDepartureDate" />
+      <instance name="HomeCity" />
+      <instance name="ConferenceCity" />
+      <instance name="TravelReturnDate" />
+    </outputs>
+  </service>
   <service name="GenerateMapService01" Res="3036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="7.17">
     <inputs>
       <instance name="MappedLocation"/>

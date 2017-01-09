@@ -86,6 +86,14 @@ public class WSCInitializer extends GPInitializer {
 	public double w5;
 	public double w6;
 
+	public InitialWSCPool getInitialWSCPool() {
+		return initialWSCPool;
+	}
+
+	public void setInitialWSCPool(InitialWSCPool initialWSCPool) {
+		this.initialWSCPool = initialWSCPool;
+	}
+
 	@Override
 	public void setup(EvolutionState state, Parameter base) {
 		random = new GraphRandom(state.random[0]);
