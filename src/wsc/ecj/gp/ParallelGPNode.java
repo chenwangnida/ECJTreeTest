@@ -122,12 +122,12 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		postconditions = overallPostconditions;
 		semanticEdges = rd.semanticEdges;
 
-		for (ServiceInput i : overallInputs) {
-			state.output.println("Parallel:I:" + i.getInput(), 0);
-		}
-		for (ServiceOutput o : overallOutputs) {
-			state.output.println("Parallel:O:" +o.getOutput(), 0);
-		}
+//		for (ServiceInput i : overallInputs) {
+//			state.output.println("Parallel:I:" + i.getInput(), 0);
+//		}
+//		for (ServiceOutput o : overallOutputs) {
+//			state.output.println("Parallel:O:" +o.getOutput(), 0);
+//		}
 
 	}
 
