@@ -35,7 +35,7 @@ stat.file		                               = $out.stat
 stat.do-time                                   = true
 stat.do-final                                  = true
 
-generations                                    = 3
+generations                                    = 5
 
 pop.subpops		                               = 1
 pop.subpop.0.size 	                           = 3

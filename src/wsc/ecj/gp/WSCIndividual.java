@@ -136,7 +136,7 @@ public class WSCIndividual extends GPIndividual {
 
 	public List<GPNode> getAllTreeNodes(GPNode gpNode) {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
-//		AddChildNodes(trees[0].child, allNodes);
+		// AddChildNodes(trees[0].child, allNodes);
 		AddChildNodes(gpNode, allNodes);
 
 		return allNodes;
@@ -158,6 +158,7 @@ public class WSCIndividual extends GPIndividual {
 	public void replaceNode4Crossover(GPNode node, GPNode replacement) {
 		// Perform replacement if neither node is not null
 		if (node != null && replacement != null) {
+
 			// clone replacement that would not clone the parents, which is
 			// wrong
 			// replacement = (GPNode) replacement.clone();
@@ -166,6 +167,9 @@ public class WSCIndividual extends GPIndividual {
 			GPNode sourceOfNode = getSourceGPNode(node);
 			// SourceNode of replaced Node obtained
 			GPNode sourceOfReplacement = getSourceGPNode(replacement);
+			
+			 replacement = (GPNode) replacement.clone();
+
 
 			// update the ServiceEdge of sourceOfNode with that of
 			// sourceOfReplacement
@@ -178,7 +182,8 @@ public class WSCIndividual extends GPIndividual {
 			// the selected node is the topNode in the tree
 			// super.trees[0].child = replacement;
 			// } else {
-
+			
+			
 			GPNode parentNode = (GPNode) node.parent;
 
 			replacement.parent = node.parent;
@@ -190,8 +195,45 @@ public class WSCIndividual extends GPIndividual {
 					break;
 				}
 			}
+			
+
+			
 		}
 	}
+
+	// private GPNode getSourceGPNode(GPNode node) {
+	//
+	// GPNode sourceGPNode = null;
+	// GPNode parentNode = (GPNode) node.parent;
+	// GPNode pOperatorNode = (GPNode) parentNode.parent;
+	//
+	// System.out.println("selected node for finding source node"+node);
+	//
+	// GPNode[] pOperatorNodeChild = pOperatorNode.children;
+	//
+	// for (GPNode ppOpChild : pOperatorNodeChild) {
+	// if (ppOpChild instanceof ServiceGPNode) {
+	// sourceGPNode = ppOpChild;
+	// }
+	// }
+	//
+	// if (sourceGPNode == null) {
+	// GPNode ppOperatorNode = (GPNode) pOperatorNode.parent;
+	// GPNode[] ppOpratorNodeChild = ppOperatorNode.children;
+	// for (GPNode ppOpChild : ppOpratorNodeChild) {
+	// if (ppOpChild instanceof ServiceGPNode) {
+	// sourceGPNode = ppOpChild;
+	// }
+	// }
+	// }
+	//
+	// if (sourceGPNode == null)
+	// {
+	// System.out.println("Wrong SourceNode of selected Node obttained under
+	// crossover");
+	// }
+	// return sourceGPNode;
+	// }
 
 	private GPNode getSourceGPNode(GPNode node) {
 
@@ -203,6 +245,9 @@ public class WSCIndividual extends GPIndividual {
 		if (node instanceof ServiceGPNode) {
 
 			GPNode pOperatorNode = (GPNode) parentNode.parent;
+
+			 System.out.println("selected node for finding source node"+node+ "pOperatorNode.children"+ pOperatorNode.children);
+
 			GPNode[] pOperatorNodeChild = pOperatorNode.children;
 
 			for (GPNode ppOpChild : pOperatorNodeChild) {
@@ -226,9 +271,19 @@ public class WSCIndividual extends GPIndividual {
 			for (GPNode pOpChild : pOpratorNodeChild) {
 				if (pOpChild instanceof ServiceGPNode) {
 					sourceGPNode = pOpChild;
-					break;
 				}
 			}
+			
+			if (sourceGPNode == null) {
+				GPNode ppOperatorNode = (GPNode) parentNode.parent;
+				GPNode[] ppOpratorNodeChild = ppOperatorNode.children;
+				for (GPNode ppOpChild : ppOpratorNodeChild) {
+					if (ppOpChild instanceof ServiceGPNode) {
+						sourceGPNode = ppOpChild;
+					}
+				}
+			}
+			
 		}
 
 		if (sourceGPNode == null) {
@@ -284,19 +339,19 @@ public class WSCIndividual extends GPIndividual {
 				for (GPNode gpn : allNodeofReplacement) {
 					if (gpn instanceof ServiceGPNode) {
 						if (((ServiceGPNode) gpn).getSerName().equals("endNode")) {
-//							 endNode = gpn;
+							// endNode = gpn;
 							endNodeList.add(gpn);
-//							replacement.cloneReplacingAtomic(appedixNode, gpn);
+							// replacement.cloneReplacingAtomic(appedixNode,
+							// gpn);
 
 						}
 					}
 				}
-				
-				
+
 				// replace the endNode with appedixNode
 				// replaceNode(endNode, appedixNode);
 				for (GPNode endNode : endNodeList) {
-					
+
 					GPNode parentEndNode = (GPNode) endNode.parent;
 					appedixNode.parent = endNode.parent;
 					for (int i = 0; i < parentEndNode.children.length; i++) {
@@ -308,8 +363,7 @@ public class WSCIndividual extends GPIndividual {
 							break;
 						}
 					}
-					
-					
+
 				}
 
 				// replace replacement in the graph
