@@ -18,7 +18,7 @@ import wsc.graph.ServiceOutput;
 import wsc.graph.ServicePostcondition;
 import wsc.graph.ServicePrecondition;
 
-public class ServiceGPNode extends GPNode implements InOutNode  {
+public class ServiceGPNode extends GPNode implements InOutNode {
 
 	private static final long serialVersionUID = 1L;
 	private Service service;
@@ -36,7 +36,8 @@ public class ServiceGPNode extends GPNode implements InOutNode  {
 
 	public ServiceGPNode(Set<ServiceEdge> semanticEdges) {
 		children = new GPNode[0];
-		this.setSemanticEdges(semanticEdges);;
+		this.setSemanticEdges(semanticEdges);
+		;
 	}
 
 	public String getSerName() {
@@ -79,7 +80,6 @@ public class ServiceGPNode extends GPNode implements InOutNode  {
 		this.postconditions = postconditions;
 	}
 
-
 	public Set<ServiceEdge> getSemanticEdges() {
 		return semanticEdges;
 	}
@@ -101,7 +101,7 @@ public class ServiceGPNode extends GPNode implements InOutNode  {
 
 			// Store input and output information in this node
 			serName = rd.serviceId;
-			semanticEdges =rd.semanticEdges;
+			semanticEdges = rd.semanticEdges;
 
 		} else {
 			Service service = init.serviceMap.get(serName);
@@ -111,7 +111,17 @@ public class ServiceGPNode extends GPNode implements InOutNode  {
 			rd.seenServices = new ArrayList<Service>();
 			rd.seenServices.add(service);
 			rd.inputs = service.getInputList();
+			// set all isSatified of input to false
+			for (ServiceInput serInput : rd.inputs) {
+				serInput.setSatified(false);
+			}
+
 			rd.outputs = service.getOutputList();
+			for (ServiceOutput serOutput : rd.outputs) {
+				serOutput.setSatified(false);
+			}
+
+			// set all isSatified of input to false
 			rd.preconditions = service.getPreconditionList();
 			rd.postconditions = service.getPostconditionList();
 			rd.semanticEdges = this.semanticEdges;

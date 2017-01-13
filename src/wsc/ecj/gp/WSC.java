@@ -27,10 +27,10 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			WSCData input = (WSCData) (this.input);
 
 			GPIndividual gpInd = (GPIndividual) ind;
-			
-			state.output.println("Evaluate new Individual:"+gpInd.toString(), 0);
 
-			
+//			state.output.println("Evaluate new Individual:"+gpInd.toString(), 0);
+
+
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
 			double[] qos = new double[4];
 			qos[WSCInitializer.TIME] = input.maxTime;
@@ -38,13 +38,13 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			qos[WSCInitializer.RELIABILITY] = 1.0;
 
 			double mt = 1.0;
-			double dst = 0.0; // Exact Match dst = 1 ; 
+			double dst = 0.0; // Exact Match dst = 1 ;
 			for (ServiceEdge semanticQuality : input.semanticEdges) {
 				mt *= semanticQuality.getAvgmt();
 				dst += semanticQuality.getAvgsdt();
 
 			}
-			
+
 			dst = dst/(input.semanticEdges.size());
 
 			for (Service s : input.seenServices) {

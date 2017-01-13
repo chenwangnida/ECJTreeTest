@@ -167,7 +167,7 @@ public class WSCIndividual extends GPIndividual {
 			GPNode sourceOfNode = getSourceGPNode(node);
 			// SourceNode of replaced Node obtained
 			GPNode sourceOfReplacement = getSourceGPNode(replacement);
-			
+
 			 replacement = (GPNode) replacement.clone();
 
 
@@ -182,8 +182,8 @@ public class WSCIndividual extends GPIndividual {
 			// the selected node is the topNode in the tree
 			// super.trees[0].child = replacement;
 			// } else {
-			
-			
+
+
 			GPNode parentNode = (GPNode) node.parent;
 
 			replacement.parent = node.parent;
@@ -195,9 +195,9 @@ public class WSCIndividual extends GPIndividual {
 					break;
 				}
 			}
-			
 
-			
+
+
 		}
 	}
 
@@ -246,7 +246,7 @@ public class WSCIndividual extends GPIndividual {
 
 			GPNode pOperatorNode = (GPNode) parentNode.parent;
 
-			 System.out.println("selected node for finding source node"+node+ "pOperatorNode.children"+ pOperatorNode.children);
+//			 System.out.println("selected node for finding source node"+node+ "pOperatorNode.children"+ pOperatorNode.children);
 
 			GPNode[] pOperatorNodeChild = pOperatorNode.children;
 
@@ -273,7 +273,7 @@ public class WSCIndividual extends GPIndividual {
 					sourceGPNode = pOpChild;
 				}
 			}
-			
+
 			if (sourceGPNode == null) {
 				GPNode ppOperatorNode = (GPNode) parentNode.parent;
 				GPNode[] ppOpratorNodeChild = ppOperatorNode.children;
@@ -283,7 +283,7 @@ public class WSCIndividual extends GPIndividual {
 					}
 				}
 			}
-			
+
 		}
 
 		if (sourceGPNode == null) {

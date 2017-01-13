@@ -96,6 +96,9 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
+			state.output.println(" -----------replace part from A:"+nodeT1, 0);
+			state.output.println(" -----------replace part from B:"+replacementT2, 0);
+
 
 			// For each t2 node, see if it can be replaced by a t1 node
 			// nodes = findReplacement(init, allT2Nodes, allT1Nodes);
@@ -114,6 +117,13 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1] = t2;
 				inds[q + 1].evaluated = false;
 			}
+			state.output.println(" CROSSOVER !!!!!!!", 0);
+			state.output.println(" new Individual:"+t1.toString(), 0);
+			state.output.println(" new Individual:"+t2.toString(), 0);
+			state.output.println(" XXXXXXXXXXXXXXXXXXXXx"+t2.toString(), 0);
+
+
+
 		}
 		return n1;
 
@@ -132,8 +142,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				InOutNode ioNode = (InOutNode) node;
 				InOutNode ioReplacement = (InOutNode) replacement;
 				if (IsReplacementFound(init, ioNode, ioReplacement)) {
-//					System.out.println("selected Node ******" + ioNode.toString());
-//					System.out.println("replaced Node ******" + ioReplacement.toString());
+					System.out.println("selected Node ******" + ioNode.toString());
+					System.out.println("replaced Node ******" + ioReplacement.toString());
 					result[0] = node;
 					result[1] = replacement;
 					break outterLoop;
@@ -175,6 +185,13 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 	// HashSet<String> inputSet, HashSet<String> inputList) {
 	public boolean searchReplacement4Inputs(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs,
 			List<ServiceInput> ioReplacement) {
+
+		for (ServiceInput serInput : ioNodeInputs) {
+			serInput.setSatified(false);
+		}
+		for (ServiceInput serInput : ioReplacement) {
+			serInput.setSatified(false);
+		}
 
 		if (ioNodeInputs.size() == ioReplacement.size()) {
 			int relevantServiceCount = 0;
@@ -225,6 +242,14 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 	// HashSet<String> inputSet, HashSet<String> inputList) {
 	public boolean searchReplacement4Outputs(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
 			List<ServiceOutput> ioReplacement) {
+		for (ServiceOutput serInput : ioNodeOutputs) {
+			serInput.setSatified(false);
+		}
+		for (ServiceOutput serInput : ioReplacement) {
+			serInput.setSatified(false);
+		}
+
+
 		if (ioNodeOutputs.size() == ioReplacement.size()) {
 			int relevantServiceCount = 0;
 			for (int i = 0; i < ioReplacement.size(); i++) {
