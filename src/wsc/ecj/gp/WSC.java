@@ -46,6 +46,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			}
 
 			dst = dst/(input.semanticEdges.size());
+//			System.out.println("semantic edge Size :"+ input.semanticEdges.size());
 
 			for (Service s : input.seenServices) {
 				qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];

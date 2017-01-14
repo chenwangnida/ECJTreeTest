@@ -60,8 +60,8 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			// Combine the input from the node with the overall task input, as
 			// the latter is available from anywhere
 
-			List<String> combinedInputs = new ArrayList<String>();
-			List<String> combinedoutputs = new ArrayList<String>();
+			Set<String> combinedInputs = new HashSet<String>();
+			Set<String> combinedoutputs = new HashSet<String>();
 
 			for (ServiceInput iNode :ioNode.getInputs()) {
 				combinedInputs.add(iNode.getInput());
@@ -80,9 +80,26 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// Generate a new tree based on the input/output information of the
 			// current node
+			
+			List<String> Inputs4Node = new ArrayList(combinedInputs);
+			List<String> outputs4Node = new ArrayList(combinedoutputs);
 
-			ServiceGraph graph4Mutation = species.Graph4Mutation(init, combinedInputs, combinedoutputs);
 			System.out.println("selected: "+selectedNode);
+
+			ServiceGraph graph4Mutation = species.Graph4Mutation(init, Inputs4Node, outputs4Node);
+	
+			
+			for (String input :Inputs4Node) {
+				System.out.print("I:"+input+"; ");
+			}
+			System.out.println("");
+
+			for (String output :outputs4Node) {
+				System.out.print("O:"+output+"; ");
+			}
+			System.out.println("");
+
+			
 			System.out.println(" @mutation graph:"+graph4Mutation.toString());;
 
 //			GPNode tree4Mutation = species.toTree4Mutation("startNode", graph4Mutation);

@@ -97,14 +97,14 @@ public class InitialWSCPool {
 					boolean foundmatched = pConn.isConsidered();
 					if (foundmatched) {
 						serOutputReq.setSatified(true);
-						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, outputInst,
-								outputrequ, this.semanticsPool);
+						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG,
+								outputInst, outputrequ, this.semanticsPool);
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);
 						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
 						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
-						break;
+						// break;
 					}
 				}
 			}
@@ -158,13 +158,15 @@ public class InitialWSCPool {
 		return false;
 
 	}
+
 	/**
 	 * check whether output is required by the defined required Output
 	 *
 	 * @param givenoutput
 	 * @return
 	 */
-	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph, List<String> requiredOutput) {
+	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph,
+			List<String> requiredOutput) {
 		pConnList.clear();
 		requiredOutputList.clear();
 		int taskMatchCount = 0;
@@ -185,14 +187,18 @@ public class InitialWSCPool {
 					boolean foundmatched = pConn.isConsidered();
 					if (foundmatched) {
 						serOutputReq.setSatified(true);
-						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, outputInst,
-								outputrequ, this.semanticsPool);
+						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG,
+								outputInst, outputrequ, this.semanticsPool);
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);
+						if (graphOutputListMap.get(outputInst) == null) {
+//							pConn.setSourceServiceID("startNode");
+							System.err.println("Inst not in the map");
+						}
 						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
 						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
-						break;
+						// break inner;
 					}
 				}
 			}
@@ -278,10 +284,10 @@ public class InitialWSCPool {
 
 		// SWSPool swsPool = new SWSPool();
 
-//		SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
+		// SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
 		serviceCandidates.addAll(serviceSequence);
 		Collections.shuffle(serviceCandidates, WSCInitializer.random);
-//		Collections.sort(serviceCandidates);
+		// Collections.sort(serviceCandidates);
 
 		boolean goalSatisfied;
 
@@ -311,18 +317,18 @@ public class InitialWSCPool {
 
 		// SWSPool swsPool = new SWSPool();
 
-//		SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
+		// SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
 		serviceCandidates.addAll(serviceSequence);
 		Collections.shuffle(serviceCandidates, WSCInitializer.random);
-//		Collections.sort(serviceCandidates);
+		// Collections.sort(serviceCandidates);
 
 		boolean goalSatisfied;
 
 		directedGraph.addVertex("startNode");
 
 		do {
-			Service service = swsPool.createGraphService4Mutation(graphOutputList, serviceCandidates, this.semanticsPool,
-					directedGraph, graphOutputListMap, combinedInputs);
+			Service service = swsPool.createGraphService4Mutation(graphOutputList, serviceCandidates,
+					this.semanticsPool, directedGraph, graphOutputListMap, combinedInputs);
 			if (service == null) {
 				System.err.println("No service is usable now");
 				return;
@@ -334,8 +340,7 @@ public class InitialWSCPool {
 	}
 
 	public void createGraphService(List<String> taskInput, List<String> taskOutput,
-			DirectedGraph<String, ServiceEdge> directedGraph, float[] weights,
-			Map<String, Integer> serviceToIndexMap) {
+			DirectedGraph<String, ServiceEdge> directedGraph, float[] weights, Map<String, Integer> serviceToIndexMap) {
 
 		graphOutputList.clear();
 		graphOutputListMap.clear();

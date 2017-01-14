@@ -75,8 +75,8 @@ public class WSCInitializer extends GPInitializer {
 	// TaxonomyNode>();
 	public static List<String> taskInput;
 	public static List<String> taskOutput;
-	// public Service startServ;
-	// public Service endServ;
+//	 public Service startServ;
+//	 public Service endServ;
 	public static GraphRandom random;
 
 	public double w1;
