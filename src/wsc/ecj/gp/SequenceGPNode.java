@@ -2,6 +2,7 @@ package wsc.ecj.gp;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -78,7 +79,8 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
 		List<ServiceOutput> overallOutputsOfLast = new ArrayList<ServiceOutput>();
 
-//		List<ServiceOutput> overallOutputsRemoved = new ArrayList<ServiceOutput>();
+		// List<ServiceOutput> overallOutputsRemoved = new
+		// ArrayList<ServiceOutput>();
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
 		Set<ServiceEdge> overallServiceEdges = new HashSet<ServiceEdge>();
@@ -123,24 +125,37 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		List<ServiceOutput> overallOutputList = new ArrayList<ServiceOutput>();
 		overallOutputList.addAll(overallOutputs);
 
+		overallInputsRemoved.clear();
+
 		// remove inputs produced by proccesor web services
 		for (ServiceOutput serOutput : overallOutputList) {
 
 			isContainedOfromI(serOutput, overallInputsList, init, overallInputsRemoved);
 
 		}
+
 		if (overallInputsRemoved != null) {
-			overallInputs.removeAll(overallInputsRemoved);
+			for (ServiceInput serInput4remove : overallInputsRemoved) {
+				Iterator<ServiceInput> iterator = overallInputs.iterator();
+				while (iterator.hasNext()) {
+					ServiceInput serInput = iterator.next();
+					if ((serInput.getInput()).equals(serInput.getInput())) {
+						iterator.remove();
+//						System.out.println("removed Inputs!!!!!!" + serInput.getInput());
+					}
+				}
+			}
 		}
 		// remove the outputs required by successor web serivces
-//		for (ServiceInput serInput : overallInputsList) {
-//
-//			isContainedIfromO(serInput, overallOutputList, init, overallOutputsRemoved);
-//		}
-//
-//		if (overallOutputsRemoved != null) {
-//			overallOutputs.removeAll(overallOutputsRemoved);
-//		}
+		// for (ServiceInput serInput : overallInputsList) {
+		//
+		// isContainedIfromO(serInput, overallOutputList, init,
+		// overallOutputsRemoved);
+		// }
+		//
+		// if (overallOutputsRemoved != null) {
+		// overallOutputs.removeAll(overallOutputsRemoved);
+		// }
 
 		// overallInputs.removeAll(overallOutputs);
 		// overallOutputs.removeAll(overallInputs);
@@ -177,8 +192,8 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 	}
 
 	// check there is inputs produced by the services Outputs or not
-	private List<ServiceInput> isContainedOfromI(ServiceOutput serOutput, List<ServiceInput> overallInputs,
-			WSCInitializer init, List<ServiceInput> overallInputsRemoved) {
+	private List isContainedOfromI(ServiceOutput serOutput, List<ServiceInput> overallInputs, WSCInitializer init,
+			List<ServiceInput> overallInputsRemoved) {
 		for (ServiceInput serInputs : overallInputs) {
 
 			OWLClass givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
@@ -193,10 +208,23 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			// System.out.println(giveninput+" concept of "+a+";"+existInput+"
 			// concept of" +b);
 
-			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
-				double dasd = WSCInitializer.semanticMatrix.get(a, b) ;
-				overallInputsRemoved.add(serInputs);
-				return overallInputsRemoved;
+			// if (WSCInitializer.semanticMatrix.get(a, b) != null) {
+			// double dasd = WSCInitializer.semanticMatrix.get(a, b) ;
+			// overallInputsRemoved.add(serInputs);
+			// return overallInputsRemoved;
+			// }
+
+			while (true) {
+				// Exact and PlugIn matching types
+				if (givenClass.getID().equals(relatedClass.getID())) {
+					overallInputsRemoved.add(serInputs);
+					return overallInputsRemoved;
+				}
+				if (givenClass.getSubClassOf() == null || givenClass.getSubClassOf().getResource().equals("")) {
+					break;
+				}
+				givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+						.get(givenClass.getSubClassOf().getResource().substring(1));
 			}
 		}
 		return null;
