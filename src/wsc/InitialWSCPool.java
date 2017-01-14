@@ -101,10 +101,18 @@ public class InitialWSCPool {
 								outputInst, outputrequ, this.semanticsPool);
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);
+						
+						if (graphOutputListMap.get(outputInst) == null) {
+							 pConn.setSourceServiceID("startNode");
+//						System.err.println(outputInst+"Inst not in the map");
+				     	}else{
 						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+				     	}
+						
+//						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
 						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
-						// break;
+//						 break;
 					}
 				}
 			}
@@ -191,14 +199,15 @@ public class InitialWSCPool {
 								outputInst, outputrequ, this.semanticsPool);
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);
-//						if (graphOutputListMap.get(outputInst) == null) {
-//							 pConn.setSourceServiceID("startNode");
-						System.err.println("Inst not in the map");
+						if (graphOutputListMap.get(outputInst) == null) {
+							 pConn.setSourceServiceID("startNode");
+//						System.err.println(outputInst+"Inst not in the map");
+				     	}else{
 						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
-						
+				     	}
 						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
-						// break inner;
+//						 break ;
 					}
 				}
 			}

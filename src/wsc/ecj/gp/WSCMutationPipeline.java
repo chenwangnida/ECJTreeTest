@@ -85,9 +85,6 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			List<String> outputs4Node = new ArrayList(combinedoutputs);
 
 			System.out.println("selected: "+selectedNode);
-
-			ServiceGraph graph4Mutation = species.Graph4Mutation(init, Inputs4Node, outputs4Node);
-	
 			
 			for (String input :Inputs4Node) {
 				System.out.print("I:"+input+"; ");
@@ -99,6 +96,8 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			}
 			System.out.println("");
 
+			ServiceGraph graph4Mutation = species.Graph4Mutation(init, Inputs4Node, outputs4Node);
+	
 			
 			System.out.println(" @mutation graph:"+graph4Mutation.toString());;
 

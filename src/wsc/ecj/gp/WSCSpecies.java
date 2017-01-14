@@ -30,7 +30,7 @@ public class WSCSpecies extends Species {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		// Generate Graph
 		ServiceGraph graph = generateGraph(init);
-		 state.output.println(graph.toString(), 0);
+		state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
 		GPNode treeRoot = toWeightedTree("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
@@ -74,7 +74,7 @@ public class WSCSpecies extends Species {
 			}
 			removeCurrentdangle(graph, dangleVerticeList);
 		}
-
+		graph.removeEdge("startNode", "endNode");
 		return graph;
 	}
 
@@ -93,6 +93,8 @@ public class WSCSpecies extends Species {
 			}
 			removeCurrentdangle(graph, dangleVerticeList);
 		}
+
+		graph.removeEdge("startNode", "endNode");
 
 		return graph;
 	}
@@ -490,8 +492,9 @@ public class WSCSpecies extends Species {
 			result = sgp;
 		}
 		// Otherwise, make next node's subtree the right child
-		else
+		else {
 			result = toTree(nextvertice, graph);
+		}
 		return result;
 	}
 
