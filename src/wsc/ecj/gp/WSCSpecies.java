@@ -30,11 +30,11 @@ public class WSCSpecies extends Species {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		// Generate Graph
 		ServiceGraph graph = generateGraph(init);
-		state.output.println(graph.toString(), 0);
+//		state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
 		GPNode treeRoot = toWeightedTree("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
-		state.output.println(tree.toString(), 0);
+//		state.output.println(tree.toString(), 0);
 
 		// GPNode treeRoot = createNewTree(state, init.taskInput,
 		// init.taskOutput); // XXX
@@ -448,9 +448,9 @@ public class WSCSpecies extends Species {
 
 		root.children = children;
 
-		Set<ServiceEdge> semanticEdgeList = new HashSet<ServiceEdge>();
-		semanticEdgeList.addAll(graph.edgeSet());
-		root.setSemanticEdges(semanticEdgeList);
+//		Set<ServiceEdge> semanticEdgeList = new HashSet<ServiceEdge>();
+//		semanticEdgeList.addAll(graph.edgeSet());
+//		root.setSemanticEdges(semanticEdgeList);
 
 		return root;
 	}

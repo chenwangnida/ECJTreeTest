@@ -123,15 +123,15 @@ public class WSCInitializer extends GPInitializer {
 			// register web services associated related ontology
 			initialWSCPool = new InitialWSCPool(state.parameters.getString(servicesParam, null),
 					state.parameters.getString(taxonomyParam, null));
-			System.out.println("All service: " + initialWSCPool.getSwsPool().getServiceList().size());
+//			System.out.println("All service: " + initialWSCPool.getSwsPool().getServiceList().size());
 			// construct ontology tree structure
 			ontologyDAG = createOntologyDAG(initialWSCPool);
 			// construct matrix storing all semantic quality for query
 			semanticMatrix = HashBasedTable.create();
 			// Filter web services in repository
 			initialWSCPool.allRelevantService(taskInput, taskOutput);
-			System.out.println("All relevant service: " + initialWSCPool.getServiceSequence().size()
-					+ ";semanticMatrix: " + semanticMatrix.size());
+//			System.out.println("All relevant service: " + initialWSCPool.getServiceSequence().size()
+//					+ ";semanticMatrix: " + semanticMatrix.size());
 
 		} catch (JAXBException | IOException e) {
 			e.printStackTrace();
@@ -195,7 +195,7 @@ public class WSCInitializer extends GPInitializer {
 			parameterconcepts.add(pConcept);
 		}
 
-		System.out.println("All concepts involved in semantic calcu NO.: " + parameterconcepts.size());
+//		System.out.println("All concepts involved in semantic calcu NO.: " + parameterconcepts.size());
 
 		for (OWLClass pCon : parameterconcepts) {
 			for (OWLClass pCon0 : parameterconcepts) {

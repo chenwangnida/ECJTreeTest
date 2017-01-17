@@ -96,8 +96,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
-			state.output.println(" -----------replace part from A:"+nodeT1, 0);
-			state.output.println(" -----------replace part from B:"+replacementT2, 0);
+//			state.output.println(" -----------replace part from A:"+nodeT1, 0);
+//			state.output.println(" -----------replace part from B:"+replacementT2, 0);
 
 
 			// For each t2 node, see if it can be replaced by a t1 node
@@ -117,10 +117,10 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1] = t2;
 				inds[q + 1].evaluated = false;
 			}
-			state.output.println(" CROSSOVER !!!!!!!", 0);
-			state.output.println(" new Individual:"+t1.toString(), 0);
-			state.output.println(" new Individual:"+t2.toString(), 0);
-			state.output.println(" XXXXXXXXXXXXXXXXXXXXx"+t2.toString(), 0);
+//			state.output.println(" CROSSOVER !!!!!!!", 0);
+//			state.output.println(" new Individual:"+t1.toString(), 0);
+//			state.output.println(" new Individual:"+t2.toString(), 0);
+//			state.output.println(" XXXXXXXXXXXXXXXXXXXXx"+t2.toString(), 0);
 
 
 

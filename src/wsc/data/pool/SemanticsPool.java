@@ -34,8 +34,8 @@ public class SemanticsPool {
 	public static SemanticsPool createSemanticsFromOWL(String filePath) throws FileNotFoundException, JAXBException {
 		RDF rdf = RDF.parseXML(filePath);
 		SemanticsPool sp = new SemanticsPool();
-		System.out.println("No.of Class put in HashMap:" + rdf.getOwlClassList().size());
-		System.out.println("No.of Instance put in HashMap:" + rdf.getOwlInstList().size());
+//		System.out.println("No.of Class put in HashMap:" + rdf.getOwlClassList().size());
+//		System.out.println("No.of Instance put in HashMap:" + rdf.getOwlInstList().size());
 		for (OWLClass cl : rdf.getOwlClassList()) {
 			sp.owlClassHashMap.put(cl.getID(), cl);
 		}
@@ -154,8 +154,8 @@ public class SemanticsPool {
 		}
 		return false;
 	}
-	
-	
+
+
 	public boolean isSemanticMatchFromConcept(OWLClass givenClass, OWLClass relatedClass) {
 
 		while (true) {
