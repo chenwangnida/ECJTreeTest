@@ -168,8 +168,7 @@ public class WSCIndividual extends GPIndividual {
 			// SourceNode of replaced Node obtained
 			GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
-			 replacement = (GPNode) replacement.clone();
-
+			replacement = (GPNode) replacement.clone();
 
 			// update the ServiceEdge of sourceOfNode with that of
 			// sourceOfReplacement
@@ -183,7 +182,6 @@ public class WSCIndividual extends GPIndividual {
 			// super.trees[0].child = replacement;
 			// } else {
 
-
 			GPNode parentNode = (GPNode) node.parent;
 
 			replacement.parent = node.parent;
@@ -195,8 +193,6 @@ public class WSCIndividual extends GPIndividual {
 					break;
 				}
 			}
-
-
 
 		}
 	}
@@ -235,59 +231,33 @@ public class WSCIndividual extends GPIndividual {
 	// return sourceGPNode;
 	// }
 
+	private GPNode isSourceGPNode(GPNode parentNode, GPNode sourceGPNode) {
+
+		for (GPNode sourceChild : parentNode.children) {
+			if (sourceChild instanceof ServiceGPNode) {
+				sourceGPNode = sourceChild;
+				return sourceGPNode;
+			}
+		}
+		return isSourceGPNode((GPNode)parentNode.parent,sourceGPNode) ;
+	}
+
 	private GPNode getSourceGPNode(GPNode node) {
-
-		GPNode parentNode = (GPNode) node.parent;
-
 		GPNode sourceGPNode = null;
-
-		// obtain SourceService if a ServiceGPNode is selected
+		GPNode parentNode = (GPNode) node.parent;	
+		
+		
 		if (node instanceof ServiceGPNode) {
-
-			GPNode pOperatorNode = (GPNode) parentNode.parent;
-
-//			 System.out.println("selected node for finding source node"+node+ "pOperatorNode.children"+ pOperatorNode.children);
-
-			GPNode[] pOperatorNodeChild = pOperatorNode.children;
-
-			for (GPNode ppOpChild : pOperatorNodeChild) {
-				if (ppOpChild instanceof ServiceGPNode) {
-					sourceGPNode = ppOpChild;
-				}
-			}
-
-			if (sourceGPNode == null) {
-				GPNode ppOperatorNode = (GPNode) pOperatorNode.parent;
-				GPNode[] ppOpratorNodeChild = ppOperatorNode.children;
-				for (GPNode ppOpChild : ppOpratorNodeChild) {
-					if (ppOpChild instanceof ServiceGPNode) {
-						sourceGPNode = ppOpChild;
-					}
-				}
-			}
-		} else {
-			// obtain SourceService if non ServiceGPNode is selected
-			GPNode[] pOpratorNodeChild = parentNode.children;
-			for (GPNode pOpChild : pOpratorNodeChild) {
-				if (pOpChild instanceof ServiceGPNode) {
-					sourceGPNode = pOpChild;
-				}
-			}
-
-			if (sourceGPNode == null) {
-				GPNode ppOperatorNode = (GPNode) parentNode.parent;
-				GPNode[] ppOpratorNodeChild = ppOperatorNode.children;
-				for (GPNode ppOpChild : ppOpratorNodeChild) {
-					if (ppOpChild instanceof ServiceGPNode) {
-						sourceGPNode = ppOpChild;
-					}
-				}
-			}
-
+			GPNode pparentNode = (GPNode) parentNode.parent;
+		    sourceGPNode = isSourceGPNode(pparentNode, sourceGPNode);
+		
+		}else{
+			sourceGPNode = isSourceGPNode(parentNode, sourceGPNode);
 		}
 
 		if (sourceGPNode == null) {
-			System.out.println("Wrong SourceNode of selected Node obttained under crossover");
+
+			System.out.println("Wrong SourceNode of selected Node obttained under crossover" + node);
 		}
 		return sourceGPNode;
 	}
