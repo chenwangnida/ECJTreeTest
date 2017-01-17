@@ -25,7 +25,7 @@ DIR_HOME="/home/wangchen/"
 #DIR_GRID=$DIR_HOME"grid/"
 DIR_GRID="/vol/grid-solar/sgeusers/wangchen/"
 DIR_WORKSPACE="workspace/"
-DIR_PROGRAM=$DIR_HOME$DIR_WORKSPACE"PSPSWC/"
+DIR_PROGRAM=$DIR_HOME$DIR_WORKSPACE"ECJTreeTest/"
 DIR_OUTPUT=$DIR_GRID$2 # Match this argument with dataset name
 
 FILE_JOB_LIST="CURRENT_JOBS.txt"
