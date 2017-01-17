@@ -75,8 +75,8 @@ public class WSCInitializer extends GPInitializer {
 	// TaxonomyNode>();
 	public static List<String> taskInput;
 	public static List<String> taskOutput;
-//	 public Service startServ;
-//	 public Service endServ;
+	// public Service startServ;
+	// public Service endServ;
 	public static GraphRandom random;
 
 	public double w1;
@@ -96,6 +96,7 @@ public class WSCInitializer extends GPInitializer {
 
 	@Override
 	public void setup(EvolutionState state, Parameter base) {
+
 		random = new GraphRandom(state.random[0]);
 		super.setup(state, base);
 
@@ -109,6 +110,10 @@ public class WSCInitializer extends GPInitializer {
 		Parameter weight5Param = new Parameter("fitness-weight5");
 		Parameter weight6Param = new Parameter("fitness-weight6");
 
+		String servicesParamStr = state.parameters.getStringWithDefault(servicesParam, null, null);
+		String taskParamStr = state.parameters.getStringWithDefault(taskParam, null, null);
+		String taxonomyParamStr = state.parameters.getStringWithDefault(taxonomyParam, null, null);
+
 		w1 = state.parameters.getDouble(weight1Param, null);
 		w2 = state.parameters.getDouble(weight2Param, null);
 		w3 = state.parameters.getDouble(weight3Param, null);
@@ -118,20 +123,21 @@ public class WSCInitializer extends GPInitializer {
 
 		try {
 			// register task
-			initialTask(state.parameters.getString(taskParam, null));
+			initialTask(taskParamStr);
 
 			// register web services associated related ontology
-			initialWSCPool = new InitialWSCPool(state.parameters.getString(servicesParam, null),
-					state.parameters.getString(taxonomyParam, null));
-//			System.out.println("All service: " + initialWSCPool.getSwsPool().getServiceList().size());
+			initialWSCPool = new InitialWSCPool(servicesParamStr, taxonomyParamStr);
+			// System.out.println("All service: " +
+			// initialWSCPool.getSwsPool().getServiceList().size());
 			// construct ontology tree structure
 			ontologyDAG = createOntologyDAG(initialWSCPool);
 			// construct matrix storing all semantic quality for query
 			semanticMatrix = HashBasedTable.create();
 			// Filter web services in repository
 			initialWSCPool.allRelevantService(taskInput, taskOutput);
-//			System.out.println("All relevant service: " + initialWSCPool.getServiceSequence().size()
-//					+ ";semanticMatrix: " + semanticMatrix.size());
+			// System.out.println("All relevant service: " +
+			// initialWSCPool.getServiceSequence().size()
+			// + ";semanticMatrix: " + semanticMatrix.size());
 
 		} catch (JAXBException | IOException e) {
 			e.printStackTrace();
@@ -195,14 +201,16 @@ public class WSCInitializer extends GPInitializer {
 			parameterconcepts.add(pConcept);
 		}
 
-//		System.out.println("All concepts involved in semantic calcu NO.: " + parameterconcepts.size());
+		// System.out.println("All concepts involved in semantic calcu NO.: " +
+		// parameterconcepts.size());
 
 		for (OWLClass pCon : parameterconcepts) {
 			for (OWLClass pCon0 : parameterconcepts) {
 				// if the pCon or PCon all parent class equal to pCon0
 				if (initialWSCPool.getSemanticsPool().isSemanticMatchFromConcept(pCon, pCon0)) {
 
-					double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, pCon.getID(), pCon0.getID());
+					double similarity = CalculateSimilarityMeasure(WSCInitializer.ontologyDAG, pCon.getID(),
+							pCon0.getID());
 
 					semanticMatrix.put(pCon.getID(), pCon0.getID(), similarity);
 				}
