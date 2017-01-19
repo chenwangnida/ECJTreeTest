@@ -20,9 +20,7 @@
 #SGE_TASK_ID=1
 
 DIR_TMP="/local/tmp/wangchen/$JOB_ID/"
-#DIR_HOME="/am/courtenay/home1/wangchen/"
 DIR_HOME="/home/wangchen/"
-#DIR_GRID=$DIR_HOME"grid/"
 DIR_GRID="/vol/grid-solar/sgeusers/wangchen/"
 DIR_WORKSPACE="workspace/"
 DIR_PROGRAM=$DIR_HOME$DIR_WORKSPACE"ECJTreeTest/"
@@ -32,10 +30,6 @@ FILE_JOB_LIST="CURRENT_JOBS.txt"
 FILE_RESULT_PREFIX="out"
 
 mkdir -p $DIR_TMP
-
-# copy the local lib to grid
-#mkdir -p lib
-#cp ~/lib/*  .
 
 # Preliminary test to ensure that the directory has been created successfully.
 if [ ! -d $DIR_TMP ]; then
@@ -54,7 +48,8 @@ echo $JOB_ID >> $DIR_GRID$FILE_JOB_LIST
 # Copy the files required for processing into the temporary directory.
 cp -r $DIR_PROGRAM"bin" $DIR_TMP
 cp $1/* $DIR_TMP # Copy datasets
-cp ~/lib/* $DIR_TMP # Copy jars
+cp ~/lib2/* $DIR_TMP # Copy jars
+cp $DIR_PROGRAM"wsc.params" $DIR_TMP # Copy parameters file
 
 mkdir -p $DIR_TMP"results"
 
@@ -68,8 +63,7 @@ echo "Running: "
 seed=$SGE_TASK_ID
 result=$FILE_RESULT_PREFIX$seed.stat
 
-java -classpath ./bin:.:jgraph-5.13.0.0.jar:jgrapht-core-1.0.1.jar:guava-20.0.jar:ecj.23.jar wsc.ecj.gp.Evolve -file wsc.params $2 -p seed.0=$seed -p stat.file=\$$result
-# java -cp jgraph-5.13.0.0.jar:jgrapht-core-1.0.1.jar:guava-20.0.jar:./bin:. ec.Evolve -file evolve_params/$1 -p seed.0=$seed -p stat.file=\$$result
+java -classpath ./bin:.:jgraph-5.13.0.0.jar:jgrapht-core-1.0.1.jar:guava-20.0.jar:ecj.23.jar wsc.ecj.gp.Evolve -file wsc.params -p seed.0=$seed -p stat.file=\$$result
 
 cp $result ./results
 

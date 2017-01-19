@@ -5,6 +5,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ECJ23"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JGraphT"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Guava"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ECJSupportLib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
