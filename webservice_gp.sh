@@ -68,7 +68,7 @@ echo "Running: "
 seed=$SGE_TASK_ID
 result=$FILE_RESULT_PREFIX$seed.stat
 
-java -classpath ./bin:.:jgraph-5.13.0.0.jar:jgrapht-core-1.0.1.jar:guava-20.0.jar:ecj.23.jar ec.Evolve -file wsc.params $3 -p seed.0=$seed -p stat.file=\$$result
+java -classpath ./bin:.:jgraph-5.13.0.0.jar:jgrapht-core-1.0.1.jar:guava-20.0.jar:ecj.23.jar wsc.ecj.gp.Evolve -file wsc.params $2 -p seed.0=$seed -p stat.file=\$$result
 # java -cp jgraph-5.13.0.0.jar:jgrapht-core-1.0.1.jar:guava-20.0.jar:./bin:. ec.Evolve -file evolve_params/$1 -p seed.0=$seed -p stat.file=\$$result
 
 cp $result ./results
