@@ -1,0 +1,4 @@
+-file wsc.params -p composition-services=services-output.xml -p composition-task=problem.xml -p composition-taxonomy=taxonomy.owl -p -p seed.0=1
+
+
+java -cp ecj.23.jar:./bin:. ec.Evolve -file $3 -p seed.0=$seed -p stat.file=\$$result -p stat.histogram=\$$hist_result
