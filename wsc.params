@@ -38,7 +38,7 @@ stat.do-final                                  = true
 generations                                    = 51
 
 pop.subpops		                               = 1
-pop.subpop.0.size 	                           = 500
+pop.subpop.0.size 	                           = 250
 pop.subpop.0.duplicate-retries 	               = 0
 pop.subpop.0.species                           = wsc.ecj.gp.WSCSpecies
 pop.subpop.0.species.ind                       = wsc.ecj.gp.WSCIndividual
