@@ -141,7 +141,8 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 					ServiceInput serInput = iterator.next();
 					if ((serInput.getInput()).equals(serInput.getInput())) {
 						iterator.remove();
-//						System.out.println("removed Inputs!!!!!!" + serInput.getInput());
+						// System.out.println("removed Inputs!!!!!!" +
+						// serInput.getInput());
 					}
 				}
 			}
@@ -208,28 +209,30 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			// System.out.println(giveninput+" concept of "+a+";"+existInput+"
 			// concept of" +b);
 
-			// if (WSCInitializer.semanticMatrix.get(a, b) != null) {
-			// double dasd = WSCInitializer.semanticMatrix.get(a, b) ;
-			// overallInputsRemoved.add(serInputs);
-			// return overallInputsRemoved;
-			// }
-
-			while (true) {
-				// Exact and PlugIn matching types
-				if (givenClass.getID().equals(relatedClass.getID())) {
-					overallInputsRemoved.add(serInputs);
-//					return overallInputsRemoved;
-				}
-				if (givenClass.getSubClassOf() == null || givenClass.getSubClassOf().getResource().equals("")) {
-					break;
-				}
-				givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-						.get(givenClass.getSubClassOf().getResource().substring(1));
+			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
+//				double dasd = WSCInitializer.semanticMatrix.get(a, b);
+				overallInputsRemoved.add(serInputs);
+				return overallInputsRemoved;
 			}
+
+			// while (true) {
+			// // Exact and PlugIn matching types
+			// if (givenClass.getID().equals(relatedClass.getID())) {
+			// overallInputsRemoved.add(serInputs);
+			//// return overallInputsRemoved;
+			// }
+			// if (givenClass.getSubClassOf() == null ||
+			// givenClass.getSubClassOf().getResource().equals("")) {
+			// break;
+			// }
+			// givenClass =
+			// init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+			// .get(givenClass.getSubClassOf().getResource().substring(1));
+			// }
 		}
 		return overallInputsRemoved;
 	}
-	
+
 	// check there is inputs produced by the services Outputs or not
 	private List isContainedOfromIMatrix(ServiceOutput serOutput, List<ServiceInput> overallInputs, WSCInitializer init,
 			List<ServiceInput> overallInputsRemoved) {

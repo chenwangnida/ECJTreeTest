@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
+import wsc.ecj.gp.WSCInitializer;
 import wsc.graph.ParamterConn;
 import wsc.owl.bean.OWLClass;
 import wsc.owl.bean.OWLInst;
@@ -34,8 +35,10 @@ public class SemanticsPool {
 	public static SemanticsPool createSemanticsFromOWL(String filePath) throws FileNotFoundException, JAXBException {
 		RDF rdf = RDF.parseXML(filePath);
 		SemanticsPool sp = new SemanticsPool();
-//		System.out.println("No.of Class put in HashMap:" + rdf.getOwlClassList().size());
-//		System.out.println("No.of Instance put in HashMap:" + rdf.getOwlInstList().size());
+		// System.out.println("No.of Class put in HashMap:" +
+		// rdf.getOwlClassList().size());
+		// System.out.println("No.of Instance put in HashMap:" +
+		// rdf.getOwlInstList().size());
 		for (OWLClass cl : rdf.getOwlClassList()) {
 			sp.owlClassHashMap.put(cl.getID(), cl);
 		}
@@ -53,28 +56,31 @@ public class SemanticsPool {
 	 * @param existInst
 	 * @return boolean
 	 */
-//	public boolean searchSemanticMatchFromInst(String givenInst, String existInst) {
-//
-//		OWLClass givenClass = this.owlClassHashMap
-//				.get(this.owlInstHashMap.get(givenInst).getRdfType().getResource().substring(1));
-//		OWLClass relatedClass = this.owlClassHashMap
-//				.get(this.owlInstHashMap.get(existInst).getRdfType().getResource().substring(1));
-//
-//		// search for the potential semantic matching relationship
-//
-//		while (true) {
-//			// Exact and PlugIn matching types
-//			if (givenClass.getID().equals(relatedClass.getID())) {
-//				return true;
-//			}
-//			if (givenClass.getSubClassOf() == null || givenClass.getSubClassOf().getResource().equals("")) {
-//				break;
-//			}
-//			givenClass = this.owlClassHashMap.get(givenClass.getSubClassOf().getResource().substring(1));
-//		}
-//
-//		return false;
-//	}
+	// public boolean searchSemanticMatchFromInst(String givenInst, String
+	// existInst) {
+	//
+	// OWLClass givenClass = this.owlClassHashMap
+	// .get(this.owlInstHashMap.get(givenInst).getRdfType().getResource().substring(1));
+	// OWLClass relatedClass = this.owlClassHashMap
+	// .get(this.owlInstHashMap.get(existInst).getRdfType().getResource().substring(1));
+	//
+	// // search for the potential semantic matching relationship
+	//
+	// while (true) {
+	// // Exact and PlugIn matching types
+	// if (givenClass.getID().equals(relatedClass.getID())) {
+	// return true;
+	// }
+	// if (givenClass.getSubClassOf() == null ||
+	// givenClass.getSubClassOf().getResource().equals("")) {
+	// break;
+	// }
+	// givenClass =
+	// this.owlClassHashMap.get(givenClass.getSubClassOf().getResource().substring(1));
+	// }
+	//
+	// return false;
+	// }
 
 	public ParamterConn searchSemanticMatchFromInst(String givenInst, String existInst) {
 
@@ -111,30 +117,46 @@ public class SemanticsPool {
 		// search for the potential semantic matching relationship
 		ParamterConn pConn = new ParamterConn();
 
-		int i = 0;
+		// change the while(true) below into query matchmaking
+		String a = givenClass.getID();
+		String b = relatedClass.getID();
+		if (WSCInitializer.semanticMatrix.get(a, b) != null) {
 
-		while (true) {
-			// Exact and PlugIn matching types
-			if (givenClass.getID().equals(relatedClass.getID())) {
-				pConn.setConsidered(true);
-				if(i==0 ){
-					pConn.setMatchType(1);
+			pConn.setConsidered(true);
 
-				}else{
-					pConn.setMatchType(0.75);
-				}
-				return pConn;
+			if (a.equals(b)) {
+				pConn.setMatchType(1);
+			} else {
+				pConn.setMatchType(0.75);
 			}
-			if (givenClass.getSubClassOf() == null || givenClass.getSubClassOf().getResource().equals("")) {
-				break;
-			}
-			givenClass = this.owlClassHashMap.get(givenClass.getSubClassOf().getResource().substring(1));
-			i++;
+			return pConn;
 		}
+
+		// int i = 0;
+		//
+		// while (true) {
+		// // Exact and PlugIn matching types
+		// if (givenClass.getID().equals(relatedClass.getID())) {
+		// pConn.setConsidered(true);
+		// if(i==0 ){
+		// pConn.setMatchType(1);
+		//
+		// }else{
+		// pConn.setMatchType(0.75);
+		// }
+		// return pConn;
+		// }
+		// if (givenClass.getSubClassOf() == null ||
+		// givenClass.getSubClassOf().getResource().equals("")) {
+		// break;
+		// }
+		// givenClass =
+		// this.owlClassHashMap.get(givenClass.getSubClassOf().getResource().substring(1));
+		// i++;
+		// }
 		pConn.setConsidered(false);
 		return pConn;
 	}
-
 
 	public boolean isSemanticMatchFromInst(String givenInst, String existInst) {
 
@@ -154,7 +176,6 @@ public class SemanticsPool {
 		}
 		return false;
 	}
-
 
 	public boolean isSemanticMatchFromConcept(OWLClass givenClass, OWLClass relatedClass) {
 
