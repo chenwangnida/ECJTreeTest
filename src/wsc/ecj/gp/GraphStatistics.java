@@ -24,6 +24,17 @@ public class GraphStatistics extends SimpleShortStatistics {
             state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
             }
 
+//        // gather timings
+//        if (output && doTime)
+//            {
+//        	long time = System.currentTimeMillis()-lastTime;
+//        	if (state.generation == 0)
+//        		time += WSCInitializer.setupTime;
+//            state.output.print("" + time + " ",  statisticslog);
+//            }
+//        
+        
+        
         int subpops = state.population.subpops.length;                          // number of supopulations
         totalIndsThisGen = new long[subpops];                                           // total assessed individuals
         bestOfGeneration = new Individual[subpops];                                     // per-subpop best individual this generation
