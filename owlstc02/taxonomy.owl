@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns1:RDF xmlns:ns1="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns2="http://www.w3.org/2002/07/owl#" xmlns:ns3="http://www.w3.org/2000/01/rdf-schema#">
+    <ns2:Ontology ns1:about=""/>
+    <ns2:Class ns1:ID="economicattribute">
+        <ns3:subClassOf ns1:resource="#politicoeconomicattribute"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="attending-a-conference">
+        <ns3:subClassOf ns1:resource="#attending-an-event"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="conditionaloutput"/>
+    <ns2:Class ns1:ID="closingcontract">
+        <ns3:subClassOf ns1:resource="#committing"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="constantquantity">
+        <ns3:subClassOf ns1:resource="#physicalquantity"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="option_contract">
+        <ns3:subClassOf ns1:resource="#contract"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="safecontainer">
+        <ns3:subClassOf ns1:resource="#container"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="secondary_market">
+        <ns3:subClassOf ns1:resource="#financial_market"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="conferencepaper">
+        <ns3:subClassOf ns1:resource="#article"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="animalcontroller">
+        <ns3:subClassOf ns1:resource="#device"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="constrictorsnake">
+        <ns3:subClassOf ns1:resource="#snake"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="condition">
+        <ns3:subClassOf ns1:resource="#expression"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="violentcontest">
+        <ns3:subClassOf ns1:resource="#contest"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="fluidcontainer">
+        <ns3:subClassOf ns1:resource="#container"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="conditionaleffect"/>
+    <ns2:Class ns1:ID="drs-condition">
+        <ns3:subClassOf ns1:resource="#drs-expression"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contraceptivedevice">
+        <ns3:subClassOf ns1:resource="#device"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="controlconstruct"/>
+    <ns2:Class ns1:ID="concentrating">
+        <ns3:subClassOf ns1:resource="#removing"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="confining">
+        <ns3:subClassOf ns1:resource="#keeping"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="unaryconstantfunctionquantity">
+        <ns3:subClassOf ns1:resource="#functionquantity"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="losingconsciousness">
+        <ns3:subClassOf ns1:resource="#psychologicalprocess"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="politicoeconomicattribute">
+        <ns3:subClassOf ns1:resource="#relationalattribute"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="controlconstructlist">
+        <ns3:subClassOf ns1:resource="#list"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="convertible_bond">
+        <ns3:subClassOf ns1:resource="#bond"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="metallurgical_futures_contract">
+        <ns3:subClassOf ns1:resource="#futures_contract"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="confederatesoldier">
+        <ns3:subClassOf ns1:resource="#soldier"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="swrl-condition">
+        <ns3:subClassOf ns1:resource="#swrl-expression"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="consonant">
+        <ns3:subClassOf ns1:resource="#alphabeticcharacter"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="congratulating">
+        <ns3:subClassOf ns1:resource="#expressingapproval"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="coconut">
+        <ns3:subClassOf ns1:resource="#fruitorvegetable"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="travelcontainer">
+        <ns3:subClassOf ns1:resource="#container"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="midlatitudecontinentalclimatezone">
+        <ns3:subClassOf ns1:resource="#climatezone"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="condominiumbuilding">
+        <ns3:subClassOf ns1:resource="#residentialbuilding"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="definedcontributionplan">
+        <ns3:subClassOf ns1:resource="#pensionplan"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="conjugatedsubstance">
+        <ns3:subClassOf ns1:resource="#compoundsubstance"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="continentalclimatezone">
+        <ns3:subClassOf ns1:resource="#temperateclimatezone"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contentbearingobject">
+        <ns3:subClassOf ns1:resource="#corpuscularobject"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="economicrelation">
+        <ns3:subClassOf ns1:resource="#binaryrelation"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="economicsystemattribute">
+        <ns3:subClassOf ns1:resource="#economicattribute"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="constructedlanguage">
+        <ns3:subClassOf ns1:resource="#artificiallanguage"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="controlconstructbag">
+        <ns3:subClassOf ns1:resource="#list"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="engineeringconnection">
+        <ns3:subClassOf ns1:resource="#engineeringcomponent"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contentdevelopment">
+        <ns3:subClassOf ns1:resource="#intentionalprocess"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="constructing">
+        <ns3:subClassOf ns1:resource="#making"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="conference-proceedings-reference">
+        <ns3:subClassOf ns1:resource="#publication-reference"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="vehiclecontroller">
+        <ns3:subClassOf ns1:resource="#device"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contract_seller">
+        <ns3:subClassOf ns1:resource="#contract_agent"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="biologicalconception">
+        <ns3:subClassOf ns1:resource="#organortissueprocess"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="continent">
+        <ns3:subClassOf ns1:resource="#landarea"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="expressioncontent"/>
+    <ns2:Class ns1:ID="selfconnectedobject">
+        <ns3:subClassOf ns1:resource="#object"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contractcarrier">
+        <ns3:subClassOf ns1:resource="#transportationcompany"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="secondduration">
+        <ns3:subClassOf ns1:resource="#timeduration"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="agricultural_future_contract">
+        <ns3:subClassOf ns1:resource="#futures_contract"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="container">
+        <ns3:subClassOf ns1:resource="#holder"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="concealing">
+        <ns3:subClassOf ns1:resource="#putting"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="economicsector">
+        <ns3:subClassOf ns1:resource="#industryattribute"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="secondaryschool">
+        <ns3:subClassOf ns1:resource="#school"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contract_buyer">
+        <ns3:subClassOf ns1:resource="#contract_agent"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contestattribute">
+        <ns3:subClassOf ns1:resource="#objectivenorm"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="secondarycolor">
+        <ns3:subClassOf ns1:resource="#colorattribute"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="icon">
+        <ns3:subClassOf ns1:resource="#contentbearingobject"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="legalconviction">
+        <ns3:subClassOf ns1:resource="#legaldecision"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contact"/>
+    <ns2:Class ns1:ID="kif-condition">
+        <ns3:subClassOf ns1:resource="#kif-expression"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="condensing">
+        <ns3:subClassOf ns1:resource="#statechange"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="second">
+        <ns3:subClassOf ns1:resource="#timeinterval"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="employment-contract-type">
+        <ns3:subClassOf ns1:resource="#intangible-thing"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contract_agent">
+        <ns3:subClassOf ns1:resource="#agent"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contest">
+        <ns3:subClassOf ns1:resource="#socialinteraction"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="conferring-an-award">
+        <ns3:subClassOf ns1:resource="#generalized-transfer"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="deacon">
+        <ns3:subClassOf ns1:resource="#parttimeposition"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="orchestralconducting">
+        <ns3:subClassOf ns1:resource="#guiding"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="conference">
+        <ns3:subClassOf ns1:resource="#publication-type-event"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="foward_contract">
+        <ns3:subClassOf ns1:resource="#contract"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="condominiumunit">
+        <ns3:subClassOf ns1:resource="#singlefamilyresidence"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="futures_contract">
+        <ns3:subClassOf ns1:resource="#contract"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="cone">
+        <ns3:subClassOf ns1:resource="#threedimensionalfigure"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="contract">
+        <ns3:subClassOf ns1:resource="#financial_instrument"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="gainingconsciousness">
+        <ns3:subClassOf ns1:resource="#psychologicalprocess"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="controlledsubstance">
+        <ns3:subClassOf ns1:resource="#biologicallyactivesubstance"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="continuousfunction">
+        <ns3:subClassOf ns1:resource="#function"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="postsecondaryschool">
+        <ns3:subClassOf ns1:resource="#school"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="concrete">
+        <ns3:subClassOf ns1:resource="#mixture"/>
+    </ns2:Class>
+    <ns2:Thing ns1:ID="r-and-d-institute-within-larger-institute">
+        <ns1:type ns1:resource="#r-and-d-institute"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="r-and-d-institute">
+        <ns1:type ns1:resource="#learning-centred-organization"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="instantevent">
+        <ns1:type ns1:resource="#event"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="financialinstrument">
+        <ns1:type ns1:resource="#certificate"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="instant">
+        <ns1:type ns1:resource="#temporalentity"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="instantthing">
+        <ns1:type ns1:resource="#temporalthing"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="financial_instrument">
+        <ns1:type ns1:resource="#financial_asset"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="windinstrument">
+        <ns1:type ns1:resource="#musicalinstrument"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="instrumentalmusic">
+        <ns1:type ns1:resource="#music"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="percussioninstrument">
+        <ns1:type ns1:resource="#musicalinstrument"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="horninstrument">
+        <ns1:type ns1:resource="#musicalinstrument"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="debt_instrument">
+        <ns1:type ns1:resource="#financial_instrument"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="institute">
+        <ns1:type ns1:resource="#organization"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="musicalinstrument">
+        <ns1:type ns1:resource="#device"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="equity_instrument">
+        <ns1:type ns1:resource="#financial_instrument"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="militaryinstallation">
+        <ns1:type ns1:resource="#militaryartifact"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="trainstation">
+        <ns1:type ns1:resource="#terminalbuilding"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="installing">
+        <ns1:type ns1:resource="#putting"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="stringinstrument">
+        <ns1:type ns1:resource="#musicalinstrument"/>
+    </ns2:Thing>
+    <ns2:Thing ns1:ID="instantthingpair">
+        <ns1:type ns1:resource="#"/>
+    </ns2:Thing>
+</ns1:RDF>
