@@ -148,7 +148,7 @@ public class Service implements Comparable<Service> {
 					if (foundmatched) {
 						serInput.setSatified(true);
 
-//						break;// each inst can only be used for one time
+						// break;// each inst can only be used for one time
 					}
 
 				}
@@ -188,7 +188,16 @@ public class Service implements Comparable<Service> {
 		double sumdst = 0.00;
 
 		int inputMatchCount = 0;
+		
+		// some web service do not have any input instance
+		if (service.getInputList().size() == 0) {
+			directedGraph.addVertex(service.getServiceID());
+			ServiceEdge serEdge = new ServiceEdge(1, 1);
+			directedGraph.addEdge("startNode", service.getServiceID(), serEdge);			
+			return true;
+		}
 
+		//some web services at least have one input instance
 		for (ServiceInput serinput : service.getInputList()) {
 			serinput.setSatified(false);
 			inputList0.add(serinput);
@@ -217,7 +226,7 @@ public class Service implements Comparable<Service> {
 
 						pConn.setSimilarity(similarity);
 						pConnList0.add(pConn);
-//						break;// each inst can only be used for one time
+						// break;// each inst can only be used for one time
 					}
 
 				}
@@ -296,6 +305,16 @@ public class Service implements Comparable<Service> {
 		double sumdst = 0.00;
 
 		int inputMatchCount = 0;
+		
+		// some web service do not have any input instance
+		if (service.getInputList().size() == 0) {
+			directedGraph.addVertex(service.getServiceID());
+			ServiceEdge serEdge = new ServiceEdge(1, 1);
+			directedGraph.addEdge("startNode", service.getServiceID(), serEdge);			
+			return true;
+		}
+
+		//some web services at least have one input instance
 
 		for (ServiceInput serinput : service.getInputList()) {
 			serinput.setSatified(false);
@@ -325,7 +344,7 @@ public class Service implements Comparable<Service> {
 
 						pConn.setSimilarity(similarity);
 						pConnList0.add(pConn);
-//						break;// each inst can only be used for one time
+						// break;// each inst can only be used for one time
 					}
 
 				}
@@ -438,7 +457,8 @@ public class Service implements Comparable<Service> {
 
 		String a = givenClass.getID();
 		String b = relatedClass.getID();
-//		System.out.println(giveninput+"  concept of "+a+";"+existInput+"  concept of" +b);
+		// System.out.println(giveninput+" concept of "+a+";"+existInput+"
+		// concept of" +b);
 
 		double similarity = WSCInitializer.semanticMatrix.get(a, b);
 		return similarity;
