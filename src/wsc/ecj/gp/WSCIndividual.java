@@ -1,10 +1,7 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
 import ec.gp.GPIndividual;
@@ -14,7 +11,6 @@ import ec.simple.SimpleFitness;
 import ec.util.Parameter;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
-import wsc.graph.ServiceOutput;
 
 public class WSCIndividual extends GPIndividual {
 

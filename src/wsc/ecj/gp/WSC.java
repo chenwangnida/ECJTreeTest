@@ -11,6 +11,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	public void setup(final EvolutionState state, final Parameter base) {
 		// very important, remember this
 		super.setup(state, base);
@@ -20,6 +21,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			state.output.fatal("GPData class must subclass from " + WSCData.class, base.push(P_DATA), null);
 	}
 
+	@Override
 	public void evaluate(final EvolutionState state, final Individual ind, final int subpopulation,
 			final int threadnum) {
 		if (!ind.evaluated) {

@@ -24,6 +24,7 @@ public class WSCData extends GPData {
 	public List<ServicePostcondition> postconditions;
 	public Set<ServiceEdge> semanticEdges; 
 	
+	@Override
 	public void copyTo(final GPData gpd) {
 		WSCData wscd = (WSCData) gpd;
 		wscd.serviceId = serviceId;

@@ -1,7 +1,5 @@
 package wsc.graph;
 
-import java.util.List;
-
 public class ServiceOutput {
 
 	private String output;

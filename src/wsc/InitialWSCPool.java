@@ -87,8 +87,8 @@ public class InitialWSCPool {
 			taskOutputList.add(taskSerOutput);
 		}
 
-		for (int i = 0; i < this.graphOutputList.size(); i++) {
-			String outputInst = this.graphOutputList.get(i);
+		for (int i = 0; i < InitialWSCPool.graphOutputList.size(); i++) {
+			String outputInst = InitialWSCPool.graphOutputList.get(i);
 			for (int j = 0; j < taskOutputList.size(); j++) {
 				ServiceOutput serOutputReq = taskOutputList.get(j);
 				if (!serOutputReq.isSatified()) {
@@ -185,8 +185,8 @@ public class InitialWSCPool {
 			requiredOutputList.add(taskSerOutput);
 		}
 
-		for (int i = 0; i < this.graphOutputList.size(); i++) {
-			String outputInst = this.graphOutputList.get(i);
+		for (int i = 0; i < InitialWSCPool.graphOutputList.size(); i++) {
+			String outputInst = InitialWSCPool.graphOutputList.get(i);
 			for (int j = 0; j < requiredOutputList.size(); j++) {
 				ServiceOutput serOutputReq = requiredOutputList.get(j);
 				if (!serOutputReq.isSatified()) {

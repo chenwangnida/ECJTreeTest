@@ -28,6 +28,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 	private List<ServicePostcondition> postconditions;
 	private Set<ServiceEdge> semanticEdges;
 
+	@Override
 	public List<ServiceInput> getInputs() {
 		return inputs;
 	}
@@ -36,6 +37,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		this.inputs = inputs;
 	}
 
+	@Override
 	public List<ServiceOutput> getOutputs() {
 		return outputs;
 	}
@@ -44,6 +46,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		this.outputs = outputs;
 	}
 
+	@Override
 	public List<ServicePrecondition> getPreconditions() {
 		return preconditions;
 	}
@@ -52,6 +55,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		this.preconditions = preconditions;
 	}
 
+	@Override
 	public List<ServicePostcondition> getPostconditions() {
 		return postconditions;
 	}

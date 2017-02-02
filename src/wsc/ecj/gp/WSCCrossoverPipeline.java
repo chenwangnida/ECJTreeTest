@@ -89,8 +89,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			// }
 
 			// Shuffle them so that the crossover is random
-			Collections.shuffle(allT1Nodes, init.random);
-			Collections.shuffle(allT2Nodes, init.random);
+			Collections.shuffle(allT1Nodes, WSCInitializer.random);
+			Collections.shuffle(allT2Nodes, WSCInitializer.random);
 
 			// For each t1 node, see if it can be replaced by a t2 node
 			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);

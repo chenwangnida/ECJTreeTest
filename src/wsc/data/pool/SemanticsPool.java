@@ -1,10 +1,7 @@
 package wsc.data.pool;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
 import javax.xml.bind.JAXBException;
 
 import wsc.ecj.gp.WSCInitializer;

@@ -53,7 +53,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// Randomly select a node in the tree to be mutation
 			List<GPNode> allNodes = tree.getFiltedTreeNodes();
-			int selectedIndex = init.random.nextInt(allNodes.size());
+			int selectedIndex = WSCInitializer.random.nextInt(allNodes.size());
 			GPNode selectedNode = allNodes.get(selectedIndex);
 			InOutNode ioNode = (InOutNode) selectedNode;
 
@@ -67,7 +67,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 				combinedInputs.add(iNode.getInput());
 			}
 
-			for(String tskInp :init.taskInput){
+			for(String tskInp :WSCInitializer.taskInput){
 				if(!combinedInputs.contains(tskInp)){
 					combinedInputs.add(tskInp);
 				}

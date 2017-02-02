@@ -48,6 +48,7 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 		this.serName = serName;
 	}
 
+	@Override
 	public List<ServiceInput> getInputs() {
 		return inputs;
 	}
@@ -56,6 +57,7 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 		this.inputs = inputs;
 	}
 
+	@Override
 	public List<ServiceOutput> getOutputs() {
 		return outputs;
 	}
@@ -64,6 +66,7 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 		this.outputs = outputs;
 	}
 
+	@Override
 	public List<ServicePrecondition> getPreconditions() {
 		return preconditions;
 	}
@@ -72,6 +75,7 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 		this.preconditions = preconditions;
 	}
 
+	@Override
 	public List<ServicePostcondition> getPostconditions() {
 		return postconditions;
 	}
@@ -88,6 +92,7 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 		this.semanticEdges = semanticEdges;
 	}
 
+	@Override
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,
 			final GPIndividual individual, final Problem problem) {
 
@@ -104,7 +109,7 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 			semanticEdges = rd.semanticEdges;
 
 		} else {
-			Service service = init.serviceMap.get(serName);
+			Service service = WSCInitializer.serviceMap.get(serName);
 			this.setService(service);
 			rd.serviceId = serName;
 			rd.maxTime = service.getQos()[WSCInitializer.TIME];
