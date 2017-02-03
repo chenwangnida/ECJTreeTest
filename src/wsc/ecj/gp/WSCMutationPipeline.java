@@ -50,6 +50,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 		for (int q = start; q < n + start; q++) {
 			WSCIndividual tree = (WSCIndividual) inds[q];
 			WSCSpecies species = (WSCSpecies) tree.species;
+//			System.out.println("old tree:"+tree.toString());;
 
 			// Randomly select a node in the tree to be mutation
 			List<GPNode> allNodes = tree.getFiltedTreeNodes();

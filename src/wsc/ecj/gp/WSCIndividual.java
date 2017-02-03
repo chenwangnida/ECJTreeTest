@@ -168,6 +168,9 @@ public class WSCIndividual extends GPIndividual {
 				Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
 
+				
+				replacement = (GPNode) replacement.clone();
+
 				// Create sequenceNode associated with endNode
 				ServiceGPNode endNode = new ServiceGPNode();
 				endNode.setSerName("endNode");
@@ -199,6 +202,10 @@ public class WSCIndividual extends GPIndividual {
 				// sourceOfReplacement
 				Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
+
+				
+				
+				replacement = (GPNode) replacement.clone();
 
 				// replacement is a functional node , selected is a service
 				// node
@@ -266,8 +273,6 @@ public class WSCIndividual extends GPIndividual {
 			} else {
 
 				// two service nodes crossover or two operation nodes crossover
-				if (node.getClass() == replacement.getClass()) {
-
 					// clone replacement that would not clone the parents, which
 					// is
 					// wrong
@@ -306,8 +311,6 @@ public class WSCIndividual extends GPIndividual {
 							break;
 						}
 					}
-
-				}
 
 			}
 
