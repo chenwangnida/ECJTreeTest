@@ -38,6 +38,11 @@ import wsc.owl.bean.OWLClass;
 
 public class WSCInitializer extends GPInitializer {
 
+
+
+	//temporary crossoverTimes
+//	public int crossoverTimess=0;
+
 	private static final long serialVersionUID = 1L;
 	// Constants with of order of QoS attributes
 	public static final int TIME = 0;

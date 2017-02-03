@@ -214,25 +214,9 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			// concept of" +b);
 
 			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
-//				double dasd = WSCInitializer.semanticMatrix.get(a, b);
 				overallInputsRemoved.add(serInputs);
 				return overallInputsRemoved;
 			}
-
-			// while (true) {
-			// // Exact and PlugIn matching types
-			// if (givenClass.getID().equals(relatedClass.getID())) {
-			// overallInputsRemoved.add(serInputs);
-			//// return overallInputsRemoved;
-			// }
-			// if (givenClass.getSubClassOf() == null ||
-			// givenClass.getSubClassOf().getResource().equals("")) {
-			// break;
-			// }
-			// givenClass =
-			// init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-			// .get(givenClass.getSubClassOf().getResource().substring(1));
-			// }
 		}
 		return overallInputsRemoved;
 	}
@@ -251,14 +235,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 			String a = givenClass.getID();
 			String b = relatedClass.getID();
-			// System.out.println(giveninput+" concept of "+a+";"+existInput+"
-			// concept of" +b);
-
-			// if (WSCInitializer.semanticMatrix.get(a, b) != null) {
-			// double dasd = WSCInitializer.semanticMatrix.get(a, b) ;
-			// overallInputsRemoved.add(serInputs);
-			// return overallInputsRemoved;
-			// }
 
 			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
 				overallInputsRemoved.add(serInputs);

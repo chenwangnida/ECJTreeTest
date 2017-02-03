@@ -67,7 +67,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		for (int q = start, x = 0; q < nMin + start; q++, x++) {
 			WSCIndividual t1 = ((WSCIndividual) inds1[x]);
 			WSCIndividual t2 = ((WSCIndividual) inds2[x]);
-
+			// state.output.println(" old Individual:"+t1.toString(), 0);
+			// state.output.println(" old Individual:"+t2.toString(), 0);
 			// Find all nodes from both candidates
 			List<GPNode> allT1Nodes = t1.getFiltedTreeNodes();
 			List<GPNode> allT2Nodes = t2.getFiltedTreeNodes();
@@ -96,19 +97,36 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
-//			state.output.println(" -----------replace part from A:"+nodeT1, 0);
-//			state.output.println(" -----------replace part from B:"+replacementT2, 0);
-
+			state.output.println(" -----------replace part from A:" + nodeT1, 0);
+			state.output.println(" -----------replace part from B:" + replacementT2, 0);
 
 			// For each t2 node, see if it can be replaced by a t1 node
 			// nodes = findReplacement(init, allT2Nodes, allT1Nodes);
 			// GPNode nodeT2 = nodes[0];
 			// GPNode replacementT1 = nodes[1];
+			 state.output.println(" old Individual:"+t1.toString(), 0);
+			 state.output.println(" old Individual:"+t2.toString(), 0);
 
 			// Perform replacement in both individuals
 			t1.replaceNode4Crossover(nodeT1, replacementT2);
 			t2.replaceNode4Crossover(replacementT2, nodeT1);
 			// t2.replaceNode(nodeT2, replacementT1);
+
+//			boolean found = false;
+//			List<GPNode> allNodes = t1.getAllTreeNodes();
+//			for (GPNode n : allNodes) {
+//				if (n instanceof ServiceGPNode) {
+//					if (((ServiceGPNode) n).getSerName() == "endNode") {
+//						found = true;
+//					}
+//				}
+//
+//			}
+//
+//			if (found == false) {
+//
+//				System.out.println("Crossocer  fuckling  shit ");
+//			}
 
 			inds[q] = t1;
 			inds[q].evaluated = false;
@@ -117,14 +135,20 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1] = t2;
 				inds[q + 1].evaluated = false;
 			}
-//			state.output.println(" CROSSOVER !!!!!!!", 0);
-//			state.output.println(" new Individual:"+t1.toString(), 0);
-//			state.output.println(" new Individual:"+t2.toString(), 0);
-//			state.output.println(" XXXXXXXXXXXXXXXXXXXXx"+t2.toString(), 0);
-
-
+			// state.output.println(" CROSSOVER !!!!!!!", 0);
+			 state.output.println(" new Individual:"+t1.toString(), 0);
+			 state.output.println(" new Individual:"+t2.toString(), 0);
 
 		}
+
+		// init.crossoverTimess++;
+		// if(init.crossoverTimess == 98){
+		// System.out.println("degbug entry~"+init.crossoverTimess);
+		//
+		//
+		// }
+		// System.out.println("crossover: TIMES~"+init.crossoverTimess);
+
 		return n1;
 
 	}
@@ -142,8 +166,10 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				InOutNode ioNode = (InOutNode) node;
 				InOutNode ioReplacement = (InOutNode) replacement;
 				if (IsReplacementFound(init, ioNode, ioReplacement)) {
-//					System.out.println("selected Node ******" + ioNode.toString());
-//					System.out.println("replaced Node ******" + ioReplacement.toString());
+					// System.out.println("selected Node ******" +
+					// ioNode.toString());
+					// System.out.println("replaced Node ******" +
+					// ioReplacement.toString());
 					result[0] = node;
 					result[1] = replacement;
 					break outterLoop;
@@ -248,7 +274,6 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		for (ServiceOutput serInput : ioReplacement) {
 			serInput.setSatified(false);
 		}
-
 
 		if (ioNodeOutputs.size() == ioReplacement.size()) {
 			int relevantServiceCount = 0;

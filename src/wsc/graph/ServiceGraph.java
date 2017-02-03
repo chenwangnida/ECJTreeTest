@@ -24,10 +24,11 @@ public class ServiceGraph extends DefaultDirectedGraph<String, ServiceEdge>{
 
 
 		builder.append("digraph g {");
-				
+
 		for (ServiceEdge e :this.edgeSet()) {
 			String serviceEdgeStr = String.format("%s->%s", this.getEdgeSource(e), this.getEdgeTarget(e));
 			builder.append(serviceEdgeStr);
+//			builder.append("mt:"+e.getAvgmt()+"dst"+e.getAvgsdt());
 			builder.append("; ");
 		}
 		builder.append("}");

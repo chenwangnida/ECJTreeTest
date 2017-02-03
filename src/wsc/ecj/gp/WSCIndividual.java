@@ -1,6 +1,7 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -155,43 +156,220 @@ public class WSCIndividual extends GPIndividual {
 		// Perform replacement if neither node is not null
 		if (node != null && replacement != null) {
 
-			// clone replacement that would not clone the parents, which is
-			// wrong
-			// replacement = (GPNode) replacement.clone();
+			// replace is a service , selected is a functional node
+			if ((replacement instanceof ServiceGPNode)
+					&& ((node instanceof SequenceGPNode) || (node instanceof ParallelGPNode))) {
 
-			// SourceNode of selected Node obtained
-			GPNode sourceOfNode = getSourceGPNode(node);
-			// SourceNode of replaced Node obtained
-			GPNode sourceOfReplacement = getSourceGPNode(replacement);
+				GPNode sourceOfNode = getSourceGPNode(node);
+				GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
-			replacement = (GPNode) replacement.clone();
+				// update the ServiceEdge of sourceOfNode with that of
+				// sourceOfReplacement
+				Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
+				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
 
-			// update the ServiceEdge of sourceOfNode with that of
-			// sourceOfReplacement
+				// Create sequenceNode associated with endNode
+				ServiceGPNode endNode = new ServiceGPNode();
+				endNode.setSerName("endNode");
+				GPNode newReplacement = createSequenceNode(replacement, endNode);
 
-			Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
-			((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
+				// swap
+				GPNode parentNode = (GPNode) node.parent;
 
-			// GPNode parentNode = (GPNode) node.parent;
-			// if (parentNode == null) {
-			// the selected node is the topNode in the tree
-			// super.trees[0].child = replacement;
-			// } else {
+				// replacement.parent = node.parent;
+				newReplacement.parent = node.parent;
 
-			GPNode parentNode = (GPNode) node.parent;
-
-			replacement.parent = node.parent;
-			for (int i = 0; i < parentNode.children.length; i++) {
-				if (parentNode.children[i] == node) {
-					parentNode.children[i] = replacement;
-					// wonder whether to break while considering the
-					// redundant nodes in the tree transfered from the graph
-					break;
+				for (int i = 0; i < parentNode.children.length; i++) {
+					if (parentNode.children[i] == node) {
+						parentNode.children[i] = newReplacement;
+						// wonder whether to break while considering the
+						// redundant nodes in the tree transfered from the
+						// graph
+						break;
+					}
 				}
+
+			} else if ((node instanceof ServiceGPNode)
+					&& ((replacement instanceof SequenceGPNode) || (node instanceof ParallelGPNode))) {
+
+				GPNode sourceOfNode = getSourceGPNode(node);
+				GPNode sourceOfReplacement = getSourceGPNode(replacement);
+
+				// update the ServiceEdge of sourceOfNode with that of
+				// sourceOfReplacement
+				Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
+				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
+
+				// replacement is a functional node , selected is a service
+				// node
+
+				GPNode pNode = (GPNode) node.parent;
+				GPNode ppNode = (GPNode) pNode.parent;
+
+				// obtain the appedixNode to tailed as the deleted endNode
+				// in
+				// replacement
+				GPNode appedixNode = null;
+				// GPNode endNode = null;
+				List<GPNode> endNodeList = new ArrayList<GPNode>();
+				GPNode[] appedix = pNode.children;
+				for (GPNode aNode : appedix) {
+					if (aNode != node) {
+						appedixNode = aNode;
+					}
+				}
+				// find the endNode in replacement
+				List<GPNode> allNodeofReplacement = this.getAllTreeNodes(replacement);
+				for (GPNode gpn : allNodeofReplacement) {
+					if (gpn instanceof ServiceGPNode) {
+						if (((ServiceGPNode) gpn).getSerName().equals("endNode")) {
+							// endNode = gpn;
+							endNodeList.add(gpn);
+							// replacement.cloneReplacingAtomic(appedixNode,
+							// gpn);
+
+						}
+					}
+				}
+
+				// replace the endNode with appedixNode
+				// replaceNode(endNode, appedixNode);
+				for (GPNode endNode : endNodeList) {
+
+					GPNode parentEndNode = (GPNode) endNode.parent;
+					appedixNode.parent = endNode.parent;
+					for (int i = 0; i < parentEndNode.children.length; i++) {
+						if (parentEndNode.children[i] == endNode) {
+							parentEndNode.children[i] = appedixNode;
+							// wonder whether to break while considering the
+							// redundant nodes in the tree transfered from
+							// the
+							// graph
+							break;
+						}
+					}
+
+				}
+
+				// replace replacement in the graph
+				replacement.parent = pNode.parent;
+				for (int i = 0; i < ppNode.children.length; i++) {
+					if (ppNode.children[i] == pNode) {
+						ppNode.children[i] = replacement;
+						// wonder whether to break while considering the
+						// redundant nodes in the tree transfered from the
+						// graph
+						break;
+					}
+				}
+
+			} else {
+
+				// two service nodes crossover or two operation nodes crossover
+				if (node.getClass() == replacement.getClass()) {
+
+					// clone replacement that would not clone the parents, which
+					// is
+					// wrong
+					// replacement = (GPNode) replacement.clone();
+
+					// SourceNode of selected Node obtained
+					// System.out.println(node.toString());
+					GPNode sourceOfNode = getSourceGPNode(node);
+					// SourceNode of replaced Node obtained
+					GPNode sourceOfReplacement = getSourceGPNode(replacement);
+
+					replacement = (GPNode) replacement.clone();
+
+					// update the ServiceEdge of sourceOfNode with that of
+					// sourceOfReplacement
+
+					Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement)
+							.getSemanticEdges();
+					((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
+
+					// GPNode parentNode = (GPNode) node.parent;
+					// if (parentNode == null) {
+					// the selected node is the topNode in the tree
+					// super.trees[0].child = replacement;
+					// } else {
+
+					GPNode parentNode = (GPNode) node.parent;
+
+					replacement.parent = node.parent;
+					for (int i = 0; i < parentNode.children.length; i++) {
+						if (parentNode.children[i] == node) {
+							parentNode.children[i] = replacement;
+							// wonder whether to break while considering the
+							// redundant nodes in the tree transfered from the
+							// graph
+							break;
+						}
+					}
+
+				}
+
 			}
 
 		}
+
 	}
+
+	private GPNode createSequenceNode(GPNode leftChild, GPNode rightChild) {
+		SequenceGPNode root = new SequenceGPNode();
+		GPNode[] children = new GPNode[2];
+		children[0] = leftChild;
+		children[0].parent = root;
+		children[1] = rightChild;
+		children[1].parent = root;
+
+		root.children = children;
+		return root;
+	}
+
+	// Replace the GPNodes and associated semantic edges
+//	public void replaceNode4Crossoverdefualt(GPNode node, GPNode replacement) {
+//		// Perform replacement if neither node is not null
+//		if (node != null && replacement != null) {
+//
+//			// clone replacement that would not clone the parents, which is
+//			// wrong
+//			// replacement = (GPNode) replacement.clone();
+//
+//			// SourceNode of selected Node obtained
+//			// System.out.println(node.toString());
+//			GPNode sourceOfNode = getSourceGPNode(node);
+//			// SourceNode of replaced Node obtained
+//			GPNode sourceOfReplacement = getSourceGPNode(replacement);
+//
+//			replacement = (GPNode) replacement.clone();
+//
+//			// update the ServiceEdge of sourceOfNode with that of
+//			// sourceOfReplacement
+//
+//			Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
+//			((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
+//
+//			// GPNode parentNode = (GPNode) node.parent;
+//			// if (parentNode == null) {
+//			// the selected node is the topNode in the tree
+//			// super.trees[0].child = replacement;
+//			// } else {
+//
+//			GPNode parentNode = (GPNode) node.parent;
+//
+//			replacement.parent = node.parent;
+//			for (int i = 0; i < parentNode.children.length; i++) {
+//				if (parentNode.children[i] == node) {
+//					parentNode.children[i] = replacement;
+//					// wonder whether to break while considering the
+//					// redundant nodes in the tree transfered from the graph
+//					break;
+//				}
+//			}
+//
+//		}
+//	}
 
 	// private GPNode getSourceGPNode(GPNode node) {
 	//
@@ -235,19 +413,19 @@ public class WSCIndividual extends GPIndividual {
 				return sourceGPNode;
 			}
 		}
-		return isSourceGPNode((GPNode)parentNode.parent,sourceGPNode) ;
+		return isSourceGPNode((GPNode) parentNode.parent, sourceGPNode);
 	}
 
 	private GPNode getSourceGPNode(GPNode node) {
+		// System.out.println(node.toString());
 		GPNode sourceGPNode = null;
-		GPNode parentNode = (GPNode) node.parent;	
-		
-		
+		GPNode parentNode = (GPNode) node.parent;
+
 		if (node instanceof ServiceGPNode) {
 			GPNode pparentNode = (GPNode) parentNode.parent;
-		    sourceGPNode = isSourceGPNode(pparentNode, sourceGPNode);
-		
-		}else{
+			sourceGPNode = isSourceGPNode(pparentNode, sourceGPNode);
+
+		} else {
 			sourceGPNode = isSourceGPNode(parentNode, sourceGPNode);
 		}
 
@@ -285,6 +463,7 @@ public class WSCIndividual extends GPIndividual {
 			// graph4Mutation
 			((ServiceGPNode) sourceOfNode).setSemanticEdges(InComingEdgeOfNode);
 
+			// mutate on service node
 			if (node instanceof ServiceGPNode) {
 				GPNode pNode = (GPNode) node.parent;
 				GPNode ppNode = (GPNode) pNode.parent;
@@ -344,6 +523,8 @@ public class WSCIndividual extends GPIndividual {
 				}
 
 			} else {
+
+				// mutate on functional nodes
 				GPNode parentNode = (GPNode) node.parent;
 				replacement.parent = node.parent;
 				for (int i = 0; i < parentNode.children.length; i++) {
