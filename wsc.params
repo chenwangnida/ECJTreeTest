@@ -1,6 +1,6 @@
 parent.0                                       = @ec.gp.koza.KozaBuilder koza.params
 
-seed.0                                         = 20
+seed.0                                         = 2
 composition-task                               = problem.xml
 composition-taxonomy                           = taxonomy.owl
 composition-services                           = services-output.xml

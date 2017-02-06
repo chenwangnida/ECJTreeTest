@@ -30,8 +30,8 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			GPIndividual gpInd = (GPIndividual) ind;
 
-//			state.output.println("Evaluate new Individual:"+gpInd.toString(), 0);
-
+			// state.output.println("Evaluate new Individual:"+gpInd.toString(),
+			// 0);
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
 			double[] qos = new double[4];
@@ -47,8 +47,9 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			}
 
-			dst = dst/(input.semanticEdges.size());
-//			System.out.println("semantic edge Size :"+ input.semanticEdges.size());
+			dst = dst / (input.semanticEdges.size());
+//			 System.out.println("semantic edge Size :"+
+//			 input.semanticEdges.size());
 
 			for (Service s : input.seenServices) {
 				qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
@@ -61,6 +62,23 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
+
+//			String fitnessStr = fitness + "";
+//			String f0 = "0.8445581651";
+//			if (fitnessStr.startsWith(f0)) {
+//				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
+//						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+//				double smvalue = calculateSM( mt, dst, init);
+//				state.output.println(fitnessStr + ";"+"QoS"+qosvalue+";SM"+smvalue, 0);
+//				
+//				
+//				for (ServiceEdge semanticQuality : input.semanticEdges) {
+//					System.out.println("avgmt:"+semanticQuality.getAvgmt()+";avgdst:"+semanticQuality.getAvgsdt());
+//					
+//				}
+//
+//			}
+
 			f.setFitness(state, fitness, false);
 			// f.setStandardizedFitness(state, fitness);
 			ind.evaluated = true;
@@ -90,6 +108,31 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 		dst = normaliseDistanceValue(dst);
 
 		double fitness = init.w1 * a + init.w2 * r + init.w3 * t + init.w4 * c + init.w5 * mt + init.w6 * dst;
+
+		return fitness;
+	}
+
+	private double calculateQoS(double a, double r, double t, double c, WSCInitializer init) {
+
+		a = normaliseAvailability(a);
+		r = normaliseReliability(r);
+		t = normaliseTime(t);
+		c = normaliseCost(c);
+
+		double fitness = init.w1 * a + init.w2 * r + init.w3 * t + init.w4 * c;
+
+		return fitness;
+	}
+
+	private double calculateSM(double mt, double dst, WSCInitializer init) {
+		System.out.println("mt before:"+mt+";dst before:"+dst);
+
+		
+		mt = normaliseMatchType(mt);
+		dst = normaliseDistanceValue(dst);
+
+		double fitness = init.w5 * mt + init.w6 * dst;
+		System.out.println("mt:"+mt+";dst:"+dst);
 
 		return fitness;
 	}
