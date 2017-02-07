@@ -21,10 +21,40 @@ public class ServiceEdge extends DefaultEdge implements Cloneable {
 
 	public ServiceEdge(double avgmt, double avgsdt) {
 		super();
+		source = this.getSource();
+		target =this.getTarget();
 		this.avgmt = avgmt;
 		this.avgsdt = avgsdt;
 	}
-	
+
+
+	@Override
+	public void setSource(Object arg0) {
+		// TODO Auto-generated method stub
+		super.setSource(arg0);
+	}
+
+
+	@Override
+	public void setTarget(Object arg0) {
+		// TODO Auto-generated method stub
+		super.setTarget(arg0);
+	}
+
+
+	@Override
+	public Object getSource() {
+		// TODO Auto-generated method stub
+		return super.getSource();
+	}
+
+
+	@Override
+	public Object getTarget() {
+		// TODO Auto-generated method stub
+		return super.getTarget();
+	}
+
 
 	public String getTargetService() {
 		return TargetService;

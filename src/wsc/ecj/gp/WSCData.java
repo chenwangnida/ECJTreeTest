@@ -1,8 +1,6 @@
 package wsc.ecj.gp;
 
 import java.util.List;
-import java.util.Set;
-
 import ec.gp.*;
 import wsc.data.pool.Service;
 import wsc.graph.ServiceEdge;
@@ -16,14 +14,14 @@ public class WSCData extends GPData {
 	private static final long serialVersionUID = 1L;
 	public double maxTime;
 	List<Service> seenServices;
-	
+
 	public String serviceId;
 	public List<ServiceInput> inputs;
 	public List<ServiceOutput> outputs;
 	public List<ServicePrecondition> preconditions;
 	public List<ServicePostcondition> postconditions;
-	public Set<ServiceEdge> semanticEdges; 
-	
+	public List<ServiceEdge> semanticEdges;
+
 	@Override
 	public void copyTo(final GPData gpd) {
 		WSCData wscd = (WSCData) gpd;

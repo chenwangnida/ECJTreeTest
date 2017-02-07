@@ -124,7 +124,7 @@ public class WSCSpecies extends Species {
 				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
 				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
 				// create startNode associated with all outgoing edges
-				ServiceGPNode startService = new ServiceGPNode(graph.outgoingEdgesOf("startNode"));
+				ServiceGPNode startService = new ServiceGPNode(outgoingEdges);
 				startService.setSerName("startNode");
 
 				ServiceEdge outgoingEdge = outgoingEdges.get(0);
@@ -140,7 +140,7 @@ public class WSCSpecies extends Species {
 				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
 
 				// create startNode associated with all outgoing edges
-				ServiceGPNode startService = new ServiceGPNode(graph.outgoingEdgesOf("startNode"));
+				ServiceGPNode startService = new ServiceGPNode(outgoingEdges);
 				startService.setSerName("startNode");
 
 				rightChild = createParallelNode(outgoingEdges, graph);
@@ -162,7 +162,7 @@ public class WSCSpecies extends Species {
 				if (graph.getEdgeTarget(outgoingedge).equals("endNode")) {
 					outputEdge = outgoingedge;
 					// Create sequenceNode associated with endNode
-					Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>();
+					List<ServiceEdge> outgoingEdgeSet = new ArrayList<ServiceEdge>();
 					outgoingEdgeSet.add(outputEdge);
 					ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
 					ServiceGPNode endNode = new ServiceGPNode();
@@ -180,29 +180,31 @@ public class WSCSpecies extends Species {
 			if (outgoingEdges.size() == 1) {
 				rightChild = getWeightedNode(graph.getEdgeTarget(outgoingEdges.get(0)), graph);
 
-				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
-				ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
+//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges);
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
 
 			// Else if there are no children at all, return a new leaf node
-			else if (outgoingEdges.size() == 0) {
-				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
-				ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
-				sgp.setSerName(vertice);
-				ServiceGPNode endNode = new ServiceGPNode();
-				endNode.setSerName("endNode");
-				root = createSequenceNode(sgp, endNode);
-			}
+//			else if (outgoingEdges.size() == 0) {
+//				List<ServiceEdge> outgoingEdges2End = new ArrayList<ServiceEdge>(outgoingEdges);
+//				outgoingEdges2End.addAll(graph.getAllEdges(vertice, "endNode"));
+//
+//				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges2End);
+//				sgp.setSerName(vertice);
+//				ServiceGPNode endNode = new ServiceGPNode();
+//				endNode.setSerName("endNode");
+//				root = createSequenceNode(sgp, endNode);
+//			}
 			// Else, create a new parallel construct wrapped in a sequence
 			// construct
-			else {
+			else if(outgoingEdges.size() > 1) {
 				rightChild = createParallelNode(outgoingEdges, graph);
 
-				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
 
-				ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
+				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges);
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
@@ -260,7 +262,7 @@ public class WSCSpecies extends Species {
 				if (graph.getEdgeTarget(outgoingedge).equals("endNode")) {
 					outputEdge = outgoingedge;
 					// Create sequenceNode associated with endNode
-					Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>();
+					List<ServiceEdge> outgoingEdgeSet = new ArrayList<ServiceEdge>();
 					outgoingEdgeSet.add(outputEdge);
 					ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
 					ServiceGPNode endNode = new ServiceGPNode();
@@ -278,24 +280,24 @@ public class WSCSpecies extends Species {
 			if (outgoingEdges.size() == 1) {
 				rightChild = getWeightedNode(graph.getEdgeTarget(outgoingEdges.get(0)), graph);
 
-				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
-				ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
+//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges);
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
 
 			// Else if there are no children at all, return a new leaf node
-			else if (outgoingEdges.size() == 0) {
-				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
-				ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
-				sgp.setSerName(vertice);
-				ServiceGPNode endNode = new ServiceGPNode();
-				endNode.setSerName("endNode");
-				root = createSequenceNode(sgp, endNode);
-			}
+//			else if (outgoingEdges.size() == 0) {
+//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+//				ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
+//				sgp.setSerName(vertice);
+//				ServiceGPNode endNode = new ServiceGPNode();
+//				endNode.setSerName("endNode");
+//				root = createSequenceNode(sgp, endNode);
+//			}
 			// Else, create a new parallel construct wrapped in a sequence
 			// construct
-			else {
+			else if(outgoingEdges.size() > 1) {
 				rightChild = createParallelNode(outgoingEdges, graph);
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
@@ -465,7 +467,9 @@ public class WSCSpecies extends Species {
 	private GPNode getWeightedNode(String nextvertice, ServiceGraph graph) {
 		GPNode result;
 		if (isLeaf(nextvertice, graph)) {
-			ServiceGPNode sgp = new ServiceGPNode(graph.getAllEdges(nextvertice, "endNode"));
+			List<ServiceEdge> outgoingEdges2End = new ArrayList<ServiceEdge>();
+			outgoingEdges2End.addAll(graph.getAllEdges(nextvertice, "endNode"));
+			ServiceGPNode sgp = new ServiceGPNode(outgoingEdges2End);
 			sgp.setSerName(nextvertice);
 			ServiceGPNode endNode = new ServiceGPNode();
 			endNode.setSerName("endNode");

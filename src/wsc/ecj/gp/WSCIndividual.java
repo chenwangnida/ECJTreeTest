@@ -1,10 +1,7 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import ec.gp.GPTree;
@@ -163,16 +160,13 @@ public class WSCIndividual extends GPIndividual {
 				GPNode sourceOfNode = getSourceGPNode(node);
 				GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
-
 				System.out.println("orginal Sematic size" + ((ServiceGPNode) sourceOfNode).getSemanticEdges().size()
 						+ "replaced Semantic Size" + ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
-				
-				
-				// update the ServiceEdge of sourceOfNode with that of
-				// sourceOfReplacement
-				Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
-				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
 
+				// update all the serviceEdges of sourceOfNode with that of
+				// sourceOfReplacement
+				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
+				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
 
 				replacement = (GPNode) replacement.clone();
 
@@ -203,15 +197,25 @@ public class WSCIndividual extends GPIndividual {
 				GPNode sourceOfNode = getSourceGPNode(node);
 				GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
-
 				System.out.println("orginal Sematic size" + ((ServiceGPNode) sourceOfNode).getSemanticEdges().size()
 						+ "replaced Semantic Size" + ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
-				
-				
+
 				// update the ServiceEdge of sourceOfNode with that of
 				// sourceOfReplacement
-				Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
-				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
+				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
+				List<ServiceEdge> EdgeOfsourceOfNode = ((ServiceGPNode) node).getSemanticEdges();
+
+				for (ServiceEdge serEdge : EdgeOfsourceOfNode) {
+					if (serEdge.getSource().toString().equals(((ServiceGPNode) sourceOfNode).getSerName())) {
+						EdgeOfsourceOfNode.remove(serEdge);
+						break;
+					}
+				}
+				EdgeOfsourceOfNode.addAll(EdgeOfsourceOfReplacement);
+				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfNode);
+
+
+
 
 				replacement = (GPNode) replacement.clone();
 
@@ -296,16 +300,12 @@ public class WSCIndividual extends GPIndividual {
 
 				// update the ServiceEdge of sourceOfNode with that of
 				// sourceOfReplacement
-				
-				
-			
+
 				System.out.println("orginal Sematic size" + ((ServiceGPNode) sourceOfNode).getSemanticEdges().size()
 						+ "replaced Semantic Size" + ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
 
-				Set<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
+				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
-				
-		
 
 				// GPNode parentNode = (GPNode) node.parent;
 				// if (parentNode == null) {
@@ -463,7 +463,7 @@ public class WSCIndividual extends GPIndividual {
 			// replacement = (GPNode) replacement.clone();
 
 			GPNode[] replacementList = replacement.children.clone();
-			Set<ServiceEdge> InComingEdgeOfNode = null;
+			List<ServiceEdge> InComingEdgeOfNode = null;
 
 			for (GPNode gpNode : replacementList) {
 				if (gpNode instanceof SequenceGPNode) {

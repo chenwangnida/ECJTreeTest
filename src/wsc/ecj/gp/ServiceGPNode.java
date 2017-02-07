@@ -2,8 +2,6 @@ package wsc.ecj.gp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 import ec.EvolutionState;
 import ec.Problem;
 import ec.gp.ADFStack;
@@ -28,16 +26,15 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
-	private Set<ServiceEdge> semanticEdges;
+	private List<ServiceEdge> semanticEdges;
 
 	public ServiceGPNode() {
 		children = new GPNode[0];
 	}
 
-	public ServiceGPNode(Set<ServiceEdge> semanticEdges) {
+	public ServiceGPNode(List<ServiceEdge> semanticEdges) {
 		children = new GPNode[0];
 		this.setSemanticEdges(semanticEdges);
-		;
 	}
 
 	public String getSerName() {
@@ -84,11 +81,11 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 		this.postconditions = postconditions;
 	}
 
-	public Set<ServiceEdge> getSemanticEdges() {
+	public List<ServiceEdge> getSemanticEdges() {
 		return semanticEdges;
 	}
 
-	public void setSemanticEdges(Set<ServiceEdge> semanticEdges) {
+	public void setSemanticEdges(List<ServiceEdge> semanticEdges) {
 		this.semanticEdges = semanticEdges;
 	}
 

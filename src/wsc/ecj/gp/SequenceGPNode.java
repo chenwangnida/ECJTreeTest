@@ -1,11 +1,8 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
 import ec.EvolutionState;
 import ec.Problem;
 import ec.gp.ADFStack;
@@ -27,7 +24,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 	private List<ServiceOutput> outputs;
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
-	private Set<ServiceEdge> semanticEdges;
+	private List<ServiceEdge> semanticEdges;
 
 	@Override
 	public List<ServiceInput> getInputs() {
@@ -65,11 +62,11 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		this.postconditions = postconditions;
 	}
 
-	public Set<ServiceEdge> getSemanticEdges() {
+	public List<ServiceEdge> getSemanticEdges() {
 		return semanticEdges;
 	}
 
-	public void setSemanticEdges(Set<ServiceEdge> semanticEdges) {
+	public void setSemanticEdges(List<ServiceEdge> semanticEdges) {
 		this.semanticEdges = semanticEdges;
 	}
 
@@ -87,7 +84,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		// ArrayList<ServiceOutput>();
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
-		Set<ServiceEdge> overallServiceEdges = new HashSet<ServiceEdge>();
+		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
 
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		WSCData rd = ((WSCData) (input));
