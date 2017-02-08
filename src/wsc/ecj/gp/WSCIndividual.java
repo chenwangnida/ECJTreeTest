@@ -1,18 +1,23 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import ec.gp.GPTree;
 import ec.simple.SimpleFitness;
 import ec.util.Parameter;
+import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
 
 public class WSCIndividual extends GPIndividual {
 
 	private static final long serialVersionUID = 1L;
+	private static Set<String> targetSerIdSet = new HashSet<String>();
 
 	public WSCIndividual() {
 		super();
@@ -160,9 +165,12 @@ public class WSCIndividual extends GPIndividual {
 				GPNode sourceOfNode = getSourceGPNode(node);
 				GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
-				System.out.println("orginal Sematic size" + ((ServiceGPNode) sourceOfNode).getSemanticEdges().size()
-						+ "replaced Semantic Size" + ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
-
+				if (((ServiceGPNode) sourceOfNode).getSemanticEdges().size() != ((ServiceGPNode) sourceOfReplacement)
+						.getSemanticEdges().size()) {
+					System.out.println("Case1 : orginal Sematic size"
+							+ ((ServiceGPNode) sourceOfNode).getSemanticEdges().size() + "replaced Semantic Size"
+							+ ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
+				}
 				// update all the serviceEdges of sourceOfNode with that of
 				// sourceOfReplacement
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
@@ -197,9 +205,12 @@ public class WSCIndividual extends GPIndividual {
 				GPNode sourceOfNode = getSourceGPNode(node);
 				GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
-				System.out.println("orginal Sematic size" + ((ServiceGPNode) sourceOfNode).getSemanticEdges().size()
-						+ "replaced Semantic Size" + ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
-
+				if (((ServiceGPNode) sourceOfNode).getSemanticEdges().size() != ((ServiceGPNode) sourceOfReplacement)
+						.getSemanticEdges().size()) {
+					System.out.println("Case2 : orginal Sematic size"
+							+ ((ServiceGPNode) sourceOfNode).getSemanticEdges().size() + "replaced Semantic Size"
+							+ ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
+				}
 				// update the ServiceEdge of sourceOfNode with that of
 				// sourceOfReplacement
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
@@ -213,9 +224,6 @@ public class WSCIndividual extends GPIndividual {
 				}
 				EdgeOfsourceOfNode.addAll(EdgeOfsourceOfReplacement);
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfNode);
-
-
-
 
 				replacement = (GPNode) replacement.clone();
 
@@ -300,10 +308,12 @@ public class WSCIndividual extends GPIndividual {
 
 				// update the ServiceEdge of sourceOfNode with that of
 				// sourceOfReplacement
-
-				System.out.println("orginal Sematic size" + ((ServiceGPNode) sourceOfNode).getSemanticEdges().size()
-						+ "replaced Semantic Size" + ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
-
+				if (((ServiceGPNode) sourceOfNode).getSemanticEdges().size() != ((ServiceGPNode) sourceOfReplacement)
+						.getSemanticEdges().size()) {
+					System.out.println("Case3 : orginal Sematic size"
+							+ ((ServiceGPNode) sourceOfNode).getSemanticEdges().size() + "replaced Semantic Size"
+							+ ((ServiceGPNode) sourceOfReplacement).getSemanticEdges().size());
+				}
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
 
@@ -463,8 +473,9 @@ public class WSCIndividual extends GPIndividual {
 			// replacement = (GPNode) replacement.clone();
 
 			GPNode[] replacementList = replacement.children.clone();
-			List<ServiceEdge> InComingEdgeOfNode = null;
+			List<ServiceEdge> InComingEdgeOfReplaceNode = null;
 
+			// obain semantic Edge and replace part of replaceNode
 			for (GPNode gpNode : replacementList) {
 				if (gpNode instanceof SequenceGPNode) {
 					// update the replacement without including the startNode
@@ -474,14 +485,17 @@ public class WSCIndividual extends GPIndividual {
 
 				if (gpNode instanceof ServiceGPNode) {
 					// obtain inComingEdge of StartNode from graph4Mutation
-					InComingEdgeOfNode = ((ServiceGPNode) gpNode).getSemanticEdges();
+					InComingEdgeOfReplaceNode = ((ServiceGPNode) gpNode).getSemanticEdges();
 				}
 			}
 
 			GPNode sourceOfNode = getSourceGPNode(node);
-			// set sourceOfNode semanticEdge as inComingEdge of StartNode in
-			// graph4Mutation
-			((ServiceGPNode) sourceOfNode).setSemanticEdges(InComingEdgeOfNode);
+
+			mutation4Weights(sourceOfNode, InComingEdgeOfReplaceNode);
+
+			/******
+			 * Mutation the node information
+			 */
 
 			// mutate on service node
 			if (node instanceof ServiceGPNode) {
@@ -558,6 +572,91 @@ public class WSCIndividual extends GPIndividual {
 			}
 
 		}
+	}
+
+	/*******
+	 * ParameterConn update and Weights aggregation for mutation process
+	 * 
+	 */
+
+	private void mutation4Weights(GPNode sourceOfNode, List<ServiceEdge> InComingEdgeOfReplaceNode) {
+
+		List<ServiceEdge> serEdgeList = ((ServiceGPNode) sourceOfNode).getSemanticEdges();
+		String sourceOfnodeName = ((ServiceGPNode) sourceOfNode).getSerName();
+
+		// Case one : replace all the semantic of sourceNode
+		if (serEdgeList.size() == 1) {
+			// obtain overall ParamterConn to replace the that of sourceNode
+			for (ServiceEdge edgeOfReplaceNode : InComingEdgeOfReplaceNode) {
+				for (ParamterConn p : edgeOfReplaceNode.getpConnList()) {
+					p.setSourceServiceID(sourceOfnodeName);
+				}
+			}
+			((ServiceGPNode) sourceOfNode).setSemanticEdges(InComingEdgeOfReplaceNode);
+
+		} else {
+			// Case two : replace part of the semantic of sourceNode
+			// create List for storing all ParameterConn from sourceNode of
+			// selectedNode
+			List<ParamterConn> undispachedParaConnList = new ArrayList<ParamterConn>();
+			for (ServiceEdge edgeOfNode : serEdgeList) {
+				if (edgeOfNode.getTargetService() != sourceOfnodeName) {
+					for (ParamterConn p : edgeOfNode.getpConnList()) {
+						undispachedParaConnList.add(p);
+					}
+				}
+			}
+
+			// add ParamterConn from source of replaceNode
+			for (ServiceEdge edgeOfnode : InComingEdgeOfReplaceNode) {
+				undispachedParaConnList.addAll(edgeOfnode.getpConnList());
+			}
+
+			/*******
+			 * Weights aggregation
+			 * 
+			 */
+			// how many sourceService are connected
+			targetSerIdSet.clear();
+			double summt = 0.00;
+			double sumdst = 0.00;
+			for (ParamterConn p : undispachedParaConnList) {
+				String targetSerID = p.getTargetServiceID();
+				targetSerIdSet.add(targetSerID);
+			}
+			List<ServiceEdge> updatedSerEdgeList = new ArrayList<ServiceEdge>();
+			// Edge are needed for each sourceService
+			for (String targetSerID : targetSerIdSet) {
+				ServiceEdge serEdge = new ServiceEdge(0, 0);
+				serEdge.setSourceService(sourceOfnodeName);
+				serEdge.setTargetService(targetSerID);
+				// how many parameter connection needed for each Edge
+				for (ParamterConn p : undispachedParaConnList) {
+					if (p.getTargetServiceID().equals(targetSerID)) {
+						serEdge.getpConnList().add(p);
+					}
+				}
+				// add Edge to a EdgeList to calcute each edge aggregation
+				// and build edge for graph
+				updatedSerEdgeList.add(serEdge);
+			}
+
+			for (ServiceEdge edge : updatedSerEdgeList) {
+				summt = 0.00;
+				sumdst = 0.00;
+				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
+					ParamterConn pCo = edge.getpConnList().get(i1);
+					summt += pCo.getMatchType();
+					sumdst += pCo.getSimilarity();
+
+				}
+				int count = edge.getpConnList().size();
+				edge.setAvgmt(summt / count);
+				edge.setAvgsdt(sumdst / count);
+			}
+			((ServiceGPNode) sourceOfNode).setSemanticEdges(updatedSerEdgeList);
+		}
+
 	}
 
 	private GPNode replaceNode(GPNode endNode, GPNode appedixNode) {

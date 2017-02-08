@@ -256,6 +256,7 @@ public class Service implements Comparable<Service> {
 			for (String sourceSerID : sourceSerIdSet) {
 				ServiceEdge serEdge = new ServiceEdge(0, 0);
 				serEdge.setSourceService(sourceSerID);
+				serEdge.setTargetService(service.getServiceID());
 				// how many parameter connection needed for each Edge
 				for (ParamterConn p : pConnList0) {
 					if (p.getSourceServiceID().equals(sourceSerID)) {
@@ -272,6 +273,7 @@ public class Service implements Comparable<Service> {
 				sumdst = 0.00;
 				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
 					ParamterConn pCo = edge.getpConnList().get(i1);
+					pCo.setTargetServiceID(service.getServiceID());
 					summt += pCo.getMatchType();
 					sumdst += pCo.getSimilarity();
 
@@ -374,6 +376,7 @@ public class Service implements Comparable<Service> {
 			for (String sourceSerID : sourceSerIdSet) {
 				ServiceEdge serEdge = new ServiceEdge(0, 0);
 				serEdge.setSourceService(sourceSerID);
+				serEdge.setTargetService(service.getServiceID());
 				// how many parameter connection needed for each Edge
 				for (ParamterConn p : pConnList0) {
 					if (p.getSourceServiceID().equals(sourceSerID)) {
@@ -390,6 +393,7 @@ public class Service implements Comparable<Service> {
 				sumdst = 0.00;
 				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
 					ParamterConn pCo = edge.getpConnList().get(i1);
+					pCo.setTargetServiceID(service.getServiceID());
 					summt += pCo.getMatchType();
 					sumdst += pCo.getSimilarity();
 

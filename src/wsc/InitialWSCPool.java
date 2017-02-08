@@ -137,6 +137,7 @@ public class InitialWSCPool {
 			for (String sourceSerID : sourceSerIdSet) {
 				ServiceEdge serEdge = new ServiceEdge(0, 0);
 				serEdge.setSourceService(sourceSerID);
+				serEdge.setTargetService("endNode");
 				for (ParamterConn p : pConnList) {
 					if (p.getSourceServiceID().equals(sourceSerID)) {
 						serEdge.getpConnList().add(p);
@@ -150,6 +151,7 @@ public class InitialWSCPool {
 				sumdst = 0.00;
 				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
 					ParamterConn pCo = edge.getpConnList().get(i1);
+					pCo.setTargetServiceID("endNode");
 					summt += pCo.getMatchType();
 					sumdst += pCo.getSimilarity();
 
@@ -232,6 +234,7 @@ public class InitialWSCPool {
 			for (String sourceSerID : sourceSerIdSet) {
 				ServiceEdge serEdge = new ServiceEdge(0, 0);
 				serEdge.setSourceService(sourceSerID);
+				serEdge.setTargetService("endNode");
 				for (ParamterConn p : pConnList) {
 					if (p.getSourceServiceID().equals(sourceSerID)) {
 						serEdge.getpConnList().add(p);
@@ -245,6 +248,7 @@ public class InitialWSCPool {
 				sumdst = 0.00;
 				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
 					ParamterConn pCo = edge.getpConnList().get(i1);
+					pCo.setTargetServiceID("endNode");
 					summt += pCo.getMatchType();
 					sumdst += pCo.getSimilarity();
 

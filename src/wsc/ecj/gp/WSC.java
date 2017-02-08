@@ -48,8 +48,8 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			}
 
 			dst = dst / (input.semanticEdges.size());
-//			 System.out.println("semantic edge Size :"+
-//			 input.semanticEdges.size());
+			// System.out.println("semantic edge Size :"+
+			// input.semanticEdges.size());
 
 			for (Service s : input.seenServices) {
 				qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
@@ -63,21 +63,23 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 
-//			String fitnessStr = fitness + "";
-//			String f0 = "0.8445581651";
-//			if (fitnessStr.startsWith(f0)) {
-//				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
-//						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-//				double smvalue = calculateSM( mt, dst, init);
-//				state.output.println(fitnessStr + ";"+"QoS"+qosvalue+";SM"+smvalue, 0);
-//				
-//				
-//				for (ServiceEdge semanticQuality : input.semanticEdges) {
-//					System.out.println("avgmt:"+semanticQuality.getAvgmt()+";avgdst:"+semanticQuality.getAvgsdt());
-//					
-//				}
-//
-//			}
+			// String fitnessStr = fitness + "";
+			// String f0 = "0.8329982119033941";
+			// if (fitnessStr.startsWith(f0)) {
+			// double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
+			// qos[WSCInitializer.RELIABILITY],
+			// qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+			// double smvalue = calculateSM(mt, dst, init);
+			// state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
+			// smvalue, 0);
+			//
+			// for (ServiceEdge semanticQuality : input.semanticEdges) {
+			// System.out.println("avgmt:" + semanticQuality.getAvgmt() +
+			// ";avgdst:" + semanticQuality.getAvgsdt());
+			//
+			//  }
+			//
+			// }
 
 			f.setFitness(state, fitness, false);
 			// f.setStandardizedFitness(state, fitness);
@@ -125,14 +127,13 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 	}
 
 	private double calculateSM(double mt, double dst, WSCInitializer init) {
-		System.out.println("mt before:"+mt+";dst before:"+dst);
+		System.out.println("mt before:" + mt + ";dst before:" + dst);
 
-		
 		mt = normaliseMatchType(mt);
 		dst = normaliseDistanceValue(dst);
 
 		double fitness = init.w5 * mt + init.w6 * dst;
-		System.out.println("mt:"+mt+";dst:"+dst);
+		System.out.println("mt:" + mt + ";dst:" + dst);
 
 		return fitness;
 	}
