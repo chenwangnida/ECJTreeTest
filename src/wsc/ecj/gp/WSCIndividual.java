@@ -491,11 +491,11 @@ public class WSCIndividual extends GPIndividual {
 
 			GPNode sourceOfNode = getSourceGPNode(node);
 
+			// mutation the service dependency on sourceNode of selected node
+
 			mutation4Weights(sourceOfNode, InComingEdgeOfReplaceNode);
 
-			/******
-			 * Mutation the node information
-			 */
+			// Mutation the node information
 
 			// mutate on service node
 			if (node instanceof ServiceGPNode) {

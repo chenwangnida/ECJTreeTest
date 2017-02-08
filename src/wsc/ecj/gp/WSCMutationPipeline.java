@@ -82,8 +82,8 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			// Generate a new tree based on the input/output information of the
 			// current node
 
-			List<String> Inputs4Node = new ArrayList(combinedInputs);
-			List<String> outputs4Node = new ArrayList(combinedoutputs);
+			List<String> Inputs4Node = new ArrayList<String>(combinedInputs);
+			List<String> outputs4Node = new ArrayList<String>(combinedoutputs);
 
 //			System.out.println("selected: "+selectedNode);
 //
