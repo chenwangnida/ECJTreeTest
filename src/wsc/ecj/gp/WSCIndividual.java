@@ -1,8 +1,10 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ec.gp.GPIndividual;
@@ -18,6 +20,7 @@ public class WSCIndividual extends GPIndividual {
 
 	private static final long serialVersionUID = 1L;
 	private static Set<String> targetSerIdSet = new HashSet<String>();
+	private static Set<String> originalTargetSerIdSet = new HashSet<String>();
 
 	public WSCIndividual() {
 		super();
@@ -109,6 +112,42 @@ public class WSCIndividual extends GPIndividual {
 
 		return allNodes;
 	}
+	
+	public List<GPNode> getOnlyServiceGPNodes(GPNode replacement) {
+		List<GPNode> allNodes = new ArrayList<GPNode>();
+		AddChildNodes(replacement, allNodes);
+
+		List<GPNode> removedNodeList = new ArrayList<GPNode>();
+		for (int i = 0; i < allNodes.size(); i++) {
+			GPNode filteredChild = allNodes.get(i);
+			if (filteredChild instanceof ServiceGPNode) {
+				ServiceGPNode sgp = (ServiceGPNode) filteredChild;
+				if (sgp.getSerName().equals("startNode")) {
+					// initial variable rootNode
+					removedNodeList.add((GPNode) sgp.parent);
+					// remove startNode
+					removedNodeList.add(allNodes.get(i));
+				}
+				if (sgp.getSerName().equals("endNode")) {
+					// initial variable endParentNodeList
+					removedNodeList.add((GPNode) sgp.parent);
+					// remove endNode
+					removedNodeList.add(allNodes.get(i));
+				}
+			}
+			if(filteredChild instanceof SequenceGPNode){
+				removedNodeList.add(filteredChild);
+			}
+			if(filteredChild instanceof ParallelGPNode){
+				removedNodeList.add(filteredChild);
+			}
+		}
+
+		allNodes.removeAll(removedNodeList);
+
+		return allNodes;
+	}
+
 
 	public List<GPNode> AddFiltedChildNodes(GPNode gpChild, List<GPNode> allNodes) {
 
@@ -491,14 +530,20 @@ public class WSCIndividual extends GPIndividual {
 
 			GPNode sourceOfNode = getSourceGPNode(node);
 
-			// mutation the service dependency on sourceNode of selected node
+			// mutation the service dependency on one sourceNode of selected
+			// node
 
-			mutation4Weights(sourceOfNode, InComingEdgeOfReplaceNode);
-
-			// Mutation the node information
+			mutateWeightsOfSourceNode(sourceOfNode, InComingEdgeOfReplaceNode);
 
 			// mutate on service node
 			if (node instanceof ServiceGPNode) {
+				
+				// mutation the service dependency on several targetNode of selected
+				// nodes only considered  in case of mutation on service node
+				mutateWeightsOfTargetNode(sourceOfNode, replacement);
+				
+				
+				
 				GPNode pNode = (GPNode) node.parent;
 				GPNode ppNode = (GPNode) pNode.parent;
 
@@ -575,11 +620,111 @@ public class WSCIndividual extends GPIndividual {
 	}
 
 	/*******
-	 * ParameterConn update and Weights aggregation for mutation process
+	 * ParameterConn update and Weights aggregation for target nodes during
+	 * mutation process Caution: it is only considered for mutation on the
+	 * service node
+	 */
+
+	private void mutateWeightsOfTargetNode(GPNode sourceOfNode, GPNode replacement) {
+		// get edges that target endNode
+		Set<GPNode> sourceOfEndNodeSet = new HashSet<GPNode>();
+		List<ParamterConn> undispachedParaConnList = new ArrayList<ParamterConn>();
+
+		List<GPNode> allReplacementNode = this.getOnlyServiceGPNodes(replacement);
+		for (GPNode replacementNode : allReplacementNode) {
+			if (replacementNode instanceof ServiceGPNode) {
+				for (ServiceEdge serEdge : ((ServiceGPNode) replacementNode).getSemanticEdges()) {
+					if (serEdge.getTargetService() == "endNode" || serEdge.getTargetService().equals("endNode")) {
+						for (ParamterConn pConn : serEdge.getpConnList()) {
+							// get all the parametersConn
+							sourceOfEndNodeSet.add(replacementNode);
+							undispachedParaConnList.add(pConn);
+						}
+
+					}
+
+				}
+			}
+		}
+
+		Map<String,List<ParamterConn>> map = new HashMap<String,List<ParamterConn>>();
+		Map<String,GPNode> gpNodeMapfromName = new HashMap<String,GPNode>();
+
+		//initialize map with list of parameter
+		for (GPNode sourceOfEndNode : sourceOfEndNodeSet) {
+			String sourceOfEndNodeName = ((ServiceGPNode) sourceOfEndNode).getSerName();
+			gpNodeMapfromName.put(sourceOfEndNodeName, sourceOfEndNode);
+			List<ParamterConn> groupedParaConnList = new ArrayList<ParamterConn>();
+			map.put(sourceOfEndNodeName, groupedParaConnList);
+		}
+		
+		for(ParamterConn pc:undispachedParaConnList){
+			map.get(pc.getSourceServiceID()).add(pc);
+		}
+		
+		for (String sourceOfEndNodeName :map.keySet()) {
+			GPNode sourceOfEndNode = gpNodeMapfromName.get(sourceOfEndNodeName);
+			aggregsteWeigthsOfNode(sourceOfEndNode, map.get(sourceOfEndNodeName));
+		}
+
+	}
+
+	private void aggregsteWeigthsOfNode(GPNode sourceOfNode, List<ParamterConn> undispachedParaConnList) {
+		/*******
+		 * Weights aggregation
+		 * 
+		 */
+		String sourceOfnodeName = ((ServiceGPNode) sourceOfNode).getSerName();
+
+		// how many sourceService are connected
+		originalTargetSerIdSet.clear();
+		double summt = 0.00;
+		double sumdst = 0.00;
+		for (ParamterConn p : undispachedParaConnList) {
+			String originalTargetSerID = p.getOriginalTargetServiceId();
+			originalTargetSerIdSet.add(originalTargetSerID);
+		}
+		List<ServiceEdge> updatedSerEdgeList = new ArrayList<ServiceEdge>();
+		// Edge are needed for each sourceService
+		for (String targetSerID : originalTargetSerIdSet) {
+			ServiceEdge serEdge = new ServiceEdge(0, 0);
+			serEdge.setSourceService(sourceOfnodeName);
+			serEdge.setTargetService(targetSerID);
+			// how many parameter connection needed for each Edge
+			for (ParamterConn p : undispachedParaConnList) {
+				if (p.getTargetServiceID().equals(targetSerID)) {
+					serEdge.getpConnList().add(p);
+				}
+			}
+			// add Edge to a EdgeList to calcute each edge aggregation
+			// and build edge for graph
+			updatedSerEdgeList.add(serEdge);
+		}
+
+		for (ServiceEdge edge : updatedSerEdgeList) {
+			summt = 0.00;
+			sumdst = 0.00;
+			for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
+				ParamterConn pCo = edge.getpConnList().get(i1);
+				summt += pCo.getMatchType();
+				sumdst += pCo.getSimilarity();
+
+			}
+			int count = edge.getpConnList().size();
+			edge.setAvgmt(summt / count);
+			edge.setAvgsdt(sumdst / count);
+		}
+		// set it for the replaced nodes or node
+		((ServiceGPNode) sourceOfNode).setSemanticEdges(updatedSerEdgeList);
+	}
+
+	/*******
+	 * ParameterConn update and Weights aggregation for source node during
+	 * mutation process
 	 * 
 	 */
 
-	private void mutation4Weights(GPNode sourceOfNode, List<ServiceEdge> InComingEdgeOfReplaceNode) {
+	private void mutateWeightsOfSourceNode(GPNode sourceOfNode, List<ServiceEdge> InComingEdgeOfReplaceNode) {
 
 		List<ServiceEdge> serEdgeList = ((ServiceGPNode) sourceOfNode).getSemanticEdges();
 		String sourceOfnodeName = ((ServiceGPNode) sourceOfNode).getSerName();

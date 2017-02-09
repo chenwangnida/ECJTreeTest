@@ -3,6 +3,7 @@ package wsc.ecj.gp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.jgrapht.DirectedGraph;
 
@@ -78,11 +79,11 @@ public class WSCSpecies extends Species {
 		return graph;
 	}
 
-	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> combinedInputs, List<String> combinedOuputs) {
+	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> combinedInputs, List<String> combinedOuputs, Map<String, String> Inst2TargetSerMap) {
 
 		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
 
-		init.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph);
+		init.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph, Inst2TargetSerMap);
 		// init.initialWSCPool.createGraphService(WSCInitializer.taskInput,
 		// WSCInitializer.taskOutput, graph);
 

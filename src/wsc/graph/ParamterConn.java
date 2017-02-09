@@ -7,6 +7,9 @@ public class ParamterConn {
 	String outputrequ;
 	String SourceServiceID;
 	String TargetServiceID;
+	//this parameter is set up to store the target Service information for mutation
+	String OriginalTargetServiceId;
+	
 	boolean isConsidered;
 
 	public double getSimilarity() {
@@ -63,6 +66,14 @@ public class ParamterConn {
 
 	public void setConsidered(boolean isConsidered) {
 		this.isConsidered = isConsidered;
+	}
+
+	public String getOriginalTargetServiceId() {
+		return OriginalTargetServiceId;
+	}
+
+	public void setOriginalTargetServiceId(String originalTargetServiceId) {
+		OriginalTargetServiceId = originalTargetServiceId;
 	}
 
 }

@@ -101,18 +101,19 @@ public class InitialWSCPool {
 								outputInst, outputrequ, this.semanticsPool);
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);
-						
+
 						if (graphOutputListMap.get(outputInst) == null) {
-							 pConn.setSourceServiceID("startNode");
-//						System.err.println(outputInst+"Inst not in the map");
-				     	}else{
-						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
-				     	}
-						
-//						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+							pConn.setSourceServiceID("startNode");
+							// System.err.println(outputInst+"Inst not in the
+							// map");
+						} else {
+							pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+						}
+
+						// pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
 						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
-//						 break;
+						// break;
 					}
 				}
 			}
@@ -175,8 +176,8 @@ public class InitialWSCPool {
 	 * @param givenoutput
 	 * @return
 	 */
-	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph,
-			List<String> requiredOutput) {
+	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph, List<String> requiredOutput,
+			Map<String, String> Inst2TargetSerMap) {
 		pConnList.clear();
 		requiredOutputList.clear();
 		int taskMatchCount = 0;
@@ -201,15 +202,23 @@ public class InitialWSCPool {
 								outputInst, outputrequ, this.semanticsPool);
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);
+
+						
+						// set up orgiginal TargetServiceId only for mutation in case of mutation on service Node
+						if (Inst2TargetSerMap.get(outputrequ) != null) {
+							pConn.setOriginalTargetServiceId(Inst2TargetSerMap.get(outputrequ));
+//							 System.out.println("outputrequ map to Orignal Service"+ pConn.getOriginalTargetServiceId());
+						}
 						if (graphOutputListMap.get(outputInst) == null) {
-							 pConn.setSourceServiceID("startNode");
-//						System.err.println(outputInst+"Inst not in the map");
-				     	}else{
-						pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
-				     	}
+							pConn.setSourceServiceID("startNode");
+							// System.err.println(outputInst+"Inst not in the
+							// map");
+						} else {
+							pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+						}
 						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
-//						 break ;
+						// break ;
 					}
 				}
 			}
@@ -249,6 +258,8 @@ public class InitialWSCPool {
 				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
 					ParamterConn pCo = edge.getpConnList().get(i1);
 					pCo.setTargetServiceID("endNode");
+					// set OriginalTargetServiceId from the node selected for
+					// mutation.
 					summt += pCo.getMatchType();
 					sumdst += pCo.getSimilarity();
 
@@ -256,7 +267,6 @@ public class InitialWSCPool {
 				int count = edge.getpConnList().size();
 				edge.setAvgmt(summt / count);
 				edge.setAvgsdt(sumdst / count);
-				edge.setTargetService("endNode");
 				directedGraph.addEdge(edge.getSourceService(), "endNode", edge);
 			}
 			return true;
@@ -320,7 +330,7 @@ public class InitialWSCPool {
 	}
 
 	public void createGraphService4Mutation(List<String> combinedInputs, List<String> combinedOutputs,
-			DirectedGraph<String, ServiceEdge> directedGraph) {
+			DirectedGraph<String, ServiceEdge> directedGraph, Map<String, String> Inst2TargetSerMap) {
 
 		graphOutputList.clear();
 		graphOutputListMap.clear();
@@ -346,7 +356,7 @@ public class InitialWSCPool {
 				System.err.println("No service is usable now");
 				return;
 			}
-			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs);
+			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs, Inst2TargetSerMap);
 
 		} while (!goalSatisfied);
 

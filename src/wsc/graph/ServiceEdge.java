@@ -9,7 +9,6 @@ public class ServiceEdge extends DefaultEdge implements Cloneable {
 
 	String SourceService;
 	String TargetService;
-
 	List<ParamterConn> pConnList = new ArrayList<ParamterConn>();
 
 	// average matching type value from source vertice to target vertice
