@@ -1,7 +1,9 @@
 package wsc.ecj.gp;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ec.BreedingPipeline;
 import ec.EvolutionState;
@@ -93,10 +95,20 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			Collections.shuffle(allT1Nodes, WSCInitializer.random);
 			Collections.shuffle(allT2Nodes, WSCInitializer.random);
 
+			
+			
+			Map<String, String> inst2TargetSerMap1 = new HashMap<String, String>();
+			Map<String, String> inst2TargetSerMap2 = new HashMap<String, String>();
+
+			
+			
 			// For each t1 node, see if it can be replaced by a t2 node
 			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
+			
+		
+			
 //			state.output.println(" -----------replace part from A:" + nodeT1, 0);
 //			state.output.println(" -----------replace part from B:" + replacementT2, 0);
 
