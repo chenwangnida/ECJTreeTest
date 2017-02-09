@@ -60,18 +60,19 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			double fitness = calculateFitness(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
 					qos[WSCInitializer.TIME], qos[WSCInitializer.COST], mt, dst, init);
 
+//			state.output.println("fitnessValue:"+fitness, 0);
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 
 			// String fitnessStr = fitness + "";
 			// String f0 = "0.8329982119033941";
 			// if (fitnessStr.startsWith(f0)) {
-			// double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
-			// qos[WSCInitializer.RELIABILITY],
-			// qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-			// double smvalue = calculateSM(mt, dst, init);
-			// state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
-			// smvalue, 0);
+//			 double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
+//			 qos[WSCInitializer.RELIABILITY],
+//			 qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+//			 double smvalue = calculateSM(mt, dst, init);
+//			 state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
+//			 smvalue, 0);
 			//
 			// for (ServiceEdge semanticQuality : input.semanticEdges) {
 			// System.out.println("avgmt:" + semanticQuality.getAvgmt() +

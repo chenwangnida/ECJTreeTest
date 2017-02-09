@@ -214,6 +214,7 @@ public class Service implements Comparable<Service> {
 					if (foundmatched) {
 						serInput.setSatified(true);
 						pConn.setOutputInst(giveninput);
+						pConn.setOutputrequ(existInput);
 						// if (GraphPSO.taskInput.contains(giveninput)) {
 						if (WSCInitializer.taskInput.contains(giveninput)) {
 
@@ -334,6 +335,7 @@ public class Service implements Comparable<Service> {
 					if (foundmatched) {
 						serInput.setSatified(true);
 						pConn.setOutputInst(giveninput);
+						pConn.setOutputrequ(existInput);
 						// if (GraphPSO.taskInput.contains(giveninput)) {
 						if (ioNodeInputs.contains(giveninput)) {
 

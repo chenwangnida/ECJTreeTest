@@ -15,6 +15,7 @@ import ec.util.Parameter;
 import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
+import wsc.graph.ServiceInput;
 
 public class WSCIndividual extends GPIndividual {
 
@@ -112,7 +113,7 @@ public class WSCIndividual extends GPIndividual {
 
 		return allNodes;
 	}
-	
+
 	public List<GPNode> getOnlyServiceGPNodes(GPNode replacement) {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
 		AddChildNodes(replacement, allNodes);
@@ -135,10 +136,10 @@ public class WSCIndividual extends GPIndividual {
 					removedNodeList.add(allNodes.get(i));
 				}
 			}
-			if(filteredChild instanceof SequenceGPNode){
+			if (filteredChild instanceof SequenceGPNode) {
 				removedNodeList.add(filteredChild);
 			}
-			if(filteredChild instanceof ParallelGPNode){
+			if (filteredChild instanceof ParallelGPNode) {
 				removedNodeList.add(filteredChild);
 			}
 		}
@@ -147,7 +148,6 @@ public class WSCIndividual extends GPIndividual {
 
 		return allNodes;
 	}
-
 
 	public List<GPNode> AddFiltedChildNodes(GPNode gpChild, List<GPNode> allNodes) {
 
@@ -197,12 +197,22 @@ public class WSCIndividual extends GPIndividual {
 		// Perform replacement if neither node is not null
 		if (node != null && replacement != null) {
 
-			// replace is a service , selected is a functional node
+			GPNode sourceOfNode = getSourceGPNode(node);
+			GPNode sourceOfReplacement = getSourceGPNode(replacement);
+			// update the outgoing edge of sourceOfNode by fetching the
+			// inComingEdges of replaceNode
+			List<ServiceEdge> InComingEdgeOfReplaceNode = new ArrayList<ServiceEdge>();
+
+			//obtain the inComingEdgesOfReplacment
+			InOutNode ioNode = (InOutNode) replacement;
+			//ToDo : create a private functiona for getting incomming edges or not 
+			
+			//
+			updateWeightsOfSourceNode(sourceOfNode, node, InComingEdgeOfReplaceNode);
+
+			// selected is a functional node, and replace is a service
 			if ((replacement instanceof ServiceGPNode)
 					&& ((node instanceof SequenceGPNode) || (node instanceof ParallelGPNode))) {
-
-				GPNode sourceOfNode = getSourceGPNode(node);
-				GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
 				if (((ServiceGPNode) sourceOfNode).getSemanticEdges().size() != ((ServiceGPNode) sourceOfReplacement)
 						.getSemanticEdges().size()) {
@@ -240,9 +250,10 @@ public class WSCIndividual extends GPIndividual {
 
 			} else if ((node instanceof ServiceGPNode)
 					&& ((replacement instanceof SequenceGPNode) || (node instanceof ParallelGPNode))) {
+				// selected is a service node, replace is a functional node
 
-				GPNode sourceOfNode = getSourceGPNode(node);
-				GPNode sourceOfReplacement = getSourceGPNode(replacement);
+				// GPNode sourceOfNode = getSourceGPNode(node);
+				// GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
 				if (((ServiceGPNode) sourceOfNode).getSemanticEdges().size() != ((ServiceGPNode) sourceOfReplacement)
 						.getSemanticEdges().size()) {
@@ -339,9 +350,9 @@ public class WSCIndividual extends GPIndividual {
 
 				// SourceNode of selected Node obtained
 				// System.out.println(node.toString());
-				GPNode sourceOfNode = getSourceGPNode(node);
+				// GPNode sourceOfNode = getSourceGPNode(node);
 				// SourceNode of replaced Node obtained
-				GPNode sourceOfReplacement = getSourceGPNode(replacement);
+				// GPNode sourceOfReplacement = getSourceGPNode(replacement);
 
 				replacement = (GPNode) replacement.clone();
 
@@ -529,21 +540,21 @@ public class WSCIndividual extends GPIndividual {
 			}
 
 			GPNode sourceOfNode = getSourceGPNode(node);
+			
+			
+			//update the outgoing edges of source node Of node regardless node is service node or functional node
 
-			// mutation the service dependency on one sourceNode of selected
-			// node
-
-			mutateWeightsOfSourceNode(sourceOfNode, InComingEdgeOfReplaceNode);
+			updateWeightsOfSourceNode(sourceOfNode, node, InComingEdgeOfReplaceNode);
 
 			// mutate on service node
 			if (node instanceof ServiceGPNode) {
-				
-				// mutation the service dependency on several targetNode of selected
-				// nodes only considered  in case of mutation on service node
+
+
+				// mutation the service dependency on several targetNode of
+				// selected
+				// nodes only considered in case of mutation on service node
 				mutateWeightsOfTargetNode(sourceOfNode, replacement);
-				
-				
-				
+
 				GPNode pNode = (GPNode) node.parent;
 				GPNode ppNode = (GPNode) pNode.parent;
 
@@ -647,22 +658,22 @@ public class WSCIndividual extends GPIndividual {
 			}
 		}
 
-		Map<String,List<ParamterConn>> map = new HashMap<String,List<ParamterConn>>();
-		Map<String,GPNode> gpNodeMapfromName = new HashMap<String,GPNode>();
+		Map<String, List<ParamterConn>> map = new HashMap<String, List<ParamterConn>>();
+		Map<String, GPNode> gpNodeMapfromName = new HashMap<String, GPNode>();
 
-		//initialize map with list of parameter
+		// initialize map with list of parameter
 		for (GPNode sourceOfEndNode : sourceOfEndNodeSet) {
 			String sourceOfEndNodeName = ((ServiceGPNode) sourceOfEndNode).getSerName();
 			gpNodeMapfromName.put(sourceOfEndNodeName, sourceOfEndNode);
 			List<ParamterConn> groupedParaConnList = new ArrayList<ParamterConn>();
 			map.put(sourceOfEndNodeName, groupedParaConnList);
 		}
-		
-		for(ParamterConn pc:undispachedParaConnList){
+
+		for (ParamterConn pc : undispachedParaConnList) {
 			map.get(pc.getSourceServiceID()).add(pc);
 		}
-		
-		for (String sourceOfEndNodeName :map.keySet()) {
+
+		for (String sourceOfEndNodeName : map.keySet()) {
 			GPNode sourceOfEndNode = gpNodeMapfromName.get(sourceOfEndNodeName);
 			aggregsteWeigthsOfNode(sourceOfEndNode, map.get(sourceOfEndNodeName));
 		}
@@ -724,7 +735,8 @@ public class WSCIndividual extends GPIndividual {
 	 * 
 	 */
 
-	private void mutateWeightsOfSourceNode(GPNode sourceOfNode, List<ServiceEdge> InComingEdgeOfReplaceNode) {
+	private void updateWeightsOfSourceNode(GPNode sourceOfNode, GPNode node,
+			List<ServiceEdge> InComingEdgeOfReplaceNode) {
 
 		List<ServiceEdge> serEdgeList = ((ServiceGPNode) sourceOfNode).getSemanticEdges();
 		String sourceOfnodeName = ((ServiceGPNode) sourceOfNode).getSerName();
@@ -743,10 +755,21 @@ public class WSCIndividual extends GPIndividual {
 			// Case two : replace part of the semantic of sourceNode
 			// create List for storing all ParameterConn from sourceNode of
 			// selectedNode
+			// String nodeName = ((ServiceGPNode) node).getSerName();
+
+			InOutNode ioNode = (InOutNode) node;
+			List<ServiceInput> requireInstList = ioNode.getInputs();
+			List<String> requrieInstStrList = new ArrayList<String>();
+			for(ServiceInput serInput: requireInstList){
+				requrieInstStrList.add(serInput.getInput());
+			}
+			
 			List<ParamterConn> undispachedParaConnList = new ArrayList<ParamterConn>();
 			for (ServiceEdge edgeOfNode : serEdgeList) {
-				if (edgeOfNode.getTargetService() != sourceOfnodeName) {
-					for (ParamterConn p : edgeOfNode.getpConnList()) {
+				for (ParamterConn p : edgeOfNode.getpConnList()) {
+					String  existInput= p.getOutputrequ();
+					
+					if (!requrieInstStrList.contains(existInput)) {
 						undispachedParaConnList.add(p);
 					}
 				}
