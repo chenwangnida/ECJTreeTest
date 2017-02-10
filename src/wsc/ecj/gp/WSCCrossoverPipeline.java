@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import ec.BreedingPipeline;
 import ec.EvolutionState;
 import ec.Individual;
@@ -69,8 +72,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		for (int q = start, x = 0; q < nMin + start; q++, x++) {
 			WSCIndividual t1 = ((WSCIndividual) inds1[x]);
 			WSCIndividual t2 = ((WSCIndividual) inds2[x]);
-//			state.output.println(" old Individual A:" + t1.toString(), 0);
-//			state.output.println(" old Individual B:" + t2.toString(), 0);
+			// state.output.println(" old Individual A:" + t1.toString(), 0);
+			// state.output.println(" old Individual B:" + t2.toString(), 0);
 			// Find all nodes from both candidates
 			List<GPNode> allT1Nodes = t1.getFiltedTreeNodes();
 			List<GPNode> allT2Nodes = t2.getFiltedTreeNodes();
@@ -95,49 +98,47 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			Collections.shuffle(allT1Nodes, WSCInitializer.random);
 			Collections.shuffle(allT2Nodes, WSCInitializer.random);
 
-			
-			
-			Map<String, String> inst2TargetSerMap1 = new HashMap<String, String>();
-			Map<String, String> inst2TargetSerMap2 = new HashMap<String, String>();
+			BiMap<String, String> inst1Toinst2 = HashBiMap.create();
 
-			
-			
 			// For each t1 node, see if it can be replaced by a t2 node
-			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);
+			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes, inst1Toinst2);
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
-			
-		
-			
-//			state.output.println(" -----------replace part from A:" + nodeT1, 0);
-//			state.output.println(" -----------replace part from B:" + replacementT2, 0);
+
+			if (inst1Toinst2.size() == 0) {
+				System.err.println("inst1Toinst2 Size:" + inst1Toinst2.size());
+			}
+
+			// state.output.println(" -----------replace part from A:" + nodeT1,
+			// 0);
+			// state.output.println(" -----------replace part from B:" +
+			// replacementT2, 0);
 
 			// For each t2 node, see if it can be replaced by a t1 node
 			// nodes = findReplacement(init, allT2Nodes, allT1Nodes);
 			// GPNode nodeT2 = nodes[0];
 			// GPNode replacementT1 = nodes[1];
 
-
 			// Perform replacement in both individuals
-			t1.replaceNode4Crossover(nodeT1, replacementT2);
-			t2.replaceNode4Crossover(replacementT2, nodeT1);
+			t1.replaceNode4Crossover(nodeT1, replacementT2, inst1Toinst2);
+			t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2);
 			// t2.replaceNode(nodeT2, replacementT1);
 
-//			boolean found = false;
-//			List<GPNode> allNodes = t1.getAllTreeNodes();
-//			for (GPNode n : allNodes) {
-//				if (n instanceof ServiceGPNode) {
-//					if (((ServiceGPNode) n).getSerName() == "endNode") {
-//						found = true;
-//					}
-//				}
-//
-//			}
-//
-//			if (found == false) {
-//
-//				System.out.println("Crossocer  fuckling  shit ");
-//			}
+			// boolean found = false;
+			// List<GPNode> allNodes = t1.getAllTreeNodes();
+			// for (GPNode n : allNodes) {
+			// if (n instanceof ServiceGPNode) {
+			// if (((ServiceGPNode) n).getSerName() == "endNode") {
+			// found = true;
+			// }
+			// }
+			//
+			// }
+			//
+			// if (found == false) {
+			//
+			// System.out.println("Crossocer fuckling shit ");
+			// }
 
 			inds[q] = t1;
 			inds[q].evaluated = false;
@@ -147,9 +148,10 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1].evaluated = false;
 			}
 			// state.output.println(" CROSSOVER !!!!!!!", 0);
-//			 state.output.println(" new Individual:"+t1.toString(), 0);
-//			 state.output.println(" new Individual:"+t2.toString(), 0);
-//			 state.output.println(" -----------next crossover---------------------", 0);
+			// state.output.println(" new Individual:"+t1.toString(), 0);
+			// state.output.println(" new Individual:"+t2.toString(), 0);
+			// state.output.println(" -----------next
+			// crossover---------------------", 0);
 
 		}
 
@@ -165,7 +167,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 
 	}
 
-	public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements) {
+	public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements,
+			BiMap<String, String> inst1Toinst2) {
 		GPNode[] result = new GPNode[2];
 		outterLoop: for (GPNode node : nodes) {
 			for (GPNode replacement : replacements) {
@@ -177,7 +180,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				 */
 				InOutNode ioNode = (InOutNode) node;
 				InOutNode ioReplacement = (InOutNode) replacement;
-				if (IsReplacementFound(init, ioNode, ioReplacement)) {
+				if (IsReplacementFound(init, ioNode, ioReplacement, inst1Toinst2)) {
 					// System.out.println("selected Node ******" +
 					// ioNode.toString());
 					// System.out.println("replaced Node ******" +
@@ -194,7 +197,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 	// check both the inputs and outputs from node and replacement node are
 	// matched.
 
-	private boolean IsReplacementFound(WSCInitializer init, InOutNode ioNode, InOutNode ioReplacement) {
+	private boolean IsReplacementFound(WSCInitializer init, InOutNode ioNode, InOutNode ioReplacement,
+			BiMap<String, String> inst1Toinst2) {
 		boolean isInputFound = false;
 		boolean isOutputFound = false;
 		// if (ioNode.getInputs() == null) {
@@ -206,6 +210,11 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				ioReplacement.getInputs());
 		isOutputFound = searchReplacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
 				ioReplacement.getOutputs());
+
+		if (isInputFound && isOutputFound) {
+			Replacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(), ioReplacement.getOutputs(),
+					inst1Toinst2);
+		}
 
 		return isInputFound && isOutputFound;
 
@@ -321,6 +330,43 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		}
 
 		return false;
+	}
+
+	// public boolean searchReplacement(SemanticsPool semanticsPool,
+	// HashSet<String> inputSet, HashSet<String> inputList) {
+	public BiMap<String, String> Replacement4Outputs(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
+			List<ServiceOutput> ioReplacement, BiMap<String, String> inst1Toinst2) {
+		for (ServiceOutput serInput : ioNodeOutputs) {
+			serInput.setSatified(false);
+		}
+		for (ServiceOutput serInput : ioReplacement) {
+			serInput.setSatified(false);
+		}
+
+		if (ioNodeOutputs.size() == ioReplacement.size()) {
+			int relevantServiceCount = 0;
+			for (int i = 0; i < ioReplacement.size(); i++) {
+				String givenOutput = ioReplacement.get(i).getOutput();
+				for (int j = 0; j < ioNodeOutputs.size(); j++) {
+					ServiceOutput serOutput = ioNodeOutputs.get(j);
+					if (!serOutput.isSatified()) {
+						String existOutput = ioNodeOutputs.get(j).getOutput();
+						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst(givenOutput, existOutput);
+						boolean foundmatched = pConn.isConsidered();
+						if (foundmatched) {
+							serOutput.setSatified(true);
+							inst1Toinst2.put(existOutput, givenOutput);
+							break;// each inst can only be used for one time
+						}
+
+					}
+
+				}
+
+			}
+		}
+
+		return inst1Toinst2;
 	}
 
 }
