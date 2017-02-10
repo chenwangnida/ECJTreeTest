@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services>
-   <service name="PaymentService02" Res="5036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="17.17">
+ <service name="QuoteConfirm03" Res="7076.15" Ava="0.81" Suc="0.75" Rel="0.34" Lat="2374.34" Pri="18.17">
     <inputs>
-      <instance name="OrderCompleted"/>>
+      <instance name="StreetMap"/>
+      <instance name="FlightArrivalDate"/>
     </inputs>
     <outputs>
-      <instance name="success" />
-    </outputs>
-  </service>
-    <service name="PaymentService01" Res="5036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="17.17">
-    <inputs>
-      <instance name="OrderCompleted"/>>
-    </inputs>
-    <outputs>
-      <instance name="success" />
+      <instance name="OrderInstance" />
     </outputs>
   </service>
     <service name="QuoteConfirm02" Res="7036.15" Ava="0.51" Suc="0.75" Rel="0.34" Lat="2474.34" Pri="17.17">
     <inputs>
       <instance name="StreetMap"/>
       <instance name="FlightArrivalDate"/>
-      <instance name="BusTicket"/>
-	  <instance name= "HotelReservation"/>
     </inputs>
     <outputs>
       <instance name="OrderInstance" />

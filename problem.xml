@@ -6,7 +6,6 @@
         </provided>
         <wanted>
             <instance name="OrderInstance" />
-            <instance name="success" />
         </wanted>
     </task>
     <solutions />

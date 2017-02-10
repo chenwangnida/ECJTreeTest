@@ -349,9 +349,9 @@ public class WSCIndividual extends GPIndividual {
 
 			} else if ((node instanceof ServiceGPNode) && (replacement instanceof ServiceGPNode)) {
 
+				replacement = (GPNode) replacement.clone();
 				updateWeightsOfTargetNodes4Crossover(node, replacement, inst1Toinst2);
 
-				replacement = (GPNode) replacement.clone();
 
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
@@ -373,25 +373,9 @@ public class WSCIndividual extends GPIndividual {
 
 				replacement = (GPNode) replacement.clone();
 
-				// update the ServiceEdge of sourceOfNode with that of
-				// sourceOfReplacement
-				// if (((ServiceGPNode) sourceOfNode).getSemanticEdges().size()
-				// != ((ServiceGPNode) sourceOfReplacement)
-				// .getSemanticEdges().size()) {
-				// System.out.println("Case3 : orginal Sematic size"
-				// + ((ServiceGPNode) sourceOfNode).getSemanticEdges().size() +
-				// "replaced Semantic Size"
-				// + ((ServiceGPNode)
-				// sourceOfReplacement).getSemanticEdges().size());
-				// }
+
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
-
-				// GPNode parentNode = (GPNode) node.parent;
-				// if (parentNode == null) {
-				// the selected node is the topNode in the tree
-				// super.trees[0].child = replacement;
-				// } else {
 
 				GPNode parentNode = (GPNode) node.parent;
 
@@ -730,7 +714,7 @@ public class WSCIndividual extends GPIndividual {
 	}
 
 	private void aggregsteWeigthsOfNode4Crossover(GPNode node, GPNode sourceOfEndNode,
-			List<ParamterConn> undispachedParaConnList, BiMap<String, String> inst1Toinst2) {
+			List<ParamterConn> groupedParaConnList, BiMap<String, String> inst1Toinst2) {
 		String sourceOfnodeName = ((ServiceGPNode) sourceOfEndNode).getSerName();
 
 		// how many sourceService are connected
@@ -746,7 +730,7 @@ public class WSCIndividual extends GPIndividual {
 			}
 		}
 
-		for (ParamterConn p : undispachedParaConnList) {
+		for (ParamterConn p : groupedParaConnList) {
 			// obtain mapped instance from selected node, and get
 			// originalTargetSerId
 
@@ -775,7 +759,7 @@ public class WSCIndividual extends GPIndividual {
 			serEdge.setSourceService(sourceOfnodeName);
 			serEdge.setTargetService(targetSerID);
 			// how many parameter connection needed for each Edge
-			for (ParamterConn p : undispachedParaConnList) {
+			for (ParamterConn p : groupedParaConnList) {
 				if (p.getTargetServiceID().equals(targetSerID)) {
 					serEdge.getpConnList().add(p);
 				}

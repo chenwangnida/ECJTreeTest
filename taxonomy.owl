@@ -34,9 +34,6 @@
     <ns2:Class ns1:ID="TouristAgencyPromotion">
         <ns3:subClassOf ns1:resource="#TravelInformation"/>
     </ns2:Class>
-     <ns2:Class ns1:ID="Success">
-        <ns3:subClassOf ns1:resource="#TravelInformation"/>
-    </ns2:Class>
     <ns2:Class ns1:ID="Order">
         <ns3:subClassOf ns1:resource="#TravelInformation"/>
     </ns2:Class>
@@ -109,11 +106,5 @@
     </ns2:Thing>
     <ns2:Thing ns1:ID="OrderInstance">
     <ns1:type ns1:resource="#Order"/>
-    </ns2:Thing>
-    <ns2:Thing ns1:ID="OrderCompleted">
-    <ns1:type ns1:resource="#Order"/>
-    </ns2:Thing>
-     <ns2:Thing ns1:ID="success">
-    <ns1:type ns1:resource="#Success"/>
     </ns2:Thing>
 </ns1:RDF>

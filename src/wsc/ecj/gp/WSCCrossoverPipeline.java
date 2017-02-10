@@ -72,8 +72,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		for (int q = start, x = 0; q < nMin + start; q++, x++) {
 			WSCIndividual t1 = ((WSCIndividual) inds1[x]);
 			WSCIndividual t2 = ((WSCIndividual) inds2[x]);
-			// state.output.println(" old Individual A:" + t1.toString(), 0);
-			// state.output.println(" old Individual B:" + t2.toString(), 0);
+			 state.output.println(" old Individual A:" + t1.toString(), 0);
+			 state.output.println(" old Individual B:" + t2.toString(), 0);
 			// Find all nodes from both candidates
 			List<GPNode> allT1Nodes = t1.getFiltedTreeNodes();
 			List<GPNode> allT2Nodes = t2.getFiltedTreeNodes();
@@ -148,10 +148,9 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1].evaluated = false;
 			}
 			// state.output.println(" CROSSOVER !!!!!!!", 0);
-			// state.output.println(" new Individual:"+t1.toString(), 0);
-			// state.output.println(" new Individual:"+t2.toString(), 0);
-			// state.output.println(" -----------next
-			// crossover---------------------", 0);
+			 state.output.println(" new Individual:"+t1.toString(), 0);
+			 state.output.println(" new Individual:"+t2.toString(), 0);
+			 state.output.println(" -----------next	crossover---------------------", 0);
 
 		}
 
