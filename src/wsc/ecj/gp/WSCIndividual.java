@@ -762,7 +762,9 @@ public class WSCIndividual extends GPIndividual {
 
 			}
 
+			if(originalTargetSerId!=null){
 			originalTargetSerIdSet.add(originalTargetSerId);
+			}
 
 		}
 
