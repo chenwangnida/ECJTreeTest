@@ -152,7 +152,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1].evaluated = false;
 			}
 			// state.output.println(" CROSSOVER !!!!!!!", 0);
-			 state.output.println(" -----------next	crossover---------------------", 0);
+//			 state.output.println(" -----------next	crossover---------------------", 0);
 
 		}
 

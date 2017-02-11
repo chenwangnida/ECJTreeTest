@@ -1,6 +1,6 @@
 parent.0                                       = @ec.gp.koza.KozaBuilder koza.params
 
-seed.0                                         = 6
+seed.0                                         = 19
 composition-task                               = problem.xml
 composition-taxonomy                           = taxonomy.owl
 composition-services                           = services-output.xml
@@ -38,7 +38,7 @@ stat.do-final                                  = true
 generations                                    = 3
 
 pop.subpops		                               = 1
-pop.subpop.0.size 	                           = 3
+pop.subpop.0.size 	                           = 4
 pop.subpop.0.duplicate-retries 	               = 0
 pop.subpop.0.species                           = wsc.ecj.gp.WSCSpecies
 pop.subpop.0.species.ind                       = wsc.ecj.gp.WSCIndividual
