@@ -134,13 +134,17 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			isContainedOfromI(serOutput, overallInputsList, init, overallInputsRemoved);
 
 		}
+		
+		if(overallInputsRemoved != null){
+			
+		}
 
 		if (overallInputsRemoved != null) {
 			for (ServiceInput serInput4remove : overallInputsRemoved) {
 				Iterator<ServiceInput> iterator = overallInputs.iterator();
 				while (iterator.hasNext()) {
 					ServiceInput serInput = iterator.next();
-					if ((serInput.getInput()).equals(serInput.getInput())) {
+					if ((serInput.getInput()).equals(serInput4remove.getInput())) {
 						iterator.remove();
 						// System.out.println("removed Inputs!!!!!!" +
 						// serInput.getInput());
