@@ -26,6 +26,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 	private List<ServicePostcondition> postconditions;
 	private List<ServiceEdge> semanticEdges;
 
+
 	@Override
 	public List<ServiceInput> getInputs() {
 		return inputs;
@@ -70,6 +71,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		this.semanticEdges = semanticEdges;
 	}
 
+
 	@Override
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,
 			final GPIndividual individual, final Problem problem) {
@@ -85,6 +87,8 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
 		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
+		List<String> overallserviceIdList = new ArrayList<String>();
+
 
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		WSCData rd = ((WSCData) (input));
@@ -130,15 +134,8 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 		// remove inputs produced by proccesor web services
 		for (ServiceOutput serOutput : overallOutputList) {
-
 			isContainedOfromI(serOutput, overallInputsList, init, overallInputsRemoved);
-
 		}
-		
-		if(overallInputsRemoved != null){
-			
-		}
-
 		if (overallInputsRemoved != null) {
 			for (ServiceInput serInput4remove : overallInputsRemoved) {
 				Iterator<ServiceInput> iterator = overallInputs.iterator();
@@ -152,31 +149,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 				}
 			}
 		}
-		// remove the outputs required by successor web serivces
-		// for (ServiceInput serInput : overallInputsList) {
-		//
-		// isContainedIfromO(serInput, overallOutputList, init,
-		// overallOutputsRemoved);
-		// }
-		//
-		// if (overallOutputsRemoved != null) {
-		// overallOutputs.removeAll(overallOutputsRemoved);
-		// }
-
-		// overallInputs.removeAll(overallOutputs);
-		// overallOutputs.removeAll(overallInputs);
-		overallPreconditions.removeAll(overallPostconditions);
-		overallPostconditions.removeAll(overallPreconditions);
-
-		// children[0].eval(state, thread, input, stack, individual, problem);
-		// maxTime = rd.maxTime;
-		// seenServices = rd.seenServices;
-		// Set<String> in = rd.inputs;
-		//
-		// children[1].eval(state, thread, input, stack, individual, problem);
-		// rd.maxTime += maxTime;
-		// rd.seenServices.addAll(seenServices);
-		// rd.inputs = in;
 
 		// Finally, set the data with the overall values before exiting the
 		// evaluation

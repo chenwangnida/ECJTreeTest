@@ -20,7 +20,6 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 
 	private static final long serialVersionUID = 1L;
 	private Service service;
-
 	private String serName;
 	private List<ServiceInput> inputs;
 	private List<ServiceOutput> outputs;

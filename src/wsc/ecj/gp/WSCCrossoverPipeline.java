@@ -76,21 +76,6 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			List<GPNode> allT1Nodes = t1.getFiltedTreeNodes();
 			List<GPNode> allT2Nodes = t2.getFiltedTreeNodes();
 
-			// Test whether constains startNode or endNodes;
-			// for (GPNode gpNode : allT1Nodes) {
-			// if (gpNode instanceof ServiceGPNode) {
-			// ServiceGPNode sgp = (ServiceGPNode) gpNode;
-			// if (sgp.getSerName().equals("startNode")) {
-			// // initial variable rootNode
-			// System.out.println("contains startNode");
-			// }
-			// if (sgp.getSerName().equals("endNode")) {
-			// // remove endNode
-			// System.out.println("contains endNode");
-			// }
-			//
-			// }
-			// }
 
 			// Shuffle them so that the crossover is random
 			Collections.shuffle(allT1Nodes, WSCInitializer.random);
@@ -116,15 +101,15 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			// nodes = findReplacement(init, allT2Nodes, allT1Nodes);
 			// GPNode nodeT2 = nodes[0];
 			// GPNode replacementT1 = nodes[1];
-			state.output.println(" old Individual A:" + t1.toString(), 0);
-			state.output.println(" old Individual B:" + t2.toString(), 0);
+			state.output.println(" old A:" + t1.toString(), 0);
+			state.output.println(" old B:" + t2.toString(), 0);
 
 			// Perform replacement in both individuals
 			t1.replaceNode4Crossover(nodeT1, replacementT2, inst1Toinst2.inverse());
-			state.output.println(" new Individual A:"+t1.toString(), 0);
+			state.output.println(" new A:"+t1.toString(), 0);
 
 			t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2);
-			state.output.println(" new Individual B:"+t2.toString(), 0);
+			state.output.println(" new B:"+t2.toString(), 0);
 
 			// t2.replaceNode(nodeT2, replacementT1);
 
@@ -152,7 +137,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1].evaluated = false;
 			}
 			// state.output.println(" CROSSOVER !!!!!!!", 0);
-//			 state.output.println(" -----------next	crossover---------------------", 0);
+			 state.output.println(" -----------next	crossover---------------------", 0);
 
 		}
 

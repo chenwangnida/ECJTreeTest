@@ -20,6 +20,7 @@ import ec.gp.GPNode;
 import ec.gp.GPTree;
 import ec.simple.SimpleFitness;
 import ec.util.Parameter;
+import wsc.data.pool.Service;
 import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
@@ -157,6 +158,26 @@ public class WSCIndividual extends GPIndividual {
 		return allNodes;
 	}
 
+	public List<GPNode> getTargetServiceGPNodes(GPNode replacement) {
+		List<GPNode> allNodes = new ArrayList<GPNode>();
+		AddChildNodes(replacement, allNodes);
+
+		List<GPNode> removedNodeList = new ArrayList<GPNode>();
+		for (int i = 0; i < allNodes.size(); i++) {
+			GPNode filteredChild = allNodes.get(i);
+			if (filteredChild instanceof SequenceGPNode) {
+				removedNodeList.add(filteredChild);
+			}
+			if (filteredChild instanceof ParallelGPNode) {
+				removedNodeList.add(filteredChild);
+			}
+		}
+
+		allNodes.removeAll(removedNodeList);
+
+		return allNodes;
+	}
+
 	public List<GPNode> AddFiltedChildNodes(GPNode gpChild, List<GPNode> allNodes) {
 
 		GPNode current = gpChild;
@@ -204,23 +225,12 @@ public class WSCIndividual extends GPIndividual {
 		List<ServiceEdge> inComingEdgeOfReplaceNode = new ArrayList<ServiceEdge>();
 
 		// obtain the inComingEdges Of Replacement
-		InOutNode ioNode = (InOutNode) replacement;
-		List<ServiceInput> requireInstList = ioNode.getInputs();
-		List<String> requrieInstStrList = new ArrayList<String>();
-		for (ServiceInput serInput : requireInstList) {
-			requrieInstStrList.add(serInput.getInput());
-		}
+
+		List<String> requiredServices = getPotentialTargetSerId(replacement);
 
 		for (ServiceEdge edgeOfNode : ((ServiceGPNode) sourceOfReplacement).getSemanticEdges()) {
-			for (ParamterConn p : edgeOfNode.getpConnList()) {
-				String existInput = p.getOutputrequ();
-				if (requrieInstStrList.contains(existInput)) {
-					if (!inComingEdgeOfReplaceNode.contains(edgeOfNode)) {
-						inComingEdgeOfReplaceNode.add(edgeOfNode);
-					}
-					break;
-				}
-
+			if (requiredServices.contains(edgeOfNode.getTargetService())) {
+				inComingEdgeOfReplaceNode.add(edgeOfNode);
 			}
 		}
 
@@ -231,6 +241,15 @@ public class WSCIndividual extends GPIndividual {
 		}
 		return inComingEdgeOfReplaceNode;
 
+	}
+
+	private List<String> getPotentialTargetSerId(GPNode replacement) {
+
+		List<GPNode> allPotentialTargetSer = getTargetServiceGPNodes(replacement);
+		List<String> allPotentilaTargetSeridList = new ArrayList<String>();
+		allPotentialTargetSer.forEach(Ser -> allPotentilaTargetSeridList.add(((ServiceGPNode) Ser).getSerName()));
+
+		return allPotentilaTargetSeridList;
 	}
 
 	// Replace the GPNodes and associated semantic edges
@@ -736,15 +755,15 @@ public class WSCIndividual extends GPIndividual {
 			}
 		}
 
-		
 		// map the inst from replacement to orignalSerId
 		groupedParaConnList.forEach(groupedParaConn -> groupedParaConn.setSetOriTargetSerId(false));
-		
+
 		for (Entry<String, String> inst : instToServMap.entries()) {
 			for (ParamterConn p : groupedParaConnList) {
 				String orginalInst = inst1Toinst2.get(p.getOutputInst());
 				if ((inst.getKey() == orginalInst) && p.isSetOriTargetSerId() == false) {
-//					System.out.println("key: "+inst.getKey()+";  value"+inst.getValue());
+					// System.out.println("key: "+inst.getKey()+";
+					// value"+inst.getValue());
 					p.setTargetServiceID(inst.getValue());
 					p.setSetOriTargetSerId(true);
 					originalTargetSerIdSet.add(inst.getValue());
@@ -753,7 +772,8 @@ public class WSCIndividual extends GPIndividual {
 			}
 		}
 
-//		groupedParaConnList.forEach(groupedParaConn -> System.out.println(groupedParaConn.getSourceServiceID()+";"+groupedParaConn.getTargetServiceID()));
+		// groupedParaConnList.forEach(groupedParaConn ->
+		// System.out.println(groupedParaConn.getSourceServiceID()+";"+groupedParaConn.getTargetServiceID()));
 
 		List<ServiceEdge> updatedSerEdgeList = new ArrayList<ServiceEdge>();
 		// Edge are needed for each sourceService
@@ -829,20 +849,11 @@ public class WSCIndividual extends GPIndividual {
 			// add parts from source node of selected node if no matter it is a
 			// service node or functional node
 
-			InOutNode ioNode = (InOutNode) node;
-			List<ServiceInput> requireInstList = ioNode.getInputs();
-			List<String> requrieInstStrList = new ArrayList<String>();
-			for (ServiceInput serInput : requireInstList) {
-				requrieInstStrList.add(serInput.getInput());
-			}
+			List<String> requiredServices = getPotentialTargetSerId(node);
 
 			for (ServiceEdge edgeOfNode : serEdgeList) {
-				for (ParamterConn p : edgeOfNode.getpConnList()) {
-					String existInput = p.getOutputrequ();
-					if (!requrieInstStrList.contains(existInput)) {
-						updatedSerEdgeList.add(edgeOfNode);
-						break;
-					}
+				if (requiredServices.contains(edgeOfNode.getTargetService())) {
+					updatedSerEdgeList.add(edgeOfNode);
 				}
 			}
 

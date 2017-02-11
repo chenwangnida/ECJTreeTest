@@ -25,6 +25,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 	private List<ServicePostcondition> postconditions;
 	private List<ServiceEdge> semanticEdges;
 
+
 	@Override
 	public List<ServiceInput> getInputs() {
 		return inputs;
@@ -79,6 +80,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
 		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
+		List<String> overallserviceIdList = new ArrayList<String>();
 
 		WSCData rd = ((WSCData) (input));
 
