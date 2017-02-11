@@ -5,9 +5,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.SetMultimap;
 
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
@@ -352,7 +358,6 @@ public class WSCIndividual extends GPIndividual {
 				replacement = (GPNode) replacement.clone();
 				updateWeightsOfTargetNodes4Crossover(node, replacement, inst1Toinst2);
 
-
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
 
@@ -372,7 +377,6 @@ public class WSCIndividual extends GPIndividual {
 			} else {
 
 				replacement = (GPNode) replacement.clone();
-
 
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
 				((ServiceGPNode) sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
@@ -614,6 +618,7 @@ public class WSCIndividual extends GPIndividual {
 		double sumdst = 0.00;
 		for (ParamterConn p : undispachedParaConnList) {
 			String originalTargetSerID = p.getOriginalTargetServiceId();
+			p.setTargetServiceID(originalTargetSerID);
 			originalTargetSerIdSet.add(originalTargetSerID);
 		}
 		List<ServiceEdge> updatedSerEdgeList = new ArrayList<ServiceEdge>();
@@ -722,7 +727,8 @@ public class WSCIndividual extends GPIndividual {
 		double summt = 0.00;
 		double sumdst = 0.00;
 
-		Map<String, String> instToServMap = new HashMap<String, String>();
+		// create a listMultimap from orginalInst to orginalserId
+		ListMultimap<String, String> instToServMap = ArrayListMultimap.create();
 
 		for (ServiceEdge e : ((ServiceGPNode) node).getSemanticEdges()) {
 			for (ParamterConn pc : e.getpConnList()) {
@@ -730,27 +736,24 @@ public class WSCIndividual extends GPIndividual {
 			}
 		}
 
-		for (ParamterConn p : groupedParaConnList) {
-			// obtain mapped instance from selected node, and get
-			// originalTargetSerId
-
-			String originalTargetSerId = null;
-
-			if (inst1Toinst2.get(p.getOutputInst()) != null) {
-				originalTargetSerId = instToServMap.get(inst1Toinst2.get(p.getOutputInst()));
-				p.setTargetServiceID(originalTargetSerId);
-
-			} else {
-				originalTargetSerId = instToServMap.get(inst1Toinst2.inverse().get(p.getOutputInst()));
-				p.setTargetServiceID(originalTargetSerId);
-
+		
+		// map the inst from replacement to orignalSerId
+		groupedParaConnList.forEach(groupedParaConn -> groupedParaConn.setSetOriTargetSerId(false));
+		
+		for (Entry<String, String> inst : instToServMap.entries()) {
+			for (ParamterConn p : groupedParaConnList) {
+				String orginalInst = inst1Toinst2.get(p.getOutputInst());
+				if ((inst.getKey() == orginalInst) && p.isSetOriTargetSerId() == false) {
+//					System.out.println("key: "+inst.getKey()+";  value"+inst.getValue());
+					p.setTargetServiceID(inst.getValue());
+					p.setSetOriTargetSerId(true);
+					originalTargetSerIdSet.add(inst.getValue());
+					break;
+				}
 			}
-
-			if(originalTargetSerId!=null){
-			originalTargetSerIdSet.add(originalTargetSerId);
-			}
-
 		}
+
+//		groupedParaConnList.forEach(groupedParaConn -> System.out.println(groupedParaConn.getSourceServiceID()+";"+groupedParaConn.getTargetServiceID()));
 
 		List<ServiceEdge> updatedSerEdgeList = new ArrayList<ServiceEdge>();
 		// Edge are needed for each sourceService

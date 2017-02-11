@@ -11,6 +11,7 @@ public class ParamterConn {
 	String OriginalTargetServiceId;
 	
 	boolean isConsidered;
+	boolean isSetOriTargetSerId;
 
 	public double getSimilarity() {
 		return similarity;
@@ -74,6 +75,14 @@ public class ParamterConn {
 
 	public void setOriginalTargetServiceId(String originalTargetServiceId) {
 		OriginalTargetServiceId = originalTargetServiceId;
+	}
+
+	public boolean isSetOriTargetSerId() {
+		return isSetOriTargetSerId;
+	}
+
+	public void setSetOriTargetSerId(boolean isSetOriTargetSerId) {
+		this.isSetOriTargetSerId = isSetOriTargetSerId;
 	}
 
 }
