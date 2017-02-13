@@ -253,7 +253,7 @@ public class WSCIndividual extends GPIndividual {
 	}
 
 	// Replace the GPNodes and associated semantic edges
-	public void replaceNode4Crossover(GPNode node, GPNode replacement, BiMap<String, String> inst1Toinst2) {
+	public void replaceNode4Crossover(GPNode node, GPNode replacement, BiMap<String, String> inst1Toinst2, GPNode tree) {
 		// Perform replacement if neither node is not null
 		if (node != null && replacement != null) {
 
@@ -394,7 +394,10 @@ public class WSCIndividual extends GPIndividual {
 				}
 
 			} else {
+				
+				
 
+				
 				replacement = (GPNode) replacement.clone();
 
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();

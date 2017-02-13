@@ -73,6 +73,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			WSCIndividual t1 = ((WSCIndividual) inds1[x]);
 			WSCIndividual t2 = ((WSCIndividual) inds2[x]);
 			// Find all nodes from both candidates
+			
 			List<GPNode> allT1Nodes = t1.getFiltedTreeNodes();
 			List<GPNode> allT2Nodes = t2.getFiltedTreeNodes();
 
@@ -92,6 +93,10 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				System.err.println("inst1Toinst2 Size:" + inst1Toinst2.size());
 			}
 
+			WSCInitializer j1 = (WSCInitializer)(inds1[0].clone());
+
+			
+			
 			// state.output.println(" -----------replace part from A:" + nodeT1,
 			// 0);
 			// state.output.println(" -----------replace part from B:" +
@@ -105,10 +110,10 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			state.output.println(" old B:" + t2.toString(), 0);
 
 			// Perform replacement in both individuals
-			t1.replaceNode4Crossover(nodeT1, replacementT2, inst1Toinst2.inverse());
+			t1.replaceNode4Crossover(nodeT1, replacementT2, inst1Toinst2.inverse(),t1.trees[0].child);
 			state.output.println(" new A:"+t1.toString(), 0);
 
-			t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2);
+			t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2, t2.trees[0].child);
 			state.output.println(" new B:"+t2.toString(), 0);
 
 			// t2.replaceNode(nodeT2, replacementT1);
