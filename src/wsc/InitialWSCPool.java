@@ -176,8 +176,7 @@ public class InitialWSCPool {
 	 * @param givenoutput
 	 * @return
 	 */
-	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph, List<String> requiredOutput,
-			Map<String, String> Inst2TargetSerMap) {
+	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph, List<String> requiredOutput) {
 		pConnList.clear();
 		requiredOutputList.clear();
 		int taskMatchCount = 0;
@@ -203,12 +202,12 @@ public class InitialWSCPool {
 						pConn.setOutputInst(outputInst);
 						pConn.setOutputrequ(outputrequ);
 
-						
+
 						// set up orgiginal TargetServiceId only for mutation in case of mutation on service Node
-						if (Inst2TargetSerMap.get(outputrequ) != null) {
-							pConn.setOriginalTargetServiceId(Inst2TargetSerMap.get(outputrequ));
-//							 System.out.println("outputrequ map to Orignal Service"+ pConn.getOriginalTargetServiceId());
-						}
+//						if (Inst2TargetSerMap.get(outputrequ) != null) {
+//							pConn.setOriginalTargetServiceId(Inst2TargetSerMap.get(outputrequ));
+////							 System.out.println("outputrequ map to Orignal Service"+ pConn.getOriginalTargetServiceId());
+//						}
 						if (graphOutputListMap.get(outputInst) == null) {
 							pConn.setSourceServiceID("startNode");
 							// System.err.println(outputInst+"Inst not in the
@@ -330,7 +329,7 @@ public class InitialWSCPool {
 	}
 
 	public void createGraphService4Mutation(List<String> combinedInputs, List<String> combinedOutputs,
-			DirectedGraph<String, ServiceEdge> directedGraph, Map<String, String> Inst2TargetSerMap) {
+			DirectedGraph<String, ServiceEdge> directedGraph) {
 
 		graphOutputList.clear();
 		graphOutputListMap.clear();
@@ -356,11 +355,45 @@ public class InitialWSCPool {
 				System.err.println("No service is usable now");
 				return;
 			}
-			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs, Inst2TargetSerMap);
+			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs);
+
 
 		} while (!goalSatisfied);
 
 	}
+
+//	public void createGraphService4Mutation(List<String> combinedInputs, List<String> combinedOutputs,
+//			DirectedGraph<String, ServiceEdge> directedGraph, Map<String, String> Inst2TargetSerMap) {
+//
+//		graphOutputList.clear();
+//		graphOutputListMap.clear();
+//		serviceCandidates.clear();
+//
+//		graphOutputList.addAll(combinedInputs);
+//
+//		// SWSPool swsPool = new SWSPool();
+//
+//		// SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
+//		serviceCandidates.addAll(serviceSequence);
+//		Collections.shuffle(serviceCandidates, WSCInitializer.random);
+//		// Collections.sort(serviceCandidates);
+//
+//		boolean goalSatisfied;
+//
+//		directedGraph.addVertex("startNode");
+//
+//		do {
+//			Service service = swsPool.createGraphService4Mutation(graphOutputList, serviceCandidates,
+//					this.semanticsPool, directedGraph, graphOutputListMap, combinedInputs);
+//			if (service == null) {
+//				System.err.println("No service is usable now");
+//				return;
+//			}
+//			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs, Inst2TargetSerMap);
+//
+//		} while (!goalSatisfied);
+//
+//	}
 
 	public void createGraphService(List<String> taskInput, List<String> taskOutput,
 			DirectedGraph<String, ServiceEdge> directedGraph, float[] weights, Map<String, Integer> serviceToIndexMap) {

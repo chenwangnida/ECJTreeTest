@@ -79,11 +79,11 @@ public class WSCSpecies extends Species {
 		return graph;
 	}
 
-	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> combinedInputs, List<String> combinedOuputs, Map<String, String> Inst2TargetSerMap) {
+	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> combinedInputs, List<String> combinedOuputs) {
 
 		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
 
-		init.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph, Inst2TargetSerMap);
+		init.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph);
 		// init.initialWSCPool.createGraphService(WSCInitializer.taskInput,
 		// WSCInitializer.taskOutput, graph);
 
@@ -99,6 +99,27 @@ public class WSCSpecies extends Species {
 
 		return graph;
 	}
+
+//	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> combinedInputs, List<String> combinedOuputs, Map<String, String> Inst2TargetSerMap) {
+//
+//		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
+//
+//		init.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph, Inst2TargetSerMap);
+//		// init.initialWSCPool.createGraphService(WSCInitializer.taskInput,
+//		// WSCInitializer.taskOutput, graph);
+//
+//		while (true) {
+//			List<String> dangleVerticeList = dangleVerticeList(graph);
+//			if (dangleVerticeList.size() == 0) {
+//				break;
+//			}
+//			removeCurrentdangle(graph, dangleVerticeList);
+//		}
+//
+//		graph.removeEdge("startNode", "endNode");
+//
+//		return graph;
+//	}
 
 	/**
 	 * Indirectly recursive method that transforms this GraphNode and all nodes

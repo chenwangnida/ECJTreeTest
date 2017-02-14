@@ -54,34 +54,34 @@ public class WSCMutationPipeline extends BreedingPipeline {
 		for (int q = start; q < n + start; q++) {
 			WSCIndividual tree = (WSCIndividual) inds[q];
 			WSCSpecies species = (WSCSpecies) tree.species;
-			// System.out.println("old tree:"+tree.toString());;
+//			 System.out.println("old tree:"+tree.toString());;
 
 			// Randomly select a node in the tree to be mutation
 			List<GPNode> allNodes = tree.getFiltedTreeNodes();
 			int selectedIndex = WSCInitializer.random.nextInt(allNodes.size());
 			GPNode selectedNode = allNodes.get(selectedIndex);
 			InOutNode ioNode = (InOutNode) selectedNode;
-			
-			
+
+
 			// obtain the target Services of selected Node, if the selected Node
 			// is a service node and put in a map
-			Map<String, String> Inst2TargetSerMap = new HashMap<String, String>();
-			if (selectedNode instanceof ServiceGPNode) {
-				List<ServiceEdge> outgoingEdgeOfSelectNode = ((ServiceGPNode) selectedNode).getSemanticEdges();
-				for (ServiceEdge serEdge : outgoingEdgeOfSelectNode) {
-					for (ParamterConn pConn : serEdge.getpConnList()) {
-						String outputInst = pConn.getOutputInst();
-						String targetSerId = pConn.getTargetServiceID();
-						if (outputInst == null || outputInst.equals("") || targetSerId == null
-								|| targetSerId.equals("")) {
-							System.err.println("outputInst or outTargetSerId is NULL");
-						}
-//						System.err.println("outputInst or outTargetSerId is "+ outputInst+"->"+targetSerId );
-						Inst2TargetSerMap.put(outputInst, targetSerId);
-					}
-
-				}
-			}
+//			Map<String, String> Inst2TargetSerMap = new HashMap<String, String>();
+//			if (selectedNode instanceof ServiceGPNode) {
+//				List<ServiceEdge> outgoingEdgeOfSelectNode = ((ServiceGPNode) selectedNode).getSemanticEdges();
+//				for (ServiceEdge serEdge : outgoingEdgeOfSelectNode) {
+//					for (ParamterConn pConn : serEdge.getpConnList()) {
+//						String outputInst = pConn.getOutputInst();
+//						String targetSerId = pConn.getTargetServiceID();
+//						if (outputInst == null || outputInst.equals("") || targetSerId == null
+//								|| targetSerId.equals("")) {
+//							System.err.println("outputInst or outTargetSerId is NULL");
+//						}
+////						System.err.println("outputInst or outTargetSerId is "+ outputInst+"->"+targetSerId );
+//						Inst2TargetSerMap.put(outputInst, targetSerId);
+//					}
+//
+//				}
+//			}
 
 			// Combine the input from the node with the overall task input, as
 			// the latter is available from anywhere
@@ -99,8 +99,8 @@ public class WSCMutationPipeline extends BreedingPipeline {
 				}
 
 			}
-			
-			//required outputs 
+
+			//required outputs
 
 			for (ServiceOutput oNode : ioNode.getOutputs()) {
 				combinedoutputs.add(oNode.getOutput());
@@ -124,19 +124,21 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			// }
 			// System.out.println("");
 
-			ServiceGraph graph4Mutation = species.Graph4Mutation(init, Inputs4Node, outputs4Node, Inst2TargetSerMap);
+//			ServiceGraph graph4Mutation = species.Graph4Mutation(init, Inputs4Node, outputs4Node, Inst2TargetSerMap);
+			ServiceGraph graph4Mutation = species.Graph4Mutation(init, Inputs4Node, outputs4Node);
 
-			// System.out.println(" @mutation
-			// graph:"+graph4Mutation.toString());;
+
+//			 System.out.println(" @mutation graph:"+graph4Mutation.toString());;
 
 			// GPNode tree4Mutation = species.toTree4Mutation("startNode",
 			// graph4Mutation);
 			GPNode tree4Mutation = species.toWeightedTree("startNode", graph4Mutation);
+//			System.out.println(tree4Mutation.toString());
 
 			// Replace the old tree with the new one
 			tree.replaceNode4Mutation(selectedNode, tree4Mutation);
-			// System.out.println("new tree:"+tree.toString());;
-			// System.out.println("_________________________________________________________________________________________________________");
+//			 System.out.println("new tree:"+tree.toString());;
+//			 System.out.println("_________________________________________________________________________________________________________");
 
 			tree.evaluated = false;
 

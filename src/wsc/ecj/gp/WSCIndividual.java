@@ -394,10 +394,10 @@ public class WSCIndividual extends GPIndividual {
 				}
 
 			} else {
-				
-				
 
-				
+
+
+
 				replacement = (GPNode) replacement.clone();
 
 				List<ServiceEdge> EdgeOfsourceOfReplacement = ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
@@ -472,28 +472,28 @@ public class WSCIndividual extends GPIndividual {
 			// replacement = (GPNode) replacement.clone();
 
 			GPNode[] replacementList = replacement.children.clone();
-			List<ServiceEdge> InComingEdgeOfReplaceNode = null;
+//			List<ServiceEdge> InComingEdgeOfReplaceNode = null;
 
 			// obain semantic Edge and replace part of replaceNode
 			for (GPNode gpNode : replacementList) {
-				if (gpNode instanceof SequenceGPNode) {
+				if (!(gpNode instanceof ServiceGPNode)) {
 					// update the replacement without including the startNode
 					// and associated sequenceNode
 					replacement = gpNode;
 				}
 
-				if (gpNode instanceof ServiceGPNode) {
-					// obtain inComingEdge of StartNode from graph4Mutation
-					InComingEdgeOfReplaceNode = ((ServiceGPNode) gpNode).getSemanticEdges();
-				}
+//				if (gpNode instanceof ServiceGPNode) {
+//					// obtain inComingEdge of StartNode from graph4Mutation
+//					InComingEdgeOfReplaceNode = ((ServiceGPNode) gpNode).getSemanticEdges();
+//				}
 			}
 
-			GPNode sourceOfNode = getSourceGPNode(node);
+//			GPNode sourceOfNode = getSourceGPNode(node);
 
 			// update the outgoing edges of source node Of node regardless node
 			// is service node or functional node
 
-			updateWeightsOfSourceNode(sourceOfNode, node, InComingEdgeOfReplaceNode);
+//			updateWeightsOfSourceNode(sourceOfNode, node, InComingEdgeOfReplaceNode);
 
 			// mutate on service node
 			if (node instanceof ServiceGPNode) {
@@ -501,7 +501,7 @@ public class WSCIndividual extends GPIndividual {
 				// mutation the service dependency on several targetNode of
 				// selected
 				// nodes only considered in case of mutation on service node
-				updateWeightsOfTargetNodes(replacement);
+//				updateWeightsOfTargetNodes(replacement);
 
 				GPNode pNode = (GPNode) node.parent;
 				GPNode ppNode = (GPNode) pNode.parent;
