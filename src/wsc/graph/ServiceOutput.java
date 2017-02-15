@@ -3,7 +3,16 @@ package wsc.graph;
 public class ServiceOutput {
 
 	private String output;
+	private String serviceId;
 	boolean isSatified;
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
+	}
 
 	public ServiceOutput(String output, boolean isSatified) {
 		super();

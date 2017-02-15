@@ -1,11 +1,20 @@
 package wsc.ecj.gp;
 
 import ec.util.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import ec.*;
 import ec.gp.*;
 import ec.simple.*;
 import wsc.data.pool.Service;
+import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
+import wsc.graph.ServiceInput;
+import wsc.graph.ServiceOutput;
 
 public class WSC extends GPProblem implements SimpleProblemForm {
 
@@ -30,9 +39,16 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			GPIndividual gpInd = (GPIndividual) ind;
 
-//			state.output.println("Evaluate new Individual:" + gpInd.toString(), 0);
+			// state.output.println("Evaluate new Individual:" +
+			// gpInd.toString(), 0);
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
+
+			// evaluate semantic matchmaking quality
+			Set<ServiceEdge> semanticEdges = calculateSemanticQuality(gpInd);
+
+			// evaluate QoS
+
 			double[] qos = new double[4];
 			qos[WSCInitializer.TIME] = input.maxTime;
 			qos[WSCInitializer.AVAILABILITY] = 1.0;
@@ -40,13 +56,15 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			double mt = 1.0;
 			double dst = 0.0; // Exact Match dst = 1 ;
-			for (ServiceEdge semanticQuality : input.semanticEdges) {
+			// for (ServiceEdge semanticQuality : input.semanticEdges) {
+			for (ServiceEdge semanticQuality : semanticEdges) {
 				mt *= semanticQuality.getAvgmt();
 				dst += semanticQuality.getAvgsdt();
 
 			}
 
-			dst = dst / (input.semanticEdges.size());
+			// dst = dst / (input.semanticEdges.size());
+			dst = dst / (semanticEdges.size());
 			// System.out.println("semantic edge Size :"+
 			// input.semanticEdges.size());
 
@@ -59,25 +77,25 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			double fitness = calculateFitness(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
 					qos[WSCInitializer.TIME], qos[WSCInitializer.COST], mt, dst, init);
 
-//			state.output.println("fitnessValue:"+fitness, 0);
+			// state.output.println("fitnessValue:"+fitness, 0);
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 
 			// String fitnessStr = fitness + "";
 			// String f0 = "0.8329982119033941";
 			// if (fitnessStr.startsWith(f0)) {
-//			 double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
-//			 qos[WSCInitializer.RELIABILITY],
-//			 qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-//			 double smvalue = calculateSM(mt, dst, init);
-//			 state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
-//			 smvalue, 0);
+			// double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
+			// qos[WSCInitializer.RELIABILITY],
+			// qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+			// double smvalue = calculateSM(mt, dst, init);
+			// state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
+			// smvalue, 0);
 			//
 			// for (ServiceEdge semanticQuality : input.semanticEdges) {
 			// System.out.println("avgmt:" + semanticQuality.getAvgmt() +
 			// ";avgdst:" + semanticQuality.getAvgsdt());
 			//
-			//  }
+			// }
 			//
 			// }
 
@@ -98,6 +116,55 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 	// (init.w4 * c));
 	// return fitness;
 	// }
+
+	private Set<ServiceEdge> calculateSemanticQuality(GPIndividual gpInd) {
+		// get all serviceNodes not including endNodes
+		List<GPNode> serNodes = ((WSCIndividual) gpInd).getAllServiceGPNodes();
+		Set<ServiceEdge> serviceEdgeSet = new HashSet<ServiceEdge>();
+		int situation = 0;
+
+		for (GPNode serNode : serNodes) {
+			InOutNode serIO = (InOutNode) serNode;
+			InOutNode serParentIO = (InOutNode) (serNode.parent);
+			GPNode parentNode = (GPNode) (serNode.parent);
+
+			String sourceSerId = ((ServiceGPNode) serIO).getSerName();
+			if (sourceSerId == "startNode") {
+				situation = 1;
+			} else if ((parentNode.children[0] instanceof ServiceGPNode)
+					&& (parentNode.children[1] instanceof ServiceGPNode)) {
+				situation = 3;
+
+			} else {
+				situation = 2;
+			}
+
+			switch (situation) {
+			case 1:
+				List<ServiceOutput> serOutput1 = new ArrayList<ServiceOutput>();
+				WSCInitializer.taskInput
+						.forEach(taskInputStr -> serOutput1.add(new ServiceOutput(taskInputStr, false)));
+				List<ServiceInput> parentReuqiredInput1 = serParentIO.getInputs();
+				serviceEdgeSet = aggregateSemanticLink(parentReuqiredInput1, serOutput1, sourceSerId);
+				break;
+			case 2:
+				List<ServiceOutput> serOutput2 = serIO.getOutputs();
+				List<ServiceInput> parentReuqiredInput2 = new ArrayList<ServiceInput>();
+				WSCInitializer.taskOutput
+						.forEach(taskOutputStr -> parentReuqiredInput2.add(new ServiceInput(taskOutputStr, false)));
+				serviceEdgeSet = aggregateSemanticLink(parentReuqiredInput2, serOutput2, sourceSerId);
+				break;
+			case 3:
+				List<ServiceOutput> serOutput3 = serIO.getOutputs();
+				List<ServiceInput> parentReuqiredInput3 = serParentIO.getInputs();
+				serviceEdgeSet = aggregateSemanticLink(parentReuqiredInput3, serOutput3, sourceSerId);
+				break;
+
+			}
+
+		}
+		return serviceEdgeSet;
+	}
 
 	private double calculateFitness(double a, double r, double t, double c, double mt, double dst,
 			WSCInitializer init) {
@@ -225,4 +292,106 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 	// else
 	// return (init.maxCost - cost)/(init.maxCost - init.minCost);
 	// }
+	/**
+	 * check whether output is required by the defined required Output
+	 *
+	 * @param givenoutput
+	 * @return
+	 */
+	private Set<ServiceEdge> aggregateSemanticLink(List<ServiceInput> parentReuqiredInput,
+			List<ServiceOutput> serOutput, String sourceSerId) {
+		List<ParamterConn> pConnList = new ArrayList<ParamterConn>();
+		Set<String> targetSerIdSet = new HashSet<String>();
+		Set<ServiceEdge> serEdgeList = new HashSet<ServiceEdge>();
+
+		int taskMatchCount = 0;
+		double summt;
+		double sumdst;
+
+		parentReuqiredInput.forEach(parentI -> parentI.setSatified(false));
+		serOutput.forEach(serO -> serO.setSatified(false));
+
+		for (int j = 0; j < serOutput.size(); j++) {
+
+			ServiceOutput serOutputProvided = serOutput.get(j);
+
+			for (int i = 0; i < parentReuqiredInput.size(); i++) {
+				ServiceInput parentInputReuqired = parentReuqiredInput.get(i);
+
+				String inputrequired = parentInputReuqired.getInput();
+				String targetSerId = parentInputReuqired.getServiceId();
+
+				if (!parentInputReuqired.isSatified()) {
+
+					String outputInst = serOutput.get(j).getOutput();
+					ParamterConn pConn = WSCInitializer.getInitialWSCPool().getSemanticsPool()
+							.searchSemanticMatchTypeFromInst(outputInst, inputrequired);
+
+					boolean foundmatched = pConn.isConsidered();
+					if (foundmatched) {
+						serOutputProvided.setSatified(true);
+						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG,
+								outputInst, inputrequired, WSCInitializer.getInitialWSCPool().getSemanticsPool());
+
+						// if (graphOutputListMap.get(outputInst) == null) {
+						// pConn.setSourceServiceID("startNode");
+						// System.err.println(outputInst+"Inst not in the
+						// map");
+						// } else {
+						pConn.setSourceServiceID(sourceSerId);
+						pConn.setTargetServiceID(targetSerId);
+						pConn.setSimilarity(similarity);
+						pConnList.add(pConn);
+						// break ;
+					}
+				}
+			}
+		}
+
+		for (ServiceOutput tOutput : serOutput) {
+			boolean sf = tOutput.isSatified();
+			if (sf == true) {
+				taskMatchCount++;
+			}
+		}
+
+		if (taskMatchCount == serOutput.size()) {
+
+			for (ParamterConn p : pConnList) {
+				String targetSerId = p.getTargetServiceID();
+				targetSerIdSet.add(targetSerId);
+			}
+
+			for (String targetSerId : targetSerIdSet) {
+				ServiceEdge serEdge = new ServiceEdge(0, 0);
+				serEdge.setSourceService(sourceSerId);
+				serEdge.setTargetService(targetSerId);
+				for (ParamterConn p : pConnList) {
+					if (p.getTargetServiceID().equals(targetSerId)) {
+						serEdge.getpConnList().add(p);
+					}
+				}
+				serEdgeList.add(serEdge);
+			}
+
+			for (ServiceEdge edge : serEdgeList) {
+				summt = 0.00;
+				sumdst = 0.00;
+				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
+					ParamterConn pCo = edge.getpConnList().get(i1);
+					// pCo.setTargetServiceID("endNode");
+					// set OriginalTargetServiceId from the node selected for
+					// mutation.
+					summt += pCo.getMatchType();
+					sumdst += pCo.getSimilarity();
+
+				}
+				int count = edge.getpConnList().size();
+				edge.setAvgmt(summt / count);
+				edge.setAvgsdt(sumdst / count);
+			}
+		}
+		return serEdgeList;
+
+	}
 }

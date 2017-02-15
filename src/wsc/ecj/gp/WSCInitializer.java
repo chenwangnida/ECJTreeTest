@@ -64,7 +64,7 @@ public class WSCInitializer extends GPInitializer {
 	public static double MAXINUM_MATCHTYPE = 1;
 	public static double MAXINUM_SEMANTICDISTANCE = 1;
 
-	public InitialWSCPool initialWSCPool;
+	public static InitialWSCPool initialWSCPool;
 
 	public static DirectedGraph<String, DefaultEdge> ontologyDAG;
 	public static final String rootconcept = "TOPNODE";
@@ -89,7 +89,7 @@ public class WSCInitializer extends GPInitializer {
 	public double w5;
 	public double w6;
 
-	public InitialWSCPool getInitialWSCPool() {
+	public static InitialWSCPool getInitialWSCPool() {
 		return initialWSCPool;
 	}
 
@@ -317,9 +317,12 @@ public class WSCInitializer extends GPInitializer {
 
 	private void MapServiceToQoS(List<Service> serviceList) {
 		for (Service service : serviceList) {
+			service.getInputList().forEach(input->input.setServiceId(service.getServiceID()));
+			service.getOutputList().forEach(output->output.setServiceId(service.getServiceID()));
 			serviceMap.put(service.getServiceID(), service);
 			serviceQoSMap.put(service.getServiceID(), service.getQos());
 		}
+		
 	}
 
 	private void calculateNormalisationBounds(List<Service> services, int instSize) {

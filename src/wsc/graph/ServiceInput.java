@@ -3,6 +3,7 @@ package wsc.graph;
 public class ServiceInput {
 
 	private String input;
+	private String serviceId;
 	boolean isSatified;
 
 	public ServiceInput(String input, boolean isSatified) {
@@ -25,6 +26,14 @@ public class ServiceInput {
 
 	public void setSatified(boolean isSatified) {
 		this.isSatified = isSatified;
+	}
+
+	public String getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(String serviceId) {
+		this.serviceId = serviceId;
 	}
 
 	@Override

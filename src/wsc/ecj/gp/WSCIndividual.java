@@ -123,6 +123,36 @@ public class WSCIndividual extends GPIndividual {
 		return allNodes;
 	}
 
+	
+	//this services node does not include end node
+	public List<GPNode> getAllServiceGPNodes() {
+		List<GPNode> allNodes = new ArrayList<GPNode>();
+		AddChildNodes(trees[0].child, allNodes);
+
+		List<GPNode> removedNodeList = new ArrayList<GPNode>();
+		for (int i = 0; i < allNodes.size(); i++) {
+			GPNode filteredChild = allNodes.get(i);
+			if (filteredChild instanceof ServiceGPNode) {
+				ServiceGPNode sgp = (ServiceGPNode) filteredChild;
+				if (sgp.getSerName().equals("endNode")) {
+					// initial variable endParentNodeList
+					removedNodeList.add((GPNode) sgp.parent);
+					// remove endNode
+					removedNodeList.add(allNodes.get(i));
+				}
+			}
+			if (filteredChild instanceof SequenceGPNode) {
+				removedNodeList.add(filteredChild);
+			}
+			if (filteredChild instanceof ParallelGPNode) {
+				removedNodeList.add(filteredChild);
+			}
+		}
+
+		allNodes.removeAll(removedNodeList);
+
+		return allNodes;
+	}
 	public List<GPNode> getOnlyServiceGPNodes(GPNode replacement) {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
 		AddChildNodes(replacement, allNodes);
