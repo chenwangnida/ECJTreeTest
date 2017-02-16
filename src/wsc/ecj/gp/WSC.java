@@ -81,23 +81,28 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 
-			// String fitnessStr = fitness + "";
-			// String f0 = "0.8329982119033941";
-			// if (fitnessStr.startsWith(f0)) {
-			// double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
-			// qos[WSCInitializer.RELIABILITY],
-			// qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-			// double smvalue = calculateSM(mt, dst, init);
-			// state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
-			// smvalue, 0);
-			//
-			// for (ServiceEdge semanticQuality : input.semanticEdges) {
-			// System.out.println("avgmt:" + semanticQuality.getAvgmt() +
-			// ";avgdst:" + semanticQuality.getAvgsdt());
-			//
-			// }
-			//
-			// }
+			String fitnessStr = fitness + "";
+			String f0 = "0.8329982119033941";
+			if (fitnessStr.startsWith(f0)) {
+				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
+						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+				double smvalue = calculateSM(mt, dst, init);
+				state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" + smvalue, 0);
+				
+				for (Service s : input.seenServices) {
+					qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
+					qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
+					qos[WSCInitializer.RELIABILITY] *= s.qos[WSCInitializer.RELIABILITY];
+				}
+				
+				input.seenServices.forEach(ser->System.out.print(ser.getServiceID()+";"));
+				for (ServiceEdge semanticQuality : semanticEdges) {
+					System.out.println(semanticQuality.getSourceService() + "->" + semanticQuality.getTargetService()
+							+ ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" + semanticQuality.getAvgsdt());
+
+				}
+
+			}
 
 			f.setFitness(state, fitness, false);
 			// f.setStandardizedFitness(state, fitness);
@@ -125,19 +130,19 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 		for (GPNode serNode : serNodes) {
 			InOutNode serIO = (InOutNode) serNode;
-			//obtain the neighbor node
+			// obtain the neighbor node
 			GPNode parentNode = (GPNode) (serNode.parent);
 			GPNode neighborNode;
-			if(parentNode.children[0] == serNode){
+			if (parentNode.children[0] == serNode) {
 				neighborNode = parentNode.children[1];
-			}else{
+			} else {
 				neighborNode = parentNode.children[0];
 			}
-			
+
 			InOutNode neighborNodeIO = (InOutNode) (neighborNode);
 
 			String sourceSerId = ((ServiceGPNode) serIO).getSerName();
-		
+
 			if (sourceSerId == "startNode") {
 				situation = 1;
 			} else if ((parentNode.children[0] instanceof ServiceGPNode)
@@ -162,7 +167,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 				List<ServiceInput> neighborNodeInput2 = new ArrayList<ServiceInput>();
 				WSCInitializer.taskOutput
 						.forEach(taskOutputStr -> neighborNodeInput2.add(new ServiceInput(taskOutputStr, false)));
-				neighborNodeInput2.forEach(endNode->endNode.setServiceId("endNode"));
+				neighborNodeInput2.forEach(endNode -> endNode.setServiceId("endNode"));
 				serviceEdgeSet.addAll(aggregateSemanticLink(neighborNodeInput2, serOutput2, sourceSerId));
 				break;
 			case 3:
@@ -193,12 +198,13 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 	}
 
 	private double calculateQoS(double a, double r, double t, double c, WSCInitializer init) {
+		System.out.println("Before :a:" + a + "r:" + r + "t:" + t + "c:" + c);
 
 		a = normaliseAvailability(a);
 		r = normaliseReliability(r);
 		t = normaliseTime(t);
 		c = normaliseCost(c);
-
+		System.out.println("a:" + a + "r:" + r + "t:" + t + "c:" + c);
 		double fitness = init.w1 * a + init.w2 * r + init.w3 * t + init.w4 * c;
 
 		return fitness;
@@ -309,8 +315,8 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 	 * @param givenoutput
 	 * @return
 	 */
-	private Set<ServiceEdge> aggregateSemanticLink(List<ServiceInput> neighborNodeInput,
-			List<ServiceOutput> serOutput, String sourceSerId) {
+	private Set<ServiceEdge> aggregateSemanticLink(List<ServiceInput> neighborNodeInput, List<ServiceOutput> serOutput,
+			String sourceSerId) {
 		List<ParamterConn> pConnList = new ArrayList<ParamterConn>();
 		Set<String> targetSerIdSet = new HashSet<String>();
 		Set<ServiceEdge> serEdgeList = new HashSet<ServiceEdge>();
