@@ -125,18 +125,27 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 		for (GPNode serNode : serNodes) {
 			InOutNode serIO = (InOutNode) serNode;
-			InOutNode serParentIO = (InOutNode) (serNode.parent);
+			//obtain the neighbor node
 			GPNode parentNode = (GPNode) (serNode.parent);
+			GPNode neighborNode;
+			if(parentNode.children[0] == serNode){
+				neighborNode = parentNode.children[1];
+			}else{
+				neighborNode = parentNode.children[0];
+			}
+			
+			InOutNode neighborNodeIO = (InOutNode) (neighborNode);
 
 			String sourceSerId = ((ServiceGPNode) serIO).getSerName();
+		
 			if (sourceSerId == "startNode") {
 				situation = 1;
 			} else if ((parentNode.children[0] instanceof ServiceGPNode)
 					&& (parentNode.children[1] instanceof ServiceGPNode)) {
-				situation = 3;
+				situation = 2;
 
 			} else {
-				situation = 2;
+				situation = 3;
 			}
 
 			switch (situation) {
@@ -144,20 +153,22 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 				List<ServiceOutput> serOutput1 = new ArrayList<ServiceOutput>();
 				WSCInitializer.taskInput
 						.forEach(taskInputStr -> serOutput1.add(new ServiceOutput(taskInputStr, false)));
-				List<ServiceInput> parentReuqiredInput1 = serParentIO.getInputs();
-				serviceEdgeSet = aggregateSemanticLink(parentReuqiredInput1, serOutput1, sourceSerId);
+				serOutput1.forEach(serO -> serO.setServiceId("startNode"));
+				List<ServiceInput> neighborNodeInput1 = neighborNodeIO.getInputs();
+				serviceEdgeSet.addAll(aggregateSemanticLink(neighborNodeInput1, serOutput1, sourceSerId));
 				break;
 			case 2:
 				List<ServiceOutput> serOutput2 = serIO.getOutputs();
-				List<ServiceInput> parentReuqiredInput2 = new ArrayList<ServiceInput>();
+				List<ServiceInput> neighborNodeInput2 = new ArrayList<ServiceInput>();
 				WSCInitializer.taskOutput
-						.forEach(taskOutputStr -> parentReuqiredInput2.add(new ServiceInput(taskOutputStr, false)));
-				serviceEdgeSet = aggregateSemanticLink(parentReuqiredInput2, serOutput2, sourceSerId);
+						.forEach(taskOutputStr -> neighborNodeInput2.add(new ServiceInput(taskOutputStr, false)));
+				neighborNodeInput2.forEach(endNode->endNode.setServiceId("endNode"));
+				serviceEdgeSet.addAll(aggregateSemanticLink(neighborNodeInput2, serOutput2, sourceSerId));
 				break;
 			case 3:
 				List<ServiceOutput> serOutput3 = serIO.getOutputs();
-				List<ServiceInput> parentReuqiredInput3 = serParentIO.getInputs();
-				serviceEdgeSet = aggregateSemanticLink(parentReuqiredInput3, serOutput3, sourceSerId);
+				List<ServiceInput> neighborNodeInput3 = neighborNodeIO.getInputs();
+				serviceEdgeSet.addAll(aggregateSemanticLink(neighborNodeInput3, serOutput3, sourceSerId));
 				break;
 
 			}
@@ -298,40 +309,38 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 	 * @param givenoutput
 	 * @return
 	 */
-	private Set<ServiceEdge> aggregateSemanticLink(List<ServiceInput> parentReuqiredInput,
+	private Set<ServiceEdge> aggregateSemanticLink(List<ServiceInput> neighborNodeInput,
 			List<ServiceOutput> serOutput, String sourceSerId) {
 		List<ParamterConn> pConnList = new ArrayList<ParamterConn>();
 		Set<String> targetSerIdSet = new HashSet<String>();
 		Set<ServiceEdge> serEdgeList = new HashSet<ServiceEdge>();
 
-		int taskMatchCount = 0;
 		double summt;
 		double sumdst;
 
-		parentReuqiredInput.forEach(parentI -> parentI.setSatified(false));
+		neighborNodeInput.forEach(parentI -> parentI.setSatified(false));
 		serOutput.forEach(serO -> serO.setSatified(false));
 
 		for (int j = 0; j < serOutput.size(); j++) {
 
-			ServiceOutput serOutputProvided = serOutput.get(j);
+			String outputInst = serOutput.get(j).getOutput();
 
-			for (int i = 0; i < parentReuqiredInput.size(); i++) {
-				ServiceInput parentInputReuqired = parentReuqiredInput.get(i);
+			for (int i = 0; i < neighborNodeInput.size(); i++) {
+				ServiceInput parentInputReuqired = neighborNodeInput.get(i);
 
 				String inputrequired = parentInputReuqired.getInput();
 				String targetSerId = parentInputReuqired.getServiceId();
 
 				if (!parentInputReuqired.isSatified()) {
 
-					String outputInst = serOutput.get(j).getOutput();
 					ParamterConn pConn = WSCInitializer.getInitialWSCPool().getSemanticsPool()
 							.searchSemanticMatchTypeFromInst(outputInst, inputrequired);
+					pConn.setOutputInst(outputInst);
+					pConn.setOutputrequ(inputrequired);
 
 					boolean foundmatched = pConn.isConsidered();
 					if (foundmatched) {
-						serOutputProvided.setSatified(true);
-						double similarity = Service.CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG,
-								outputInst, inputrequired, WSCInitializer.getInitialWSCPool().getSemanticsPool());
+						parentInputReuqired.setSatified(true);
 
 						// if (graphOutputListMap.get(outputInst) == null) {
 						// pConn.setSourceServiceID("startNode");
@@ -340,7 +349,6 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 						// } else {
 						pConn.setSourceServiceID(sourceSerId);
 						pConn.setTargetServiceID(targetSerId);
-						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
 						// break ;
 					}
@@ -348,48 +356,38 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			}
 		}
 
-		for (ServiceOutput tOutput : serOutput) {
-			boolean sf = tOutput.isSatified();
-			if (sf == true) {
-				taskMatchCount++;
-			}
+		for (ParamterConn p : pConnList) {
+			String targetSerId = p.getTargetServiceID();
+			targetSerIdSet.add(targetSerId);
 		}
 
-		if (taskMatchCount == serOutput.size()) {
-
+		for (String targetSerId : targetSerIdSet) {
+			ServiceEdge serEdge = new ServiceEdge(0, 0);
+			serEdge.setSourceService(sourceSerId);
+			serEdge.setTargetService(targetSerId);
 			for (ParamterConn p : pConnList) {
-				String targetSerId = p.getTargetServiceID();
-				targetSerIdSet.add(targetSerId);
-			}
-
-			for (String targetSerId : targetSerIdSet) {
-				ServiceEdge serEdge = new ServiceEdge(0, 0);
-				serEdge.setSourceService(sourceSerId);
-				serEdge.setTargetService(targetSerId);
-				for (ParamterConn p : pConnList) {
-					if (p.getTargetServiceID().equals(targetSerId)) {
-						serEdge.getpConnList().add(p);
-					}
+				if (p.getTargetServiceID().equals(targetSerId)) {
+					serEdge.getpConnList().add(p);
 				}
-				serEdgeList.add(serEdge);
 			}
+			serEdgeList.add(serEdge);
+		}
 
-			for (ServiceEdge edge : serEdgeList) {
-				summt = 0.00;
-				sumdst = 0.00;
-				for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
-					ParamterConn pCo = edge.getpConnList().get(i1);
-					// pCo.setTargetServiceID("endNode");
-					// set OriginalTargetServiceId from the node selected for
-					// mutation.
-					summt += pCo.getMatchType();
-					sumdst += pCo.getSimilarity();
+		for (ServiceEdge edge : serEdgeList) {
+			summt = 0.00;
+			sumdst = 0.00;
+			for (int i1 = 0; i1 < edge.getpConnList().size(); i1++) {
+				ParamterConn pCo = edge.getpConnList().get(i1);
+				// pCo.setTargetServiceID("endNode");
+				// set OriginalTargetServiceId from the node selected for
+				// mutation.
+				summt += pCo.getMatchType();
+				sumdst += pCo.getSimilarity();
 
-				}
-				int count = edge.getpConnList().size();
-				edge.setAvgmt(summt / count);
-				edge.setAvgsdt(sumdst / count);
 			}
+			int count = edge.getpConnList().size();
+			edge.setAvgmt(summt / count);
+			edge.setAvgsdt(sumdst / count);
 		}
 		return serEdgeList;
 

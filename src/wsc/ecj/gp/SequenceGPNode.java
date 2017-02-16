@@ -100,7 +100,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			// System.out.println(""+rd.serviceId);
 
 			if (rd.serviceId.equals("startNode")) {
-				overallServiceEdges.addAll(rd.semanticEdges);
+//				overallServiceEdges.addAll(rd.semanticEdges);
 				continue;
 			}
 

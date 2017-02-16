@@ -109,4 +109,46 @@ public class ServiceEdge extends DefaultEdge implements Cloneable {
 //		return super.toString();
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((SourceService == null) ? 0 : SourceService.hashCode());
+		result = prime * result + ((TargetService == null) ? 0 : TargetService.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(avgmt);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(avgsdt);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ServiceEdge other = (ServiceEdge) obj;
+		if (SourceService == null) {
+			if (other.SourceService != null)
+				return false;
+		} else if (!SourceService.equals(other.SourceService))
+			return false;
+		if (TargetService == null) {
+			if (other.TargetService != null)
+				return false;
+		} else if (!TargetService.equals(other.TargetService))
+			return false;
+		if (Double.doubleToLongBits(avgmt) != Double.doubleToLongBits(other.avgmt))
+			return false;
+		if (Double.doubleToLongBits(avgsdt) != Double.doubleToLongBits(other.avgsdt))
+			return false;
+		return true;
+	}
+
 }

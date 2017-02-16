@@ -82,18 +82,20 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			Collections.shuffle(allT1Nodes, WSCInitializer.random);
 			Collections.shuffle(allT2Nodes, WSCInitializer.random);
 
-			BiMap<String, String> inst1Toinst2 = HashBiMap.create();
+//			BiMap<String, String> inst1Toinst2 = HashBiMap.create();
 
 			// For each t1 node, see if it can be replaced by a t2 node
-			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes, inst1Toinst2);
+//			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes, inst1Toinst2);
+			GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes);
+
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
 
-			if (inst1Toinst2.size() == 0) {
-				System.err.println("inst1Toinst2 Size:" + inst1Toinst2.size());
-			}
+//			if (inst1Toinst2.size() == 0) {
+//				System.err.println("inst1Toinst2 Size:" + inst1Toinst2.size());
+//			}
 
-			WSCInitializer j1 = (WSCInitializer)(inds1[0].clone());
+//			WSCInitializer j1 = (WSCInitializer)(inds1[0].clone());
 
 			
 			
@@ -106,15 +108,19 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			// nodes = findReplacement(init, allT2Nodes, allT1Nodes);
 			// GPNode nodeT2 = nodes[0];
 			// GPNode replacementT1 = nodes[1];
-			state.output.println(" old A:" + t1.toString(), 0);
-			state.output.println(" old B:" + t2.toString(), 0);
+//			state.output.println(" old A:" + t1.toString(), 0);
+//			state.output.println(" old B:" + t2.toString(), 0);
 
 			// Perform replacement in both individuals
-			t1.replaceNode4Crossover(nodeT1, replacementT2, inst1Toinst2.inverse(),t1.trees[0].child);
-			state.output.println(" new A:"+t1.toString(), 0);
+//			t1.replaceNode4Crossover(nodeT1, replacementT2, inst1Toinst2.inverse(),t1.trees[0].child);
+			t1.replaceNode4Crossover(nodeT1, replacementT2);
 
-			t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2, t2.trees[0].child);
-			state.output.println(" new B:"+t2.toString(), 0);
+//			state.output.println(" new A:"+t1.toString(), 0);
+
+//			t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2, t2.trees[0].child);
+			t2.replaceNode4Crossover(replacementT2, nodeT1);
+
+//			state.output.println(" new B:"+t2.toString(), 0);
 
 			// t2.replaceNode(nodeT2, replacementT1);
 
@@ -142,7 +148,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				inds[q + 1].evaluated = false;
 			}
 			// state.output.println(" CROSSOVER !!!!!!!", 0);
-			 state.output.println(" -----------next	crossover---------------------", 0);
+//			 state.output.println(" -----------next	crossover---------------------", 0);
 
 		}
 
@@ -158,6 +164,32 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 
 	}
 
+	public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements) {
+		GPNode[] result = new GPNode[2];
+		outterLoop: for (GPNode node : nodes) {
+			for (GPNode replacement : replacements) {
+				/*
+				 * Check if the inputs of replacement are subsumed by the inputs
+				 * of the node and the outputs of the node are subsumed by the
+				 * outputs of the replacement. This will ensure that the
+				 * replacement has equivalent functionality to the replacement.
+				 */
+				InOutNode ioNode = (InOutNode) node;
+				InOutNode ioReplacement = (InOutNode) replacement;
+				if (IsReplacementFound(init, ioNode, ioReplacement)) {
+					// System.out.println("selected Node ******" +
+					// ioNode.toString());
+					// System.out.println("replaced Node ******" +
+					// ioReplacement.toString());
+					result[0] = node;
+					result[1] = replacement;
+					break outterLoop;
+				}
+			}
+		}
+		return result;
+	}
+	
 	public GPNode[] findReplacement(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements,
 			BiMap<String, String> inst1Toinst2) {
 		GPNode[] result = new GPNode[2];
@@ -206,6 +238,25 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			Replacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(), ioReplacement.getOutputs(),
 					inst1Toinst2);
 		}
+
+		return isInputFound && isOutputFound;
+
+	}
+	// check both the inputs and outputs from node and replacement node are
+	// matched.
+
+	private boolean IsReplacementFound(WSCInitializer init, InOutNode ioNode, InOutNode ioReplacement) {
+		boolean isInputFound = false;
+		boolean isOutputFound = false;
+		// if (ioNode.getInputs() == null) {
+		// System.out.println("toString"+ioNode.toString());
+		//
+		// System.out.println("NULLLLLLLLLLLLLLLLL");
+		// }
+		isInputFound = searchReplacement4Inputs(init.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
+				ioReplacement.getInputs());
+		isOutputFound = searchReplacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
+				ioReplacement.getOutputs());
 
 		return isInputFound && isOutputFound;
 

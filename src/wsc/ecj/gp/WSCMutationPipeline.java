@@ -132,7 +132,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// GPNode tree4Mutation = species.toTree4Mutation("startNode",
 			// graph4Mutation);
-			GPNode tree4Mutation = species.toWeightedTree("startNode", graph4Mutation);
+			GPNode tree4Mutation = species.toSemanticTree("startNode", graph4Mutation);
 //			System.out.println(tree4Mutation.toString());
 
 			// Replace the old tree with the new one
