@@ -1,10 +1,8 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import ec.BreedingPipeline;
@@ -12,8 +10,6 @@ import ec.EvolutionState;
 import ec.Individual;
 import ec.gp.GPNode;
 import ec.util.Parameter;
-import wsc.graph.ParamterConn;
-import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
 import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;

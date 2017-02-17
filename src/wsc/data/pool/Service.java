@@ -189,8 +189,11 @@ public class Service implements Comparable<Service> {
 
 		int inputMatchCount = 0;
 		
+//		if(service.getServiceID().equals("kodakdigcamera_price_service")){
+//			System.out.println("enter debug");
+//		}
 		// some web service do not have any input instance
-		if (service.getInputList().size() == 0) {
+		if (service.getInputList().size() == 0 || service.getInputList() ==null) {
 			directedGraph.addVertex(service.getServiceID());
 			ServiceEdge serEdge = new ServiceEdge(1, 1);
 			directedGraph.addEdge("startNode", service.getServiceID(), serEdge);			

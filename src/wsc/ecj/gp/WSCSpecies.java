@@ -3,8 +3,6 @@ package wsc.ecj.gp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-
 import org.jgrapht.DirectedGraph;
 
 import java.util.Set;
@@ -66,7 +64,7 @@ public class WSCSpecies extends Species {
 
 		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
 
-		init.initialWSCPool.createGraphService(WSCInitializer.taskInput, WSCInitializer.taskOutput, graph);
+		WSCInitializer.initialWSCPool.createGraphService(WSCInitializer.taskInput, WSCInitializer.taskOutput, graph);
 
 		while (true) {
 			List<String> dangleVerticeList = dangleVerticeList(graph);
@@ -83,7 +81,7 @@ public class WSCSpecies extends Species {
 
 		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
 
-		init.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph);
+		WSCInitializer.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph);
 		// init.initialWSCPool.createGraphService(WSCInitializer.taskInput,
 		// WSCInitializer.taskOutput, graph);
 

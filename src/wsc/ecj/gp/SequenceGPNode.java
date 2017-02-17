@@ -174,11 +174,11 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			List<ServiceInput> overallInputsRemoved) {
 		for (ServiceInput serInputs : overallInputs) {
 
-			OWLClass givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-					.get(init.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
+			OWLClass givenClass = WSCInitializer.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+					.get(WSCInitializer.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
 							.getRdfType().getResource().substring(1));
-			OWLClass relatedClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-					.get(init.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serInputs.getInput())
+			OWLClass relatedClass = WSCInitializer.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+					.get(WSCInitializer.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serInputs.getInput())
 							.getRdfType().getResource().substring(1));
 
 			String a = givenClass.getID();
@@ -199,11 +199,11 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			List<ServiceInput> overallInputsRemoved) {
 		for (ServiceInput serInputs : overallInputs) {
 
-			OWLClass givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-					.get(init.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
+			OWLClass givenClass = WSCInitializer.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+					.get(WSCInitializer.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
 							.getRdfType().getResource().substring(1));
-			OWLClass relatedClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-					.get(init.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serInputs.getInput())
+			OWLClass relatedClass = WSCInitializer.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+					.get(WSCInitializer.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serInputs.getInput())
 							.getRdfType().getResource().substring(1));
 
 			String a = givenClass.getID();
@@ -222,11 +222,11 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			WSCInitializer init, List<ServiceOutput> overallOutputsRemoved) {
 		for (ServiceOutput serOutput : overallOutput) {
 
-			OWLClass givenClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-					.get(init.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serInput.getInput())
+			OWLClass givenClass = WSCInitializer.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+					.get(WSCInitializer.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serInput.getInput())
 							.getRdfType().getResource().substring(1));
-			OWLClass relatedClass = init.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
-					.get(init.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
+			OWLClass relatedClass = WSCInitializer.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
+					.get(WSCInitializer.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
 							.getRdfType().getResource().substring(1));
 
 			String a = givenClass.getID();

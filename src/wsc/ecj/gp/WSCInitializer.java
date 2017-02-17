@@ -94,7 +94,7 @@ public class WSCInitializer extends GPInitializer {
 	}
 
 	public void setInitialWSCPool(InitialWSCPool initialWSCPool) {
-		this.initialWSCPool = initialWSCPool;
+		WSCInitializer.initialWSCPool = initialWSCPool;
 	}
 
 	@Override

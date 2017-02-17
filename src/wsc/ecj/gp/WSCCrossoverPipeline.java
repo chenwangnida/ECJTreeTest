@@ -1,13 +1,8 @@
 package wsc.ecj.gp;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 import ec.BreedingPipeline;
 import ec.EvolutionState;
 import ec.Individual;
@@ -229,13 +224,13 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		//
 		// System.out.println("NULLLLLLLLLLLLLLLLL");
 		// }
-		isInputFound = searchReplacement4Inputs(init.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
+		isInputFound = searchReplacement4Inputs(WSCInitializer.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
 				ioReplacement.getInputs());
-		isOutputFound = searchReplacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
+		isOutputFound = searchReplacement4Outputs(WSCInitializer.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
 				ioReplacement.getOutputs());
 
 		if (isInputFound && isOutputFound) {
-			Replacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(), ioReplacement.getOutputs(),
+			Replacement4Outputs(WSCInitializer.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(), ioReplacement.getOutputs(),
 					inst1Toinst2);
 		}
 
@@ -253,9 +248,9 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		//
 		// System.out.println("NULLLLLLLLLLLLLLLLL");
 		// }
-		isInputFound = searchReplacement4Inputs(init.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
+		isInputFound = searchReplacement4Inputs(WSCInitializer.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
 				ioReplacement.getInputs());
-		isOutputFound = searchReplacement4Outputs(init.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
+		isOutputFound = searchReplacement4Outputs(WSCInitializer.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
 				ioReplacement.getOutputs());
 
 		return isInputFound && isOutputFound;

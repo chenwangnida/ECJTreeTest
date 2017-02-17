@@ -10,21 +10,15 @@ import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.BiMap;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.SetMultimap;
-
 import ec.gp.GPIndividual;
 import ec.gp.GPNode;
 import ec.gp.GPTree;
 import ec.simple.SimpleFitness;
 import ec.util.Parameter;
-import wsc.data.pool.Service;
 import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
 import wsc.graph.ServiceGraph;
-import wsc.graph.ServiceInput;
 
 public class WSCIndividual extends GPIndividual {
 

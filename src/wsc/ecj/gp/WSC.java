@@ -56,17 +56,26 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			double mt = 1.0;
 			double dst = 0.0; // Exact Match dst = 1 ;
-			// for (ServiceEdge semanticQuality : input.semanticEdges) {
-			for (ServiceEdge semanticQuality : semanticEdges) {
+			Set<SemanticLink> semanticLinks = new HashSet<SemanticLink>();
+
+			for (ServiceEdge edge : semanticEdges) {
+				SemanticLink sl = new SemanticLink();
+
+				sl.setSourceService(edge.getSourceService());
+				sl.setTargetService(edge.getTargetService());
+				sl.setAvgmt(edge.getAvgmt());
+				sl.setAvgsdt(edge.getAvgsdt());
+				semanticLinks.add(sl);
+			}
+
+			for (SemanticLink semanticQuality : semanticLinks) {
 				mt *= semanticQuality.getAvgmt();
 				dst += semanticQuality.getAvgsdt();
 
 			}
 
-			// dst = dst / (input.semanticEdges.size());
-			dst = dst / (semanticEdges.size());
-			// System.out.println("semantic edge Size :"+
-			// input.semanticEdges.size());
+			dst = dst / (semanticLinks.size());
+
 
 			for (Service s : input.seenServices) {
 				qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
