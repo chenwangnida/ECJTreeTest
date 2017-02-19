@@ -5023,9 +5023,6 @@
     <ns2:Class ns1:ID="bedandbreakfast">
         <ns3:subClassOf ns1:resource="#accommodation"/>
     </ns2:Class>
-    <ns2:Class ns1:ID="city">
-        <ns3:subClassOf ns1:resource="#geopoliticalarea"/>
-    </ns2:Class>
     <ns2:Class ns1:ID="selfpoweredroadvehicle">
         <ns3:subClassOf ns1:resource="#selfpoweredvehicle"/>
     </ns2:Class>
@@ -5697,6 +5694,9 @@
     </ns2:Class>
     <ns2:Class ns1:ID="contractcarrier">
         <ns3:subClassOf ns1:resource="#transportationcompany"/>
+    </ns2:Class>
+    <ns2:Class ns1:ID="city">
+        <ns3:subClassOf ns1:resource="#municipal-unit"/>
     </ns2:Class>
     <ns2:Class ns1:ID="town">
         <ns3:subClassOf ns1:resource="#municipal-unit"/>
