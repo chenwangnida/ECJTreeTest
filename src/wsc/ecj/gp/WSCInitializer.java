@@ -41,7 +41,9 @@ public class WSCInitializer extends GPInitializer {
 
 
 	//temporary crossoverTimes
-//	public int crossoverTimess=0;
+	public int crossoverTimess=0;
+	public int mutationTimess=0;
+	
 
 	private static final long serialVersionUID = 1L;
 	// Constants with of order of QoS attributes

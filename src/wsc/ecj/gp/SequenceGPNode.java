@@ -78,16 +78,13 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		double maxTime = 0.0;
 		List<Service> seenServices = new ArrayList<Service>();
 		List<ServiceInput> overallInputs = new ArrayList<ServiceInput>();
-		List<ServiceInput> overallInputsRemoved = new ArrayList<ServiceInput>();
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
-		List<ServiceOutput> overallOutputsOfLast = new ArrayList<ServiceOutput>();
 
 		// List<ServiceOutput> overallOutputsRemoved = new
 		// ArrayList<ServiceOutput>();
 		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
 		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
 		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
-		List<String> overallserviceIdList = new ArrayList<String>();
 
 
 		WSCInitializer init = (WSCInitializer) state.initializer;
@@ -118,7 +115,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			// Children
 			overallInputs.addAll(rd.inputs);
 			overallOutputs.addAll(rd.outputs);
-			overallOutputsOfLast = rd.outputs;
 			overallPreconditions.addAll(rd.preconditions);
 			overallPostconditions.addAll(rd.postconditions);
 			overallServiceEdges.addAll(rd.semanticEdges);
@@ -130,32 +126,32 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		List<ServiceOutput> overallOutputList = new ArrayList<ServiceOutput>();
 		overallOutputList.addAll(overallOutputs);
 
-		overallInputsRemoved.clear();
-
-		// remove inputs produced by proccesor web services
-		for (ServiceOutput serOutput : overallOutputList) {
-			isContainedOfromI(serOutput, overallInputsList, init, overallInputsRemoved);
-		}
-		if (overallInputsRemoved != null) {
-			for (ServiceInput serInput4remove : overallInputsRemoved) {
-				Iterator<ServiceInput> iterator = overallInputs.iterator();
-				while (iterator.hasNext()) {
-					ServiceInput serInput = iterator.next();
-					if ((serInput.getInput()).equals(serInput4remove.getInput())) {
-						iterator.remove();
-						// System.out.println("removed Inputs!!!!!!" +
-						// serInput.getInput());
-					}
-				}
-			}
-		}
+//		overallInputsRemoved.clear();
+//
+//		// remove inputs produced by proccesor web services
+//		for (ServiceOutput serOutput : overallOutputList) {
+//			isContainedOfromI(serOutput, overallInputsList, init, overallInputsRemoved);
+//		}
+//		if (overallInputsRemoved != null) {
+//			for (ServiceInput serInput4remove : overallInputsRemoved) {
+//				Iterator<ServiceInput> iterator = overallInputs.iterator();
+//				while (iterator.hasNext()) {
+//					ServiceInput serInput = iterator.next();
+//					if ((serInput.getInput()).equals(serInput4remove.getInput())) {
+//						iterator.remove();
+//						// System.out.println("removed Inputs!!!!!!" +
+//						// serInput.getInput());
+//					}
+//				}
+//			}
+//		}
 
 		// Finally, set the data with the overall values before exiting the
 		// evaluation
 		rd.maxTime = maxTime;
 		rd.seenServices = seenServices;
 		rd.inputs = overallInputs;
-		rd.outputs = overallOutputsOfLast;
+		rd.outputs = overallOutputList;
 		rd.preconditions = overallPreconditions;
 		rd.postconditions = overallPostconditions;
 		rd.semanticEdges = overallServiceEdges;
