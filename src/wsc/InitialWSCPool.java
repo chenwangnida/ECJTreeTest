@@ -176,7 +176,7 @@ public class InitialWSCPool {
 	 * @param givenoutput
 	 * @return
 	 */
-	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph, List<String> requiredOutput) {
+	private boolean checkDefinedOutputSet(DirectedGraph<String, ServiceEdge> directedGraph, List<String> requiredOutput, List<String> requiredInputs) {
 		pConnList.clear();
 		requiredOutputList.clear();
 		int taskMatchCount = 0;
@@ -186,7 +186,8 @@ public class InitialWSCPool {
 			ServiceOutput taskSerOutput = new ServiceOutput(taskOutputStr, false);
 			requiredOutputList.add(taskSerOutput);
 		}
-
+//		InitialWSCPool.graphOutputList.removeAll(requiredInputs);
+		
 		for (int i = 0; i < InitialWSCPool.graphOutputList.size(); i++) {
 			String outputInst = InitialWSCPool.graphOutputList.get(i);
 			for (int j = 0; j < requiredOutputList.size(); j++) {
@@ -355,7 +356,7 @@ public class InitialWSCPool {
 				System.err.println("No service is usable now");
 				return;
 			}
-			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs);
+			goalSatisfied = this.checkDefinedOutputSet(directedGraph, combinedOutputs, combinedInputs);
 
 
 		} while (!goalSatisfied);

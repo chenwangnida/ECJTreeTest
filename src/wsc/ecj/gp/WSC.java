@@ -39,14 +39,8 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			GPIndividual gpInd = (GPIndividual) ind;
 
-//			 state.output.println("Evaluate new Individual:" +
-//			 gpInd.toString(), 0);
-			
-			String prefix = "digraph tree { 766908643";
-			
-			if(gpInd.toString().startsWith(prefix)){
-				System.out.println("degbug entr");
-			}
+			// state.output.println("Evaluate new Individual:" +
+			// gpInd.toString(), 0);
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
 
@@ -82,7 +76,25 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			dst = dst / (semanticLinks.size());
 
+			List<String> serviceIdList = new ArrayList<String>();
+			serviceIdList.add("academicbooknumberorisbnsearch");
+			serviceIdList.add("novel_author_bookontoservice");
+			serviceIdList.add("author_bookmaxprice_service");
+			List<String> contained = new ArrayList<String>();
 
+			if (input.seenServices.size() == 3) {
+				for (Service s : input.seenServices) {
+
+					contained.add(s.getServiceID());
+				}
+			}
+			if (input.seenServices.size() == 3) {
+
+				if (serviceIdList.containsAll(contained)) {
+					System.out.println("debug entry");
+
+				}
+			}
 			for (Service s : input.seenServices) {
 				qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
 				qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
@@ -95,31 +107,37 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			// state.output.println("fitnessValue:"+fitness, 0);
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
-//
-//			String fitnessStr = fitness + "";
-//			String f0 = "0.9446104104893337";
-//			if (fitnessStr.startsWith(f0)) {
-//				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
-//						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-//				double smvalue = calculateSM(mt, dst, init);
-//				state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" + smvalue, 0);
-//				
-//				for (Service s : input.seenServices) {
-//					qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
-//					qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
-//					qos[WSCInitializer.RELIABILITY] *= s.qos[WSCInitializer.RELIABILITY];
-//				}
-//				
-//				input.seenServices.forEach(ser->System.out.print(ser.getServiceID()+";"));
-//				for (ServiceEdge semanticQuality : semanticEdges) {
-//					System.out.println(semanticQuality.getSourceService() + "->" + semanticQuality.getTargetService()
-//							+ ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" + semanticQuality.getAvgsdt());
-//
-//				}
-//				 state.output.println("Where is the fucking wrong Individual:" +
-//				 gpInd.toString(), 0);
-//
-//			}
+			//
+			// String fitnessStr = fitness + "";
+			// String f0 = "0.9446104104893337";
+			// if (fitnessStr.startsWith(f0)) {
+			// double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
+			// qos[WSCInitializer.RELIABILITY],
+			// qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+			// double smvalue = calculateSM(mt, dst, init);
+			// state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
+			// smvalue, 0);
+			//
+			// for (Service s : input.seenServices) {
+			// qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
+			// qos[WSCInitializer.AVAILABILITY] *=
+			// s.qos[WSCInitializer.AVAILABILITY];
+			// qos[WSCInitializer.RELIABILITY] *=
+			// s.qos[WSCInitializer.RELIABILITY];
+			// }
+			//
+			// input.seenServices.forEach(ser->System.out.print(ser.getServiceID()+";"));
+			// for (ServiceEdge semanticQuality : semanticEdges) {
+			// System.out.println(semanticQuality.getSourceService() + "->" +
+			// semanticQuality.getTargetService()
+			// + ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" +
+			// semanticQuality.getAvgsdt());
+			//
+			// }
+			// state.output.println("Where is the fucking wrong Individual:" +
+			// gpInd.toString(), 0);
+			//
+			// }
 
 			f.setFitness(state, fitness, false);
 			// f.setStandardizedFitness(state, fitness);

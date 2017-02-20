@@ -26,7 +26,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 	private List<ServicePostcondition> postconditions;
 	private List<ServiceEdge> semanticEdges;
 
-
 	@Override
 	public List<ServiceInput> getInputs() {
 		return inputs;
@@ -71,7 +70,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		this.semanticEdges = semanticEdges;
 	}
 
-
 	@Override
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,
 			final GPIndividual individual, final Problem problem) {
@@ -79,31 +77,18 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		List<Service> seenServices = new ArrayList<Service>();
 		List<ServiceInput> overallInputs = new ArrayList<ServiceInput>();
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
-
-		// List<ServiceOutput> overallOutputsRemoved = new
-		// ArrayList<ServiceOutput>();
-		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
-		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
-		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
-
+		List<ServiceInput> lChildInputs = new ArrayList<ServiceInput>();
+		List<ServiceOutput> lChildOutputs = new ArrayList<ServiceOutput>();
+		List<ServiceInput> rChildInputs = new ArrayList<ServiceInput>();
+		List<ServiceOutput> rChildOutputs = new ArrayList<ServiceOutput>();
 
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		WSCData rd = ((WSCData) (input));
 
-		for (GPNode child : children) {
+		// leftChild
+		children[0].eval(state, thread, input, stack, individual, problem);
 
-			child.eval(state, thread, input, stack, individual, problem);
-
-			// System.out.println(""+rd.serviceId);
-
-			if (rd.serviceId.equals("startNode")) {
-//				overallServiceEdges.addAll(rd.semanticEdges);
-				continue;
-			}
-
-			if (rd.serviceId.equals("endNode")) {
-				continue;
-			}
+		if (!rd.serviceId.equals("startNode") && !rd.serviceId.equals("endNode")) {
 
 			// Update max. time
 			maxTime += rd.maxTime;
@@ -113,48 +98,80 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 			// Load all Inputs, Outputs, Preconditions and Postconditions of
 			// Children
-			overallInputs.addAll(rd.inputs);
-			overallOutputs.addAll(rd.outputs);
-			overallPreconditions.addAll(rd.preconditions);
-			overallPostconditions.addAll(rd.postconditions);
-			overallServiceEdges.addAll(rd.semanticEdges);
+			lChildInputs.addAll(rd.inputs);
+			lChildOutputs.addAll(rd.outputs);
+
+		}
+		children[1].eval(state, thread, input, stack, individual, problem);
+
+		if (!rd.serviceId.equals("startNode") || !rd.serviceId.equals("endNode")) {
+
+			// Update max. time
+			maxTime += rd.maxTime;
+
+			// Update seen services
+			seenServices.addAll(rd.seenServices);
+
+			// Load all Inputs, Outputs, Preconditions and Postconditions of
+			// Children
+			rChildInputs.addAll(rd.inputs);
+			rChildOutputs.addAll(rd.outputs);
 
 		}
 
-		List<ServiceInput> overallInputsList = new ArrayList<ServiceInput>();
-		overallInputsList.addAll(overallInputs);
-		List<ServiceOutput> overallOutputList = new ArrayList<ServiceOutput>();
-		overallOutputList.addAll(overallOutputs);
+		overallInputs.addAll(lChildInputs);
 
-//		overallInputsRemoved.clear();
-//
-//		// remove inputs produced by proccesor web services
-//		for (ServiceOutput serOutput : overallOutputList) {
-//			isContainedOfromI(serOutput, overallInputsList, init, overallInputsRemoved);
-//		}
-//		if (overallInputsRemoved != null) {
-//			for (ServiceInput serInput4remove : overallInputsRemoved) {
-//				Iterator<ServiceInput> iterator = overallInputs.iterator();
-//				while (iterator.hasNext()) {
-//					ServiceInput serInput = iterator.next();
-//					if ((serInput.getInput()).equals(serInput4remove.getInput())) {
-//						iterator.remove();
-//						// System.out.println("removed Inputs!!!!!!" +
-//						// serInput.getInput());
-//					}
-//				}
-//			}
-//		}
+		List<ServiceInput> removedInputs = new ArrayList<ServiceInput>();
+
+		// remove inputs produced by proccesor web services
+		for (ServiceOutput serOutput : lChildOutputs) {
+			isContainedOfromI(serOutput, rChildInputs, init, removedInputs);
+		}
+		if (removedInputs != null) {
+			for (ServiceInput serInput4remove : removedInputs) {
+				Iterator<ServiceInput> iterator = rChildInputs.iterator();
+				while (iterator.hasNext()) {
+					ServiceInput serInput = iterator.next();
+					if ((serInput.getInput()).equals(serInput4remove.getInput())) {
+						iterator.remove();
+					}
+				}
+			}
+		}
+
+		if (rChildInputs != null) {
+			overallInputs.addAll(rChildInputs);
+		}
+
+		overallOutputs.addAll(rChildOutputs);
+
+		List<ServiceOutput> removedOutputs = new ArrayList<ServiceOutput>();
+
+		for (ServiceInput serInput : rChildInputs) {
+			isContainedIfromO(serInput, lChildOutputs, init, removedOutputs);
+		}
+		if (removedOutputs != null) {
+			for (ServiceOutput serOutput4remove : removedOutputs) {
+				Iterator<ServiceOutput> iterator = lChildOutputs.iterator();
+				while (iterator.hasNext()) {
+					ServiceOutput serInput = iterator.next();
+					if ((serInput.getOutput()).equals(serOutput4remove.getOutput())) {
+						iterator.remove();
+					}
+				}
+			}
+		}
+
+		if (lChildOutputs != null) {
+			overallOutputs.addAll(lChildOutputs);
+		}
 
 		// Finally, set the data with the overall values before exiting the
 		// evaluation
 		rd.maxTime = maxTime;
 		rd.seenServices = seenServices;
 		rd.inputs = overallInputs;
-		rd.outputs = overallOutputList;
-		rd.preconditions = overallPreconditions;
-		rd.postconditions = overallPostconditions;
-		rd.semanticEdges = overallServiceEdges;
+		rd.outputs = overallOutputs;
 		rd.serviceId = "Sequence";
 
 		// Store input and output information in this node
@@ -181,6 +198,9 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			String b = relatedClass.getID();
 			// System.out.println(giveninput+" concept of "+a+";"+existInput+"
 			// concept of" +b);
+//			if(a.equals("book")&&b.equals("novel")){
+//				System.out.println("enter debug");
+//			}
 
 			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
 				overallInputsRemoved.add(serInputs);

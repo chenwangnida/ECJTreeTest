@@ -77,10 +77,6 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		List<Service> seenServices = new ArrayList<Service>();
 		List<ServiceInput> overallInputs = new ArrayList<ServiceInput>();
 		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
-		List<ServicePrecondition> overallPreconditions = new ArrayList<ServicePrecondition>();
-		List<ServicePostcondition> overallPostconditions = new ArrayList<ServicePostcondition>();
-		List<ServiceEdge> overallServiceEdges = new ArrayList<ServiceEdge>();
-		List<String> overallserviceIdList = new ArrayList<String>();
 
 		WSCData rd = ((WSCData) (input));
 
@@ -97,13 +93,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 			// Update overall inputs and outputs
 			overallInputs.addAll(rd.inputs);
 			overallOutputs.addAll(rd.outputs);
-			overallServiceEdges.addAll(rd.semanticEdges);
 
-			// Update overall precondition and postcondition
-			if (rd.preconditions != null && rd.postconditions != null) {
-				overallPreconditions.addAll(rd.preconditions);
-				overallPostconditions.addAll(rd.postconditions);
-			}
 
 		}
 
@@ -113,16 +103,11 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		rd.seenServices = seenServices;
 		rd.inputs = overallInputs;
 		rd.outputs = overallOutputs;
-		rd.preconditions = overallPreconditions;
-		rd.postconditions = overallPostconditions;
 		rd.serviceId = "Parallel";
-		rd.semanticEdges = overallServiceEdges;
 
 		// Store input and output information in this node
 		inputs = overallInputs;
 		outputs = overallOutputs;
-		preconditions = overallPreconditions;
-		postconditions = overallPostconditions;
 		semanticEdges = rd.semanticEdges;
 
 //		for (ServiceInput i : overallInputs) {

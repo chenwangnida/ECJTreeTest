@@ -29,12 +29,14 @@ public class WSCSpecies extends Species {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		// Generate Graph
 		ServiceGraph graph = generateGraph(init);
-//		state.output.println(graph.toString(), 0);
+		// state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
 		GPNode treeRoot = toSemanticTree("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
-//		state.output.println(tree.toString(), 0);
-
+		String Str = "digraph x { 833272193";
+		if (tree.toString().startsWith(Str)) {
+			state.output.println(tree.toString(), 0);
+		}
 		// GPNode treeRoot = createNewTree(state, init.taskInput,
 		// init.taskOutput); // XXX
 
@@ -98,26 +100,29 @@ public class WSCSpecies extends Species {
 		return graph;
 	}
 
-//	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> combinedInputs, List<String> combinedOuputs, Map<String, String> Inst2TargetSerMap) {
-//
-//		ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
-//
-//		init.initialWSCPool.createGraphService4Mutation(combinedInputs, combinedOuputs, graph, Inst2TargetSerMap);
-//		// init.initialWSCPool.createGraphService(WSCInitializer.taskInput,
-//		// WSCInitializer.taskOutput, graph);
-//
-//		while (true) {
-//			List<String> dangleVerticeList = dangleVerticeList(graph);
-//			if (dangleVerticeList.size() == 0) {
-//				break;
-//			}
-//			removeCurrentdangle(graph, dangleVerticeList);
-//		}
-//
-//		graph.removeEdge("startNode", "endNode");
-//
-//		return graph;
-//	}
+	// public ServiceGraph Graph4Mutation(WSCInitializer init, List<String>
+	// combinedInputs, List<String> combinedOuputs, Map<String, String>
+	// Inst2TargetSerMap) {
+	//
+	// ServiceGraph graph = new ServiceGraph(ServiceEdge.class);
+	//
+	// init.initialWSCPool.createGraphService4Mutation(combinedInputs,
+	// combinedOuputs, graph, Inst2TargetSerMap);
+	// // init.initialWSCPool.createGraphService(WSCInitializer.taskInput,
+	// // WSCInitializer.taskOutput, graph);
+	//
+	// while (true) {
+	// List<String> dangleVerticeList = dangleVerticeList(graph);
+	// if (dangleVerticeList.size() == 0) {
+	// break;
+	// }
+	// removeCurrentdangle(graph, dangleVerticeList);
+	// }
+	//
+	// graph.removeEdge("startNode", "endNode");
+	//
+	// return graph;
+	// }
 	/**
 	 * Indirectly recursive method that transforms this GraphNode and all nodes
 	 * that directly or indirectly receive its output into a tree representation
@@ -184,6 +189,7 @@ public class WSCSpecies extends Species {
 					List<ServiceEdge> outgoingEdgeSet = new ArrayList<ServiceEdge>();
 					outgoingEdgeSet.add(outputEdge);
 					ServiceGPNode sgp = new ServiceGPNode();
+					sgp.setSerName(vertice);
 					ServiceGPNode endNode = new ServiceGPNode();
 					endNode.setSerName("endNode");
 					root = createSequenceNode(sgp, endNode);
@@ -199,29 +205,32 @@ public class WSCSpecies extends Species {
 			if (outgoingEdges.size() == 1) {
 				rightChild = getWeightedNode(graph.getEdgeTarget(outgoingEdges.get(0)), graph);
 
-//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+				// Set<ServiceEdge> outgoingEdgeSet = new
+				// HashSet<ServiceEdge>(outgoingEdges);
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
 
 			// Else if there are no children at all, return a new leaf node
-//			else if (outgoingEdges.size() == 0) {
-//				List<ServiceEdge> outgoingEdges2End = new ArrayList<ServiceEdge>(outgoingEdges);
-//				outgoingEdges2End.addAll(graph.getAllEdges(vertice, "endNode"));
-//
-//				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges2End);
-//				sgp.setSerName(vertice);
-//				ServiceGPNode endNode = new ServiceGPNode();
-//				endNode.setSerName("endNode");
-//				root = createSequenceNode(sgp, endNode);
-//			}
+			// else if (outgoingEdges.size() == 0) {
+			// List<ServiceEdge> outgoingEdges2End = new
+			// ArrayList<ServiceEdge>(outgoingEdges);
+			// outgoingEdges2End.addAll(graph.getAllEdges(vertice, "endNode"));
+			//
+			// ServiceGPNode sgp = new ServiceGPNode(outgoingEdges2End);
+			// sgp.setSerName(vertice);
+			// ServiceGPNode endNode = new ServiceGPNode();
+			// endNode.setSerName("endNode");
+			// root = createSequenceNode(sgp, endNode);
+			// }
 			// Else, create a new parallel construct wrapped in a sequence
 			// construct
-			else if(outgoingEdges.size() > 1) {
+			else if (outgoingEdges.size() > 1) {
 				rightChild = createParallelNode(outgoingEdges, graph);
 
-//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+				// Set<ServiceEdge> outgoingEdgeSet = new
+				// HashSet<ServiceEdge>(outgoingEdges);
 
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
@@ -232,6 +241,7 @@ public class WSCSpecies extends Species {
 
 		return root;
 	}
+
 	/**
 	 * Indirectly recursive method that transforms this GraphNode and all nodes
 	 * that directly or indirectly receive its output into a tree representation
@@ -313,29 +323,32 @@ public class WSCSpecies extends Species {
 			if (outgoingEdges.size() == 1) {
 				rightChild = getWeightedNode(graph.getEdgeTarget(outgoingEdges.get(0)), graph);
 
-//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+				// Set<ServiceEdge> outgoingEdgeSet = new
+				// HashSet<ServiceEdge>(outgoingEdges);
 				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges);
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
 
 			// Else if there are no children at all, return a new leaf node
-//			else if (outgoingEdges.size() == 0) {
-//				List<ServiceEdge> outgoingEdges2End = new ArrayList<ServiceEdge>(outgoingEdges);
-//				outgoingEdges2End.addAll(graph.getAllEdges(vertice, "endNode"));
-//
-//				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges2End);
-//				sgp.setSerName(vertice);
-//				ServiceGPNode endNode = new ServiceGPNode();
-//				endNode.setSerName("endNode");
-//				root = createSequenceNode(sgp, endNode);
-//			}
+			// else if (outgoingEdges.size() == 0) {
+			// List<ServiceEdge> outgoingEdges2End = new
+			// ArrayList<ServiceEdge>(outgoingEdges);
+			// outgoingEdges2End.addAll(graph.getAllEdges(vertice, "endNode"));
+			//
+			// ServiceGPNode sgp = new ServiceGPNode(outgoingEdges2End);
+			// sgp.setSerName(vertice);
+			// ServiceGPNode endNode = new ServiceGPNode();
+			// endNode.setSerName("endNode");
+			// root = createSequenceNode(sgp, endNode);
+			// }
 			// Else, create a new parallel construct wrapped in a sequence
 			// construct
-			else if(outgoingEdges.size() > 1) {
+			else if (outgoingEdges.size() > 1) {
 				rightChild = createParallelNode(outgoingEdges, graph);
 
-//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+				// Set<ServiceEdge> outgoingEdgeSet = new
+				// HashSet<ServiceEdge>(outgoingEdges);
 
 				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges);
 				sgp.setSerName(vertice);
@@ -413,24 +426,26 @@ public class WSCSpecies extends Species {
 			if (outgoingEdges.size() == 1) {
 				rightChild = getWeightedNode(graph.getEdgeTarget(outgoingEdges.get(0)), graph);
 
-//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
+				// Set<ServiceEdge> outgoingEdgeSet = new
+				// HashSet<ServiceEdge>(outgoingEdges);
 				ServiceGPNode sgp = new ServiceGPNode(outgoingEdges);
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
 			}
 
 			// Else if there are no children at all, return a new leaf node
-//			else if (outgoingEdges.size() == 0) {
-//				Set<ServiceEdge> outgoingEdgeSet = new HashSet<ServiceEdge>(outgoingEdges);
-//				ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
-//				sgp.setSerName(vertice);
-//				ServiceGPNode endNode = new ServiceGPNode();
-//				endNode.setSerName("endNode");
-//				root = createSequenceNode(sgp, endNode);
-//			}
+			// else if (outgoingEdges.size() == 0) {
+			// Set<ServiceEdge> outgoingEdgeSet = new
+			// HashSet<ServiceEdge>(outgoingEdges);
+			// ServiceGPNode sgp = new ServiceGPNode(outgoingEdgeSet);
+			// sgp.setSerName(vertice);
+			// ServiceGPNode endNode = new ServiceGPNode();
+			// endNode.setSerName("endNode");
+			// root = createSequenceNode(sgp, endNode);
+			// }
 			// Else, create a new parallel construct wrapped in a sequence
 			// construct
-			else if(outgoingEdges.size() > 1) {
+			else if (outgoingEdges.size() > 1) {
 				rightChild = createParallelNode(outgoingEdges, graph);
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
@@ -583,9 +598,9 @@ public class WSCSpecies extends Species {
 
 		root.children = children;
 
-//		Set<ServiceEdge> semanticEdgeList = new HashSet<ServiceEdge>();
-//		semanticEdgeList.addAll(graph.edgeSet());
-//		root.setSemanticEdges(semanticEdgeList);
+		// Set<ServiceEdge> semanticEdgeList = new HashSet<ServiceEdge>();
+		// semanticEdgeList.addAll(graph.edgeSet());
+		// root.setSemanticEdges(semanticEdgeList);
 
 		return root;
 	}
@@ -610,7 +625,7 @@ public class WSCSpecies extends Species {
 		}
 		// Otherwise, make next node's subtree the right child
 		else
-			result = toWeightedTree(nextvertice, graph);
+			result = toSemanticTree(nextvertice, graph);
 		return result;
 	}
 
@@ -659,7 +674,6 @@ public class WSCSpecies extends Species {
 		return a && b;
 	}
 
-
 	private static List<String> dangleVerticeList(DirectedGraph<String, ServiceEdge> directedGraph) {
 		Set<String> allVertice = directedGraph.vertexSet();
 
@@ -693,6 +707,5 @@ public class WSCSpecies extends Species {
 			directedGraph.removeVertex(danglevertice);
 		}
 	}
-
 
 }

@@ -104,6 +104,27 @@ public class SemanticsPool {
 		return pConn;
 	}
 
+	public ParamterConn searchSemanticMatchFromInst4ExactMatch(String givenInst, String existInst) {
+
+		OWLClass givenClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(givenInst).getRdfType().getResource().substring(1));
+		OWLClass relatedClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(existInst).getRdfType().getResource().substring(1));
+
+		// search for the potential semantic matching relationship
+		ParamterConn pConn = new ParamterConn();
+
+		// Exact and PlugIn matching types
+		if (givenClass.getID().equals(relatedClass.getID())) {
+			pConn.setConsidered(true);
+			return pConn;
+		} else {
+
+			pConn.setConsidered(false);
+			return pConn;
+		}
+	}
+
 	public ParamterConn searchSemanticMatchTypeFromInst(String givenInst, String existInst) {
 
 		OWLClass givenClass = this.owlClassHashMap

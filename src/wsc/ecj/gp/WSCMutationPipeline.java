@@ -36,7 +36,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 		
 		
 		 init.mutationTimess++;
-		 if(init.mutationTimess == 250){
+		 if(init.mutationTimess == 184){
 		 System.out.println("degbug entry~"+init.mutationTimess);
 		 }
 		 System.out.println("mutation: TIMES~"+init.mutationTimess);
@@ -145,6 +145,9 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			 System.out.println("new mutation tree:"+tree.toString());;
 //			 System.out.println("_________________________________________________________________________________________________________");
 
+			 
+			 
+			 
 			tree.evaluated = false;
 
 		}
