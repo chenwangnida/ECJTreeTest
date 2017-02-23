@@ -145,22 +145,22 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 		overallOutputs.addAll(rChildOutputs);
 
-		List<ServiceOutput> removedOutputs = new ArrayList<ServiceOutput>();
-
-		for (ServiceInput serInput : rChildInputs) {
-			isContainedIfromO(serInput, lChildOutputs, init, removedOutputs);
-		}
-		if (removedOutputs != null) {
-			for (ServiceOutput serOutput4remove : removedOutputs) {
-				Iterator<ServiceOutput> iterator = lChildOutputs.iterator();
-				while (iterator.hasNext()) {
-					ServiceOutput serInput = iterator.next();
-					if ((serInput.getOutput()).equals(serOutput4remove.getOutput())) {
-						iterator.remove();
-					}
-				}
-			}
-		}
+//		List<ServiceOutput> removedOutputs = new ArrayList<ServiceOutput>();
+//
+//		for (ServiceInput serInput : rChildInputs) {
+//			isContainedIfromO(serInput, lChildOutputs, init, removedOutputs);
+//		}
+//		if (removedOutputs != null) {
+//			for (ServiceOutput serOutput4remove : removedOutputs) {
+//				Iterator<ServiceOutput> iterator = lChildOutputs.iterator();
+//				while (iterator.hasNext()) {
+//					ServiceOutput serInput = iterator.next();
+//					if ((serInput.getOutput()).equals(serOutput4remove.getOutput())) {
+//						iterator.remove();
+//					}
+//				}
+//			}
+//		}
 
 		if (lChildOutputs != null) {
 			overallOutputs.addAll(lChildOutputs);
