@@ -31,7 +31,7 @@ public class WSCSpecies extends Species {
 		ServiceGraph graph = generateGraph(init);
 		// state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
-		GPNode treeRoot = toSemanticTree("startNode", graph);
+		GPNode treeRoot = toSemanticTree2("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
 		String Str = "digraph x { 833272193";
 		if (tree.toString().startsWith(Str)) {
@@ -235,6 +235,115 @@ public class WSCSpecies extends Species {
 				ServiceGPNode sgp = new ServiceGPNode();
 				sgp.setSerName(vertice);
 				root = createSequenceNode(sgp, rightChild);
+			}
+
+		}
+
+		return root;
+	}
+
+	public GPNode toSemanticTree2(String vertice, ServiceGraph graph) {
+		GPNode root = null;
+		if (vertice.equals("startNode")) {
+
+			GPNode rightChild;
+
+			if (graph.outDegreeOf("startNode") == 1) {
+				/*
+				 * If the next node points to the output, this is a
+				 * single-service composition, so return a service node
+				 */
+
+				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
+				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
+				// create startNode associated with all outgoing edges
+				ServiceGPNode startService = new ServiceGPNode();
+				startService.setSerName("startNode");
+
+				ServiceEdge outgoingEdge = outgoingEdges.get(0);
+				String nextvertice = graph.getEdgeTarget(outgoingEdge);
+				rightChild = getWeightedNode(nextvertice, graph);
+				root = createSequenceTopNode(startService, rightChild, graph);
+
+			}
+			// Start with parallel node
+			else if (graph.outDegreeOf("startNode") > 1) {
+				// root = createParallelNode(this, outgoingEdgeList);
+				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
+				outgoingEdges.addAll(graph.outgoingEdgesOf("startNode"));
+
+				// create startNode associated with all outgoing edges
+				ServiceGPNode startService = new ServiceGPNode();
+				startService.setSerName("startNode");
+
+				rightChild = createParallelNode(outgoingEdges, graph);
+				// root = createSequenceTopNode(startService, rightChild,
+				// graph);
+				root = createSequenceNode(startService, rightChild);
+
+			}
+		} else {
+			// Begin by checking how many nodes are in the right child.
+			GPNode rightChild;
+			GPNode R = null;
+
+			List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
+			outgoingEdges.addAll(graph.outgoingEdgesOf(vertice));
+
+			// Find the end node in the list, if it is contained there
+			ServiceEdge outputEdge = null;
+			for (ServiceEdge outgoingedge : outgoingEdges) {
+				if (graph.getEdgeTarget(outgoingedge).equals("endNode")) {
+					outputEdge = outgoingedge;
+					// Create sequenceNode associated with endNode
+					List<ServiceEdge> outgoingEdgeSet = new ArrayList<ServiceEdge>();
+					outgoingEdgeSet.add(outputEdge);
+					ServiceGPNode sgp = new ServiceGPNode();
+					sgp.setSerName(vertice);
+					ServiceGPNode endNode = new ServiceGPNode();
+					endNode.setSerName("endNode");
+					R = createSequenceNode(sgp, endNode);
+
+					// Remove the output node from the children list
+
+					outgoingEdges.remove(outputEdge);
+					break;
+				}
+			}
+
+			// If there is only one other child, create a sequence construct
+			if (outgoingEdges.size() == 1) {
+				rightChild = getWeightedNode(graph.getEdgeTarget(outgoingEdges.get(0)), graph);
+
+				// Set<ServiceEdge> outgoingEdgeSet = new
+				// HashSet<ServiceEdge>(outgoingEdges);
+				ServiceGPNode sgp = new ServiceGPNode();
+				sgp.setSerName(vertice);
+
+				if (outputEdge != null) {
+					GPNode L = createSequenceNode(sgp, rightChild);
+					root = createParallelNode(R, L);
+				} else {
+					root = createSequenceNode(sgp, rightChild);
+				}
+			}
+
+			// Else, create a new parallel construct wrapped in a sequence
+			// construct
+			else if (outgoingEdges.size() > 1) {
+				rightChild = createParallelNode(outgoingEdges, graph);
+
+				// Set<ServiceEdge> outgoingEdgeSet = new
+				// HashSet<ServiceEdge>(outgoingEdges);
+
+				ServiceGPNode sgp = new ServiceGPNode();
+				sgp.setSerName(vertice);
+				if (outputEdge != null) {
+					GPNode L = createSequenceNode(sgp, rightChild);
+					root = createParallelNode(R, L);
+				} else {
+					root = createSequenceNode(sgp, rightChild);
+				}
 			}
 
 		}
@@ -558,6 +667,26 @@ public class WSCSpecies extends Species {
 			children[i] = getWeightedNode(nextVertice, graph);
 			children[i].parent = root;
 		}
+		root.children = children;
+		return root;
+	}
+
+	/**
+	 * Represents a GraphNode with multiple outgoing edges as a ParallelNode in
+	 * the tree. The children of this node are explicitly provided as a list.
+	 *
+	 * @param n
+	 * @param childrenGraphNodes
+	 * @return parallel node
+	 */
+	private GPNode createParallelNode(GPNode lChild, GPNode rChild) {
+		GPNode root = new ParallelGPNode();
+
+		// Create subtrees for children
+		GPNode[] children = new GPNode[2];
+		children[0].parent = lChild;
+		children[1].parent = rChild;
+
 		root.children = children;
 		return root;
 	}

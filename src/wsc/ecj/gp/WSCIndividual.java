@@ -430,6 +430,57 @@ public class WSCIndividual extends GPIndividual {
 	}
 
 	// Replace the GPNodes and associated semantic edges
+	public void replaceNode4Crossover1(GPNode node, GPNode replacement) {
+		// Perform replacement if neither node is not null
+		if (node != null && replacement != null) {
+
+			// GPNode sourceOfNode = getSourceGPNode(node);
+			// GPNode sourceOfReplacement = getSourceGPNode(replacement);
+
+			// obtain the inComingEdges of replaceNode
+			// List<ServiceEdge> inComingEdgeOfReplaceNode =
+			// getIncomingEdgeOfGPNode(replacement, sourceOfReplacement);
+
+			// update the outgoingEdges of source node of selected node
+			// updateWeightsOfSourceNode(sourceOfNode, node,
+			// inComingEdgeOfReplaceNode);
+
+			// selected is a functional node, and replace is a service
+			if ((replacement instanceof ServiceGPNode) && (node instanceof ServiceGPNode)
+					|| (replacement instanceof SequenceGPNode) && (node instanceof SequenceGPNode)
+					|| (replacement instanceof ParallelGPNode) && (node instanceof ParallelGPNode)
+					|| (replacement instanceof SequenceGPNode) && (node instanceof ParallelGPNode)
+					|| (replacement instanceof ParallelGPNode) && (node instanceof SequenceGPNode)) {
+
+				replacement = (GPNode) replacement.clone();
+				// updateWeightsOfTargetNodes4Crossover(node, replacement,
+				// inst1Toinst2);
+
+				// List<ServiceEdge> EdgeOfsourceOfReplacement =
+				// ((ServiceGPNode) sourceOfReplacement).getSemanticEdges();
+				// ((ServiceGPNode)
+				// sourceOfNode).setSemanticEdges(EdgeOfsourceOfReplacement);
+
+				GPNode parentNode = (GPNode) node.parent;
+
+				replacement.parent = node.parent;
+				for (int i = 0; i < parentNode.children.length; i++) {
+					if (parentNode.children[i] == node) {
+						parentNode.children[i] = replacement;
+						// wonder whether to break while considering the
+						// redundant nodes in the tree transfered from the
+						// graph
+						break;
+					}
+				}
+
+			}
+
+		}
+
+	}
+
+	// Replace the GPNodes and associated semantic edges
 	public void replaceNode4Crossover(GPNode node, GPNode replacement, BiMap<String, String> inst1Toinst2,
 			GPNode tree) {
 		// Perform replacement if neither node is not null

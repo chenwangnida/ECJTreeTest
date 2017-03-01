@@ -107,13 +107,13 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			// Perform replacement in both individuals
 			// t1.replaceNode4Crossover(nodeT1, replacementT2,
 			// inst1Toinst2.inverse(),t1.trees[0].child);
-			t1.replaceNode4Crossover(nodeT1, replacementT2);
+			t1.replaceNode4Crossover1(nodeT1, replacementT2);
 
 			// state.output.println(" new A:"+t1.toString(), 0);
 
 			// t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2,
 			// t2.trees[0].child);
-			t2.replaceNode4Crossover(replacementT2, nodeT1);
+			t2.replaceNode4Crossover1(replacementT2, nodeT1);
 
 			// state.output.println(" new B:"+t2.toString(), 0);
 

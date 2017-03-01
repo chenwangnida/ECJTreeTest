@@ -1,7 +1,10 @@
 package wsc.ecj.gp;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import ec.EvolutionState;
 import ec.Problem;
 import ec.gp.ADFStack;
@@ -74,9 +77,9 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 	public void eval(final EvolutionState state, final int thread, final GPData input, final ADFStack stack,
 			final GPIndividual individual, final Problem problem) {
 		double maxTime = 0.0;
-		List<Service> seenServices = new ArrayList<Service>();
-		List<ServiceInput> overallInputs = new ArrayList<ServiceInput>();
-		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
+		Set<Service> seenServices = new HashSet<Service>();
+		Set<ServiceInput> overallInputs = new HashSet<ServiceInput>();
+		Set<ServiceOutput> overallOutputs = new HashSet<ServiceOutput>();
 
 		WSCData rd = ((WSCData) (input));
 
@@ -97,17 +100,22 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 
 		}
 
+		List<Service> seenServices1 = new ArrayList<Service>(seenServices);
+		List<ServiceInput> overallInputs1 = new ArrayList<ServiceInput>(overallInputs);
+		List<ServiceOutput> overallOutputs1 = new ArrayList<ServiceOutput>(overallOutputs);
+
+		
 		// Finally, set the data with the overall values before exiting the
 		// evaluation
 		rd.maxTime = maxTime;
-		rd.seenServices = seenServices;
-		rd.inputs = overallInputs;
-		rd.outputs = overallOutputs;
+		rd.seenServices = seenServices1;
+		rd.inputs = overallInputs1;
+		rd.outputs = overallOutputs1;
 		rd.serviceId = "Parallel";
 
 		// Store input and output information in this node
-		inputs = overallInputs;
-		outputs = overallOutputs;
+		inputs = overallInputs1;
+		outputs = overallOutputs1;
 		semanticEdges = rd.semanticEdges;
 
 //		for (ServiceInput i : overallInputs) {

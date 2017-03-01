@@ -305,12 +305,9 @@ public class InitialWSCPool {
 
 		graphOutputList.addAll(taskInput);
 
-		// SWSPool swsPool = new SWSPool();
 
-		// SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
 		serviceCandidates.addAll(serviceSequence);
 		Collections.shuffle(serviceCandidates, WSCInitializer.random);
-		// Collections.sort(serviceCandidates);
 
 		boolean goalSatisfied;
 
