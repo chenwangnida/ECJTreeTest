@@ -12,6 +12,13 @@ public class ServiceInput {
 		this.isSatified = isSatified;
 	}
 
+	public ServiceInput(String input, String serviceId, boolean isSatified) {
+		super();
+		this.input = input;
+		this.serviceId = serviceId;
+		this.isSatified = isSatified;
+	}
+
 	public String getInput() {
 		return input;
 	}

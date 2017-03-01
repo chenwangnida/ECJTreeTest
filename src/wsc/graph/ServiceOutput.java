@@ -20,6 +20,13 @@ public class ServiceOutput {
 		this.isSatified = isSatified;
 	}
 
+	public ServiceOutput(String output, String serviceId, boolean isSatified) {
+		super();
+		this.output = output;
+		this.serviceId = serviceId;
+		this.isSatified = isSatified;
+	}
+
 	public String getOutput() {
 		return output;
 	}

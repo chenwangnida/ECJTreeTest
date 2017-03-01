@@ -21,6 +21,7 @@ import wsc.data.pool.Service;
 import wsc.ecj.gp.WSCInitializer;
 import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
+import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
 
 public class InitialWSCPool {
@@ -32,7 +33,7 @@ public class InitialWSCPool {
 	private final List<Service> serviceSequence = new LinkedList<Service>();
 
 	private static List<Service> serviceCandidates = new ArrayList<Service>();
-	private static List<String> graphOutputList = new ArrayList<String>();
+	private static List<ServiceOutput> graphOutputs = new ArrayList<ServiceOutput>();
 	private static Map<String, Service> graphOutputListMap = new HashMap<String, Service>();
 	private static List<ParamterConn> pConnList = new ArrayList<ParamterConn>();
 	private static List<ServiceOutput> taskOutputList = new ArrayList<ServiceOutput>();
@@ -87,8 +88,10 @@ public class InitialWSCPool {
 			taskOutputList.add(taskSerOutput);
 		}
 
-		for (int i = 0; i < InitialWSCPool.graphOutputList.size(); i++) {
-			String outputInst = InitialWSCPool.graphOutputList.get(i);
+		for (int i = 0; i < InitialWSCPool.graphOutputs.size(); i++) {
+			ServiceOutput serviceOutput = InitialWSCPool.graphOutputs.get(i);
+			String outputInst = serviceOutput.getOutput();
+
 			for (int j = 0; j < taskOutputList.size(); j++) {
 				ServiceOutput serOutputReq = taskOutputList.get(j);
 				if (!serOutputReq.isSatified()) {
@@ -107,7 +110,9 @@ public class InitialWSCPool {
 							// System.err.println(outputInst+"Inst not in the
 							// map");
 						} else {
-							pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+//							pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+							pConn.setSourceServiceID(serviceOutput.getServiceId());
+
 						}
 
 						// pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
@@ -187,9 +192,9 @@ public class InitialWSCPool {
 			requiredOutputList.add(taskSerOutput);
 		}
 //		InitialWSCPool.graphOutputList.removeAll(requiredInputs);
-		
-		for (int i = 0; i < InitialWSCPool.graphOutputList.size(); i++) {
-			String outputInst = InitialWSCPool.graphOutputList.get(i);
+		for (int i = 0; i < InitialWSCPool.graphOutputs.size(); i++) {
+			ServiceOutput serviceOutput = InitialWSCPool.graphOutputs.get(i);
+			String outputInst = serviceOutput.getOutput();
 			for (int j = 0; j < requiredOutputList.size(); j++) {
 				ServiceOutput serOutputReq = requiredOutputList.get(j);
 				if (!serOutputReq.isSatified()) {
@@ -214,7 +219,8 @@ public class InitialWSCPool {
 							// System.err.println(outputInst+"Inst not in the
 							// map");
 						} else {
-							pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+//							pConn.setSourceServiceID(graphOutputListMap.get(outputInst).getServiceID());
+							pConn.setSourceServiceID(serviceOutput.getServiceId());
 						}
 						pConn.setSimilarity(similarity);
 						pConnList.add(pConn);
@@ -298,13 +304,13 @@ public class InitialWSCPool {
 
 	public void createGraphService(List<String> taskInput, List<String> taskOutput,
 			DirectedGraph<String, ServiceEdge> directedGraph) {
-
-		graphOutputList.clear();
+		graphOutputs.clear();
+//		graphOutputList.clear();
 		graphOutputListMap.clear();
 		serviceCandidates.clear();
 
-		graphOutputList.addAll(taskInput);
-
+//		graphOutputList.addAll(taskInput);
+		taskInput.forEach(input->graphOutputs.add(new ServiceOutput(input,"startNode",false)));
 
 		serviceCandidates.addAll(serviceSequence);
 		Collections.shuffle(serviceCandidates, WSCInitializer.random);
@@ -314,7 +320,7 @@ public class InitialWSCPool {
 		directedGraph.addVertex("startNode");
 
 		do {
-			Service service = swsPool.createGraphService(graphOutputList, serviceCandidates, this.semanticsPool,
+			Service service = swsPool.createGraphService(graphOutputs, serviceCandidates, this.semanticsPool,
 					directedGraph, graphOutputListMap);
 			if (service == null) {
 				System.err.println("No service is usable now");
@@ -328,12 +334,14 @@ public class InitialWSCPool {
 
 	public void createGraphService4Mutation(List<String> combinedInputs, List<String> combinedOutputs,
 			DirectedGraph<String, ServiceEdge> directedGraph) {
-
-		graphOutputList.clear();
+		graphOutputs.clear();
+//		graphOutputList.clear();
 		graphOutputListMap.clear();
 		serviceCandidates.clear();
 
-		graphOutputList.addAll(combinedInputs);
+//		graphOutputList.addAll(combinedInputs);
+		combinedInputs.forEach(input->graphOutputs.add(new ServiceOutput(input,"startNode",false)));
+
 
 		// SWSPool swsPool = new SWSPool();
 
@@ -347,7 +355,7 @@ public class InitialWSCPool {
 		directedGraph.addVertex("startNode");
 
 		do {
-			Service service = swsPool.createGraphService4Mutation(graphOutputList, serviceCandidates,
+			Service service = swsPool.createGraphService4Mutation(graphOutputs, serviceCandidates,
 					this.semanticsPool, directedGraph, graphOutputListMap, combinedInputs);
 			if (service == null) {
 				System.err.println("No service is usable now");
@@ -392,38 +400,38 @@ public class InitialWSCPool {
 //		} while (!goalSatisfied);
 //
 //	}
-
-	public void createGraphService(List<String> taskInput, List<String> taskOutput,
-			DirectedGraph<String, ServiceEdge> directedGraph, float[] weights, Map<String, Integer> serviceToIndexMap) {
-
-		graphOutputList.clear();
-		graphOutputListMap.clear();
-		serviceCandidates.clear();
-
-		graphOutputList.addAll(taskInput);
-
-		// SWSPool swsPool = new SWSPool();
-
-		SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
-		serviceCandidates.addAll(serviceSequence);
-		Collections.sort(serviceCandidates);
-
-		boolean goalSatisfied;
-
-		directedGraph.addVertex("startNode");
-
-		do {
-			Service service = swsPool.createGraphService(graphOutputList, serviceCandidates, this.semanticsPool,
-					directedGraph, graphOutputListMap);
-			if (service == null) {
-				System.err.println("No service is usable now");
-				return;
-			}
-			goalSatisfied = this.checkOutputSet(directedGraph, taskOutput);
-
-		} while (!goalSatisfied);
-
-	}
+//
+//	public void createGraphService(List<String> taskInput, List<String> taskOutput,
+//			DirectedGraph<String, ServiceEdge> directedGraph, float[] weights, Map<String, Integer> serviceToIndexMap) {
+//
+//		graphOutputList.clear();
+//		graphOutputListMap.clear();
+//		serviceCandidates.clear();
+//
+//		graphOutputList.addAll(taskInput);
+//
+//		// SWSPool swsPool = new SWSPool();
+//
+//		SetWeightsToServiceList(serviceToIndexMap, serviceSequence, weights);
+//		serviceCandidates.addAll(serviceSequence);
+//		Collections.sort(serviceCandidates);
+//
+//		boolean goalSatisfied;
+//
+//		directedGraph.addVertex("startNode");
+//
+//		do {
+//			Service service = swsPool.createGraphService(graphOutputList, serviceCandidates, this.semanticsPool,
+//					directedGraph, graphOutputListMap);
+//			if (service == null) {
+//				System.err.println("No service is usable now");
+//				return;
+//			}
+//			goalSatisfied = this.checkOutputSet(directedGraph, taskOutput);
+//
+//		} while (!goalSatisfied);
+//
+//	}
 
 	private void SetWeightsToServiceList(Map<String, Integer> serviceToIndexMap, List<Service> serviceSequence,
 			float[] weights) {

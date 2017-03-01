@@ -178,13 +178,13 @@ public class SWSPool {
 	 *
 	 * @param graphOutputList
 	 */
-	public Service createGraphService(List<String> graphOutputList, List<Service> serviceCandidates,
+	public Service createGraphService(List<ServiceOutput> graphOutputs, List<Service> serviceCandidates,
 			SemanticsPool semanticsPool, DirectedGraph<String, ServiceEdge> directedGraph, Map<String, Service> graphOutputListMap) {
 		int foundServiceIndex = -1;
 
 		for (int i = 0; i < serviceCandidates.size(); i++) {
 			Service service = serviceCandidates.get(i);
-			if (service.searchServiceGraphMatchFromInputSet(semanticsPool, service, graphOutputList, directedGraph,
+			if (service.searchServiceGraphMatchFromInputSet(graphOutputs, semanticsPool, service, directedGraph,
 					graphOutputListMap)) {
 				foundServiceIndex = i;
 				break;
@@ -199,7 +199,8 @@ public class SWSPool {
 		// add found service outputs to inputSet
 		for (ServiceOutput output : service.getOutputList()) {
 //			if (!graphOutputList.contains(output.getOutput())) {
-				graphOutputList.add(output.getOutput());
+				graphOutputs.add(output);
+//				graphOutputList.add(output.getOutput());
 				// output mapped back to service
 				graphOutputListMap.put(output.getOutput(), service);
 //			}
@@ -207,13 +208,13 @@ public class SWSPool {
 		return service;
 	}
 
-	public Service createGraphService4Mutation(List<String> graphOutputList, List<Service> serviceCandidates,
+	public Service createGraphService4Mutation(List<ServiceOutput> graphOutputs, List<Service> serviceCandidates,
 			SemanticsPool semanticsPool, DirectedGraph<String, ServiceEdge> directedGraph, Map<String, Service> graphOutputListMap, List<String> ioNodeInputs) {
 		int foundServiceIndex = -1;
 
 		for (int i = 0; i < serviceCandidates.size(); i++) {
 			Service service = serviceCandidates.get(i);
-			if (service.searchServiceGraphMatchFromDefinedInputSet(semanticsPool, service, graphOutputList, directedGraph,
+			if (service.searchServiceGraphMatchFromDefinedInputSet(graphOutputs, semanticsPool, service, directedGraph,
 					graphOutputListMap, ioNodeInputs)) {
 				foundServiceIndex = i;
 				break;
@@ -227,12 +228,13 @@ public class SWSPool {
 		serviceCandidates.remove(service);
 		// add found service outputs to inputSet
 		for (ServiceOutput output : service.getOutputList()) {
-			if (!graphOutputList.contains(output.getOutput())) {
-				graphOutputList.add(output.getOutput());
+//			if (!graphOutputList.contains(output.getOutput())) {
+				graphOutputs.add(output);
+//				graphOutputList.add(output.getOutput());
 				// output mapped back to service
 				graphOutputListMap.put(output.getOutput(), service);
 			}
-		}
+//		}
 		return service;
 	}
 

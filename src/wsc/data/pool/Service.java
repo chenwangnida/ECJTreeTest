@@ -179,8 +179,7 @@ public class Service implements Comparable<Service> {
 	 * @param intputList
 	 * @return boolean
 	 */
-	public boolean searchServiceGraphMatchFromInputSet(SemanticsPool semanticsPool, Service service,
-			List<String> graphOutputList, DirectedGraph<String, ServiceEdge> directedGraph,
+	public boolean searchServiceGraphMatchFromInputSet(List<ServiceOutput>graphOutputs, SemanticsPool semanticsPool, Service service, DirectedGraph<String, ServiceEdge> directedGraph,
 			Map<String, Service> graphOutputListMap) {
 		pConnList0.clear();
 		inputList0.clear();
@@ -206,8 +205,10 @@ public class Service implements Comparable<Service> {
 			inputList0.add(serinput);
 		}
 
-		for (int i = 0; i < graphOutputList.size(); i++) {
-			String giveninput = graphOutputList.get(i);
+		for (int i = 0; i < graphOutputs.size(); i++) {
+			ServiceOutput serviceOutput = graphOutputs.get(i);
+			String giveninput = serviceOutput.getOutput();
+
 			for (int j = 0; j < inputList0.size(); j++) {
 				ServiceInput serInput = inputList0.get(j);
 				if (!serInput.isSatified()) {
@@ -223,7 +224,9 @@ public class Service implements Comparable<Service> {
 
 							pConn.setSourceServiceID("startNode");
 						} else {
-							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
+//							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
+							pConn.setSourceServiceID(serviceOutput.getServiceId());
+							
 						}
 						double similarity = CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, giveninput,
 								existInput, semanticsPool);
@@ -302,8 +305,7 @@ public class Service implements Comparable<Service> {
 	 * @param intputList
 	 * @return boolean
 	 */
-	public boolean searchServiceGraphMatchFromDefinedInputSet(SemanticsPool semanticsPool, Service service,
-			List<String> graphOutputList, DirectedGraph<String, ServiceEdge> directedGraph,
+	public boolean searchServiceGraphMatchFromDefinedInputSet(List<ServiceOutput>graphOutputs, SemanticsPool semanticsPool, Service service, DirectedGraph<String, ServiceEdge> directedGraph,
 			Map<String, Service> graphOutputListMap, List<String> ioNodeInputs) {
 		pConnList0.clear();
 		inputList0.clear();
@@ -327,8 +329,9 @@ public class Service implements Comparable<Service> {
 			inputList0.add(serinput);
 		}
 
-		for (int i = 0; i < graphOutputList.size(); i++) {
-			String giveninput = graphOutputList.get(i);
+		for (int i = 0; i < graphOutputs.size(); i++) {
+			ServiceOutput serviceOutput = graphOutputs.get(i);
+			String giveninput = serviceOutput.getOutput();
 			for (int j = 0; j < inputList0.size(); j++) {
 				ServiceInput serInput = inputList0.get(j);
 				if (!serInput.isSatified()) {
@@ -344,7 +347,9 @@ public class Service implements Comparable<Service> {
 
 							pConn.setSourceServiceID("startNode");
 						} else {
-							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
+//							pConn.setSourceServiceID(graphOutputListMap.get(giveninput).getServiceID());
+							pConn.setSourceServiceID(serviceOutput.getServiceId());
+
 						}
 						double similarity = CalculateSimilarityMeasure4Concepts(WSCInitializer.ontologyDAG, giveninput,
 								existInput, semanticsPool);
