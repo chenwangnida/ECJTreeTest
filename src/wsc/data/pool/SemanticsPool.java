@@ -125,6 +125,54 @@ public class SemanticsPool {
 		}
 	}
 
+	public ParamterConn searchSemanticMatchFromInst4PluginMatch(String givenInst, String existInst) {
+
+		OWLClass givenClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(givenInst).getRdfType().getResource().substring(1));
+		OWLClass relatedClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(existInst).getRdfType().getResource().substring(1));
+
+		// search for the potential semantic matching relationship
+		ParamterConn pConn = new ParamterConn();
+		pConn.setConsidered(false);
+
+		
+		String a = givenClass.getID();
+		String b = relatedClass.getID();
+		if (WSCInitializer.semanticMatrix.get(a, b) != null) {
+
+			pConn.setConsidered(true);
+			return pConn;
+		}
+		
+		return pConn;
+	}
+	
+	public ParamterConn searchSemanticMatchFromInst4SubsumeMatch(String givenInst, String existInst) {
+
+		OWLClass givenClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(givenInst).getRdfType().getResource().substring(1));
+		OWLClass relatedClass = this.owlClassHashMap
+				.get(this.owlInstHashMap.get(existInst).getRdfType().getResource().substring(1));
+
+		// search for the potential semantic matching relationship
+		ParamterConn pConn = new ParamterConn();
+		pConn.setConsidered(false);
+
+		
+		String a = givenClass.getID();
+		String b = relatedClass.getID();
+		if (WSCInitializer.semanticMatrix.get(b, a) != null) {
+
+			pConn.setConsidered(true);
+			return pConn;
+		}
+		
+		return pConn;
+		
+	}
+	
+	
 	public ParamterConn searchSemanticMatchTypeFromInst(String givenInst, String existInst) {
 
 		OWLClass givenClass = this.owlClassHashMap
@@ -153,29 +201,6 @@ public class SemanticsPool {
 			}
 			return pConn;
 		}
-
-		// int i = 0;
-		//
-		// while (true) {
-		// // Exact and PlugIn matching types
-		// if (givenClass.getID().equals(relatedClass.getID())) {
-		// pConn.setConsidered(true);
-		// if(i==0 ){
-		// pConn.setMatchType(1);
-		//
-		// }else{
-		// pConn.setMatchType(0.75);
-		// }
-		// return pConn;
-		// }
-		// if (givenClass.getSubClassOf() == null ||
-		// givenClass.getSubClassOf().getResource().equals("")) {
-		// break;
-		// }
-		// givenClass =
-		// this.owlClassHashMap.get(givenClass.getSubClassOf().getResource().substring(1));
-		// i++;
-		// }
 		pConn.setConsidered(false);
 		return pConn;
 	}

@@ -76,48 +76,38 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			Collections.shuffle(allT1Nodes, WSCInitializer.random);
 			Collections.shuffle(allT2Nodes, WSCInitializer.random);
 
-			// BiMap<String, String> inst1Toinst2 = HashBiMap.create();
-
 			// For each t1 node, see if it can be replaced by a t2 node
-			// GPNode[] nodes = findReplacement(init, allT1Nodes, allT2Nodes,
-			// inst1Toinst2);
 			GPNode[] nodes = findReplacement4ExactMatch(init, allT1Nodes, allT2Nodes);
 
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
 
-			// if (inst1Toinst2.size() == 0) {
-			// System.err.println("inst1Toinst2 Size:" + inst1Toinst2.size());
-			// }
+			if (nodeT1 != null && replacementT2 != null) {
 
-			// WSCInitializer j1 = (WSCInitializer)(inds1[0].clone());
+				t1.replaceNode4Crossover1(nodeT1, replacementT2);
 
-			// state.output.println(" -----------replace part from A:" + nodeT1,
-			// 0);
-			// state.output.println(" -----------replace part from B:" +
-			// replacementT2, 0);
+				// state.output.println(" new A:"+t1.toString(), 0);
 
-			// For each t2 node, see if it can be replaced by a t1 node
-			// nodes = findReplacement(init, allT2Nodes, allT1Nodes);
-			// GPNode nodeT2 = nodes[0];
-			// GPNode replacementT1 = nodes[1];
-			// state.output.println(" old A:" + t1.toString(), 0);
-			// state.output.println(" old B:" + t2.toString(), 0);
+				t2.replaceNode4Crossover1(replacementT2, nodeT1);
 
-			// Perform replacement in both individuals
-			// t1.replaceNode4Crossover(nodeT1, replacementT2,
-			// inst1Toinst2.inverse(),t1.trees[0].child);
-			t1.replaceNode4Crossover1(nodeT1, replacementT2);
+				// state.output.println(" new B:"+t2.toString(), 0);
+			} else {
 
-			// state.output.println(" new A:"+t1.toString(), 0);
+				// if there is no exact match for swap, then check the
+				// multiple-function swap for crossover.
+				GPNode[] nodes4Function1 = findReplacement4SemanticMatch(init, allT1Nodes, allT2Nodes);
 
-			// t2.replaceNode4Crossover(replacementT2, nodeT1, inst1Toinst2,
-			// t2.trees[0].child);
-			t2.replaceNode4Crossover1(replacementT2, nodeT1);
+				GPNode node4Function1T1 = nodes4Function1[0];
+				GPNode replacement4Function1T1 = nodes4Function1[1];
 
-			// state.output.println(" new B:"+t2.toString(), 0);
+				GPNode[] nodes4Function2 = findReplacement4SemanticMatch(init, allT2Nodes, allT1Nodes);
+				GPNode node4Function2T1 = nodes4Function2[0];
+				GPNode replacement4Function2T2 = nodes4Function2[1];
 
-			// t2.replaceNode(nodeT2, replacementT1);
+				t1.replaceNode4Crossover1(node4Function1T1, replacement4Function1T1);
+				t2.replaceNode4Crossover1(node4Function2T1, replacement4Function2T2);
+
+			}
 
 			inds[q] = t1;
 			inds[q].evaluated = false;
@@ -169,8 +159,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		}
 		return result;
 	}
-	
-	
+
 	public GPNode[] findReplacement4ExactMatch(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements) {
 		GPNode[] result = new GPNode[2];
 		outterLoop: for (GPNode node : nodes) {
@@ -184,6 +173,32 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				InOutNode ioNode = (InOutNode) node;
 				InOutNode ioReplacement = (InOutNode) replacement;
 				if (IsReplacementFound4ExactMatch(init, ioNode, ioReplacement)) {
+					// System.out.println("selected Node ******" +
+					// ioNode.toString());
+					// System.out.println("replaced Node ******" +
+					// ioReplacement.toString());
+					result[0] = node;
+					result[1] = replacement;
+					break outterLoop;
+				}
+			}
+		}
+		return result;
+	}
+
+	public GPNode[] findReplacement4SemanticMatch(WSCInitializer init, List<GPNode> nodes, List<GPNode> replacements) {
+		GPNode[] result = new GPNode[2];
+		outterLoop: for (GPNode node : nodes) {
+			for (GPNode replacement : replacements) {
+				/*
+				 * Check if the inputs of replacement are subsumed by the inputs
+				 * of the node and the outputs of the node are subsumed by the
+				 * outputs of the replacement. This will ensure that the
+				 * replacement has equivalent functionality to the replacement.
+				 */
+				InOutNode ioNode = (InOutNode) node;
+				InOutNode ioReplacement = (InOutNode) replacement;
+				if (IsReplacementFound4SemanticMatch(init, ioNode, ioReplacement)) {
 					// System.out.println("selected Node ******" +
 					// ioNode.toString());
 					// System.out.println("replaced Node ******" +
@@ -268,8 +283,26 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		return isInputFound && isOutputFound;
 
 	}
-	
-	
+
+	// check both the inputs and outputs from node and replacement node are
+	// matched.
+
+	private boolean IsReplacementFound4SemanticMatch(WSCInitializer init, InOutNode ioNode, InOutNode ioReplacement) {
+		boolean isInputFound = false;
+		boolean isOutputFound = false;
+		// if (ioNode.getInputs() == null) {
+		// System.out.println("toString"+ioNode.toString());
+		//
+		// System.out.println("NULLLLLLLLLLLLLLLLL"); 
+		// }
+		isInputFound = searchReplacement4Inputs4SubsumeMatch(WSCInitializer.initialWSCPool.getSemanticsPool(),
+				ioNode.getInputs(), ioReplacement.getInputs());
+		isOutputFound = searchReplacement4Outputs4PluginMatch(WSCInitializer.initialWSCPool.getSemanticsPool(),
+				ioNode.getOutputs(), ioReplacement.getOutputs());
+
+		return isInputFound && isOutputFound;
+
+	}
 	// check both the inputs and outputs from node and replacement node are
 	// matched.
 
@@ -281,10 +314,10 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		//
 		// System.out.println("NULLLLLLLLLLLLLLLLL");
 		// }
-		isInputFound = searchReplacement4Inputs4ExactMatch(WSCInitializer.initialWSCPool.getSemanticsPool(), ioNode.getInputs(),
-				ioReplacement.getInputs());
-		isOutputFound = searchReplacement4Outputs4ExactMatch(WSCInitializer.initialWSCPool.getSemanticsPool(), ioNode.getOutputs(),
-				ioReplacement.getOutputs());
+		isInputFound = searchReplacement4Inputs4ExactMatch(WSCInitializer.initialWSCPool.getSemanticsPool(),
+				ioNode.getInputs(), ioReplacement.getInputs());
+		isOutputFound = searchReplacement4Outputs4ExactMatch(WSCInitializer.initialWSCPool.getSemanticsPool(),
+				ioNode.getOutputs(), ioReplacement.getOutputs());
 
 		return isInputFound && isOutputFound;
 
@@ -346,6 +379,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 
 		return false;
 	}
+
 	public boolean searchReplacement4Inputs4ExactMatch(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs,
 			List<ServiceInput> ioReplacement) {
 
@@ -364,7 +398,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 					ServiceInput serInput = ioNodeInputs.get(j);
 					if (!serInput.isSatified()) {
 						String existInput = ioNodeInputs.get(j).getInput();
-						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst4ExactMatch(giveninput, existInput);
+						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst4ExactMatch(giveninput,
+								existInput);
 						boolean foundmatched = pConn.isConsidered();
 						if (foundmatched) {
 							serInput.setSatified(true);
@@ -392,6 +427,55 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 
 		return false;
 	}
+
+	public boolean searchReplacement4Inputs4SubsumeMatch(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs,
+			List<ServiceInput> ioReplacement) {
+
+		for (ServiceInput serInput : ioNodeInputs) {
+			serInput.setSatified(false);
+		}
+		for (ServiceInput serInput : ioReplacement) {
+			serInput.setSatified(false);
+		}
+
+		if (ioNodeInputs.size() == ioReplacement.size()) {
+			int relevantServiceCount = 0;
+			for (int i = 0; i < ioReplacement.size(); i++) {
+				String giveninput = ioReplacement.get(i).getInput();
+				for (int j = 0; j < ioNodeInputs.size(); j++) {
+					ServiceInput serInput = ioNodeInputs.get(j);
+					if (!serInput.isSatified()) {
+						String existInput = ioNodeInputs.get(j).getInput();
+						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst4SubsumeMatch(giveninput,
+								existInput);
+						boolean foundmatched = pConn.isConsidered();
+						if (foundmatched) {
+							serInput.setSatified(true);
+							break;// each inst can only be used for one time
+						}
+
+					}
+
+				}
+
+			}
+
+			for (ServiceInput sInput : ioNodeInputs) {
+				boolean sf = sInput.isSatified();
+				if (sf == true) {
+					relevantServiceCount++;
+				}
+			}
+
+			if (relevantServiceCount == ioNodeInputs.size()) {
+				return true;
+			}
+
+		}
+
+		return false;
+	}
+
 	public boolean searchReplacement4Outputs4ExactMatch(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
 			List<ServiceOutput> ioReplacement) {
 		for (ServiceOutput serInput : ioNodeOutputs) {
@@ -409,7 +493,8 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 					ServiceOutput serOutput = ioNodeOutputs.get(j);
 					if (!serOutput.isSatified()) {
 						String existOutput = ioNodeOutputs.get(j).getOutput();
-						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst4ExactMatch(givenOutput, existOutput);
+						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst4ExactMatch(givenOutput,
+								existOutput);
 						boolean foundmatched = pConn.isConsidered();
 						if (foundmatched) {
 							serOutput.setSatified(true);
@@ -436,6 +521,54 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 
 		return false;
 	}
+	
+	public boolean searchReplacement4Outputs4PluginMatch(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
+			List<ServiceOutput> ioReplacement) {
+		for (ServiceOutput serInput : ioNodeOutputs) {
+			serInput.setSatified(false);
+		}
+		for (ServiceOutput serInput : ioReplacement) {
+			serInput.setSatified(false);
+		}
+
+		if (ioNodeOutputs.size() == ioReplacement.size()) {
+			int relevantServiceCount = 0;
+			for (int i = 0; i < ioReplacement.size(); i++) {
+				String givenOutput = ioReplacement.get(i).getOutput();
+				for (int j = 0; j < ioNodeOutputs.size(); j++) {
+					ServiceOutput serOutput = ioNodeOutputs.get(j);
+					if (!serOutput.isSatified()) {
+						String existOutput = ioNodeOutputs.get(j).getOutput();
+						ParamterConn pConn = semanticsPool.searchSemanticMatchFromInst4PluginMatch(givenOutput,
+								existOutput);
+						boolean foundmatched = pConn.isConsidered();
+						if (foundmatched) {
+							serOutput.setSatified(true);
+							break;// each inst can only be used for one time
+						}
+
+					}
+
+				}
+
+			}
+
+			for (ServiceOutput sInput : ioNodeOutputs) {
+				boolean sf = sInput.isSatified();
+				if (sf == true) {
+					relevantServiceCount++;
+				}
+			}
+
+			if (relevantServiceCount == ioNodeOutputs.size()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * search input functional correctness for replacements
 	 *

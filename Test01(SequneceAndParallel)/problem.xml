@@ -5,8 +5,8 @@
             <instance name="TouristAgencyPromotion" />
         </provided>
         <wanted>
-            <instance name="TouristMap" />
-            <instance name="TravelArrivalDate" />
+            <instance name="TravelReturnDate" />
+            <instance name="StreetMap" />
         </wanted>
     </task>
     <solutions />

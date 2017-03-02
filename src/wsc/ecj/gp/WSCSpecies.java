@@ -29,7 +29,7 @@ public class WSCSpecies extends Species {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		// Generate Graph
 		ServiceGraph graph = generateGraph(init);
-		// state.output.println(graph.toString(), 0);
+//		 state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
 		GPNode treeRoot = toSemanticTree2("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
@@ -684,8 +684,10 @@ public class WSCSpecies extends Species {
 
 		// Create subtrees for children
 		GPNode[] children = new GPNode[2];
-		children[0].parent = lChild;
-		children[1].parent = rChild;
+		children[0] = lChild;
+		children[0].parent = root;
+		children[1] = rChild;
+		children[1].parent = root;
 
 		root.children = children;
 		return root;
@@ -754,7 +756,7 @@ public class WSCSpecies extends Species {
 		}
 		// Otherwise, make next node's subtree the right child
 		else
-			result = toSemanticTree(nextvertice, graph);
+			result = toSemanticTree2(nextvertice, graph);
 		return result;
 	}
 
