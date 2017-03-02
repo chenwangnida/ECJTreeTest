@@ -2,6 +2,8 @@ package wsc.ecj.gp;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.BiMap;
 import ec.BreedingPipeline;
 import ec.EvolutionState;
@@ -380,11 +382,16 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		return false;
 	}
 
-	public boolean searchReplacement4Inputs4ExactMatch(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs,
-			List<ServiceInput> ioReplacement) {
+	public boolean searchReplacement4Inputs4ExactMatch(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs0,
+			List<ServiceInput> ioReplacement0) {
+	
+		List<ServiceInput> ioNodeInputs = ioNodeInputs0.stream().distinct().collect(Collectors.toList());
+		List<ServiceInput> ioReplacement = ioReplacement0.stream().distinct().collect(Collectors.toList());
 
+		
 		for (ServiceInput serInput : ioNodeInputs) {
 			serInput.setSatified(false);
+
 		}
 		for (ServiceInput serInput : ioReplacement) {
 			serInput.setSatified(false);
@@ -428,8 +435,11 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		return false;
 	}
 
-	public boolean searchReplacement4Inputs4SubsumeMatch(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs,
-			List<ServiceInput> ioReplacement) {
+	public boolean searchReplacement4Inputs4SubsumeMatch(SemanticsPool semanticsPool, List<ServiceInput> ioNodeInputs0,
+			List<ServiceInput> ioReplacement0) {
+		
+		List<ServiceInput> ioNodeInputs = ioNodeInputs0.stream().distinct().collect(Collectors.toList());
+		List<ServiceInput> ioReplacement = ioReplacement0.stream().distinct().collect(Collectors.toList());
 
 		for (ServiceInput serInput : ioNodeInputs) {
 			serInput.setSatified(false);
@@ -476,8 +486,12 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		return false;
 	}
 
-	public boolean searchReplacement4Outputs4ExactMatch(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
-			List<ServiceOutput> ioReplacement) {
+	public boolean searchReplacement4Outputs4ExactMatch(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs0,
+			List<ServiceOutput> ioReplacement0) {
+		
+		List<ServiceOutput> ioNodeOutputs = ioNodeOutputs0.stream().distinct().collect(Collectors.toList());
+		List<ServiceOutput> ioReplacement = ioReplacement0.stream().distinct().collect(Collectors.toList());
+		
 		for (ServiceOutput serInput : ioNodeOutputs) {
 			serInput.setSatified(false);
 		}
@@ -522,8 +536,12 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 		return false;
 	}
 	
-	public boolean searchReplacement4Outputs4PluginMatch(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs,
-			List<ServiceOutput> ioReplacement) {
+	public boolean searchReplacement4Outputs4PluginMatch(SemanticsPool semanticsPool, List<ServiceOutput> ioNodeOutputs0,
+			List<ServiceOutput> ioReplacement0) {
+		
+		List<ServiceOutput> ioNodeOutputs = ioNodeOutputs0.stream().distinct().collect(Collectors.toList());
+		List<ServiceOutput> ioReplacement = ioReplacement0.stream().distinct().collect(Collectors.toList());
+		
 		for (ServiceOutput serInput : ioNodeOutputs) {
 			serInput.setSatified(false);
 		}

@@ -91,7 +91,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 			//
 //			String fitnessStr = fitness + "";
-//			String f0 = "0.8702508378299644";
+//			String f0 = "0.8329982119033941";
 //			if (fitnessStr.startsWith(f0)) {
 //				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
 //						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);

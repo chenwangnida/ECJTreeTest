@@ -21,7 +21,6 @@ import wsc.data.pool.Service;
 import wsc.ecj.gp.WSCInitializer;
 import wsc.graph.ParamterConn;
 import wsc.graph.ServiceEdge;
-import wsc.graph.ServiceInput;
 import wsc.graph.ServiceOutput;
 
 public class InitialWSCPool {

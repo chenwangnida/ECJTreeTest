@@ -78,12 +78,12 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			final GPIndividual individual, final Problem problem) {
 		double maxTime = 0.0;
 		Set<Service> seenServices = new HashSet<Service>();
-		Set<ServiceInput> overallInputs = new HashSet<ServiceInput>();
-		Set<ServiceOutput> overallOutputs = new HashSet<ServiceOutput>();
-		Set<ServiceInput> lChildInputs = new HashSet<ServiceInput>();
-		Set<ServiceOutput> lChildOutputs = new HashSet<ServiceOutput>();
-		Set<ServiceInput> rChildInputs = new HashSet<ServiceInput>();
-		Set<ServiceOutput> rChildOutputs = new HashSet<ServiceOutput>();
+		List<ServiceInput> overallInputs = new ArrayList<ServiceInput>();
+		List<ServiceOutput> overallOutputs = new ArrayList<ServiceOutput>();
+		List<ServiceInput> lChildInputs = new ArrayList<ServiceInput>();
+		List<ServiceOutput> lChildOutputs = new ArrayList<ServiceOutput>();
+		List<ServiceInput> rChildInputs = new ArrayList<ServiceInput>();
+		List<ServiceOutput> rChildOutputs = new ArrayList<ServiceOutput>();
 
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		WSCData rd = ((WSCData) (input));
@@ -170,8 +170,8 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		}
 
 		List<Service> seenServices1 = new ArrayList<Service>(seenServices);
-		List<ServiceInput> overallInputs1 = new ArrayList<ServiceInput>(overallInputs);
-		List<ServiceOutput> overallOutputs1 = new ArrayList<ServiceOutput>(overallOutputs);
+//		List<ServiceInput> overallInputs1 = new ArrayList<ServiceInput>(overallInputs);
+//		List<ServiceOutput> overallOutputs1 = new ArrayList<ServiceOutput>(overallOutputs);
 		
 		
 		
@@ -179,8 +179,8 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		// evaluation
 		rd.maxTime = maxTime;
 		rd.seenServices = seenServices1;
-		rd.inputs = overallInputs1;
-		rd.outputs = overallOutputs1;
+		rd.inputs = overallInputs;
+		rd.outputs = overallOutputs;
 		rd.serviceId = "Sequence";
 
 		// Store input and output information in this node
@@ -192,7 +192,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 	}
 
 	// check there is inputs produced by the services Outputs or not
-	private List isContainedOfromI(ServiceOutput serOutput, Set<ServiceInput> overallInputs, WSCInitializer init,
+	private List isContainedOfromI(ServiceOutput serOutput, List<ServiceInput> overallInputs, WSCInitializer init,
 			List<ServiceInput> overallInputsRemoved) {
 		for (ServiceInput serInputs : overallInputs) {
 
