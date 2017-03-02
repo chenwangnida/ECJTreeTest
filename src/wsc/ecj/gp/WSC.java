@@ -90,29 +90,29 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 			//
-			String fitnessStr = fitness + "";
-			String f0 = "0.8329982119033941";
-			if (fitnessStr.startsWith(f0)) {
-				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
-						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-				double smvalue = calculateSM(mt, dst, init);
-				state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" + smvalue, 0);
-
-//				for (Service s : input.seenServices) {
-//					qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
-//					qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
-//					qos[WSCInitializer.RELIABILITY] *= s.qos[WSCInitializer.RELIABILITY];
+//			String fitnessStr = fitness + "";
+//			String f0 = "0.8702508378299644";
+//			if (fitnessStr.startsWith(f0)) {
+//				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
+//						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+//				double smvalue = calculateSM(mt, dst, init);
+//				state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" + smvalue, 0);
+//
+////				for (Service s : input.seenServices) {
+////					qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
+////					qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
+////					qos[WSCInitializer.RELIABILITY] *= s.qos[WSCInitializer.RELIABILITY];
+////				}
+//
+//				input.seenServices.forEach(ser -> System.out.print(ser.getServiceID() + ";"));
+//				for (ServiceEdge semanticQuality : semanticEdges) {
+//					System.out.println(semanticQuality.getSourceService() + "->" + semanticQuality.getTargetService()
+//							+ ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" + semanticQuality.getAvgsdt());
+//
 //				}
-
-				input.seenServices.forEach(ser -> System.out.print(ser.getServiceID() + ";"));
-				for (ServiceEdge semanticQuality : semanticEdges) {
-					System.out.println(semanticQuality.getSourceService() + "->" + semanticQuality.getTargetService()
-							+ ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" + semanticQuality.getAvgsdt());
-
-				}
-				state.output.println("Where is the fucking wrong Individual:" + gpInd.toString(), 0);
-
-			}
+//				state.output.println("Where is the fucking wrong Individual:" + gpInd.toString(), 0);
+//
+//			}
 
 			f.setFitness(state, fitness, false);
 			// f.setStandardizedFitness(state, fitness);
