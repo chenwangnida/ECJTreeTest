@@ -107,7 +107,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		}
 		children[1].eval(state, thread, input, stack, individual, problem);
 
-		if (!rd.serviceId.equals("startNode") || !rd.serviceId.equals("endNode")) {
+		if (!rd.serviceId.equals("startNode") && !rd.serviceId.equals("endNode")) {
 
 			// Update max. time
 			maxTime += rd.maxTime;

@@ -36,6 +36,12 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 		if (!ind.evaluated) {
 			WSCInitializer init = (WSCInitializer) state.initializer;
 			WSCData input = (WSCData) (this.input);
+			
+			
+			if(input.maxTime == 9520.8){
+				 state.output.println("debug entre",0 );
+
+			}
 
 			GPIndividual gpInd = (GPIndividual) ind;
 
@@ -44,11 +50,17 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
 
+			if(input.maxTime == 9520.8){
+				 state.output.println("debug entre",0 );
+
+			}
+			
+			
 			// evaluate semantic matchmaking quality
 			Set<ServiceEdge> semanticEdges = calculateSemanticQuality(gpInd);
 
 			// evaluate QoS
-
+			
 			double[] qos = new double[4];
 			qos[WSCInitializer.TIME] = input.maxTime;
 			qos[WSCInitializer.AVAILABILITY] = 1.0;
@@ -76,25 +88,6 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			dst = dst / (semanticLinks.size());
 
-			List<String> serviceIdList = new ArrayList<String>();
-			serviceIdList.add("academicbooknumberorisbnsearch");
-			serviceIdList.add("novel_author_bookontoservice");
-			serviceIdList.add("author_bookmaxprice_service");
-			List<String> contained = new ArrayList<String>();
-
-			if (input.seenServices.size() == 3) {
-				for (Service s : input.seenServices) {
-
-					contained.add(s.getServiceID());
-				}
-			}
-			if (input.seenServices.size() == 3) {
-
-				if (serviceIdList.containsAll(contained)) {
-					System.out.println("debug entry");
-
-				}
-			}
 			for (Service s : input.seenServices) {
 				qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
 				qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
@@ -108,36 +101,29 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 			//
-			// String fitnessStr = fitness + "";
-			// String f0 = "0.9446104104893337";
-			// if (fitnessStr.startsWith(f0)) {
-			// double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
-			// qos[WSCInitializer.RELIABILITY],
-			// qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-			// double smvalue = calculateSM(mt, dst, init);
-			// state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
-			// smvalue, 0);
-			//
-			// for (Service s : input.seenServices) {
-			// qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
-			// qos[WSCInitializer.AVAILABILITY] *=
-			// s.qos[WSCInitializer.AVAILABILITY];
-			// qos[WSCInitializer.RELIABILITY] *=
-			// s.qos[WSCInitializer.RELIABILITY];
-			// }
-			//
-			// input.seenServices.forEach(ser->System.out.print(ser.getServiceID()+";"));
-			// for (ServiceEdge semanticQuality : semanticEdges) {
-			// System.out.println(semanticQuality.getSourceService() + "->" +
-			// semanticQuality.getTargetService()
-			// + ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" +
-			// semanticQuality.getAvgsdt());
-			//
-			// }
-			// state.output.println("Where is the fucking wrong Individual:" +
-			// gpInd.toString(), 0);
-			//
-			// }
+			String fitnessStr = fitness + "";
+			String f0 = "0.832701829304195";
+			if (fitnessStr.startsWith(f0)) {
+				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
+						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+				double smvalue = calculateSM(mt, dst, init);
+				state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" + smvalue, 0);
+
+//				for (Service s : input.seenServices) {
+//					qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
+//					qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
+//					qos[WSCInitializer.RELIABILITY] *= s.qos[WSCInitializer.RELIABILITY];
+//				}
+
+				input.seenServices.forEach(ser -> System.out.print(ser.getServiceID() + ";"));
+				for (ServiceEdge semanticQuality : semanticEdges) {
+					System.out.println(semanticQuality.getSourceService() + "->" + semanticQuality.getTargetService()
+							+ ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" + semanticQuality.getAvgsdt());
+
+				}
+				state.output.println("Where is the fucking wrong Individual:" + gpInd.toString(), 0);
+
+			}
 
 			f.setFitness(state, fitness, false);
 			// f.setStandardizedFitness(state, fitness);
