@@ -142,7 +142,7 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// Replace the old tree with the new one
 			tree.replaceNode4Mutation(selectedNode, tree4Mutation);
-//			 System.out.println("new mutation tree:"+tree.toString());;
+			 System.out.println("new mutation tree:"+tree.toString());;
 //			 System.out.println("_________________________________________________________________________________________________________");
 
 			 
