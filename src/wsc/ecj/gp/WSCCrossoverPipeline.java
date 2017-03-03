@@ -84,7 +84,7 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 			GPNode nodeT1 = nodes[0];
 			GPNode replacementT2 = nodes[1];
 
-			if (nodeT1 != null && replacementT2 != null) {
+//			if (nodeT1 != null && replacementT2 != null) {
 
 				t1.replaceNode4Crossover1(nodeT1, replacementT2);
 
@@ -93,23 +93,23 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 				t2.replaceNode4Crossover1(replacementT2, nodeT1);
 
 				// state.output.println(" new B:"+t2.toString(), 0);
-			} else {
+//			} else {
 
 				// if there is no exact match for swap, then check the
 				// multiple-function swap for crossover.
-				GPNode[] nodes4Function1 = findReplacement4SemanticMatch(init, allT1Nodes, allT2Nodes);
+//				GPNode[] nodes4Function1 = findReplacement4SemanticMatch(init, allT1Nodes, allT2Nodes);
+//
+//				GPNode node4Function1T1 = nodes4Function1[0];
+//				GPNode replacement4Function1T1 = nodes4Function1[1];
 
-				GPNode node4Function1T1 = nodes4Function1[0];
-				GPNode replacement4Function1T1 = nodes4Function1[1];
+//				GPNode[] nodes4Function2 = findReplacement4SemanticMatch(init, allT2Nodes, allT1Nodes);
+//				GPNode node4Function2T1 = nodes4Function2[0];
+//				GPNode replacement4Function2T2 = nodes4Function2[1];
 
-				GPNode[] nodes4Function2 = findReplacement4SemanticMatch(init, allT2Nodes, allT1Nodes);
-				GPNode node4Function2T1 = nodes4Function2[0];
-				GPNode replacement4Function2T2 = nodes4Function2[1];
+//				t1.replaceNode4Crossover(node4Function1T1, replacement4Function1T1);
+//				t2.replaceNode4Crossover1(node4Function2T1, replacement4Function2T2);
 
-				t1.replaceNode4Crossover1(node4Function1T1, replacement4Function1T1);
-				t2.replaceNode4Crossover1(node4Function2T1, replacement4Function2T2);
-
-			}
+//			}
 
 			inds[q] = t1;
 			inds[q].evaluated = false;
