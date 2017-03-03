@@ -36,20 +36,55 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 		if (!ind.evaluated) {
 			WSCInitializer init = (WSCInitializer) state.initializer;
 			WSCData input = (WSCData) (this.input);
-			
 
 			GPIndividual gpInd = (GPIndividual) ind;
 
 			// state.output.println("Evaluate new Individual:" +
 			// gpInd.toString(), 0);
+			 init.evaluationTimes++;
+//			 if(init.evaluationTimes == 118){
+//			 System.out.println("degbug entry~"+init.evaluationTimes);
+//			 }
+//			 System.out.println("evaluationTimes: TIMES~"+init.evaluationTimes);
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
-			
+
+			// evaluate correctness
+			// evaluate the correctness after mutation for debug use
+			InOutNode io = (InOutNode) ((WSCIndividual) gpInd).getAvaibleTopNode();
+			Set<String> inputStr = new HashSet<String>();
+			Set<String> outputStr = new HashSet<String>();
+
+			io.getInputs().forEach(serInput -> inputStr.add(serInput.getInput()));
+			io.getOutputs().forEach(serOutput -> outputStr.add(serOutput.getOutput()));
+
+			boolean iFlag = true;
+			boolean oFlag = true;
+
+			for (String inp : inputStr) {
+				for (String taskI : WSCInitializer.taskInput) {
+					if (WSCInitializer.semanticMatrix.get(taskI, inp) == null) {
+						iFlag = false;
+						System.err.println("uncorrect individual for INPUT,evaluationTimes:"+init.evaluationTimes);
+
+					}
+				}
+			}
+
+//			for (String taskOut : WSCInitializer.taskOutput) {
+//				for (String outp : outputStr) {
+//					if (WSCInitializer.semanticMatrix.get(outp, taskOut) == null) {
+//						oFlag = false;
+//						System.err.println("uncorrect individual for INPUT");
+//					}
+//				}
+//			}
+
 			// evaluate semantic matchmaking quality
 			Set<ServiceEdge> semanticEdges = calculateSemanticQuality(gpInd);
 
 			// evaluate QoS
-			
+
 			double[] qos = new double[4];
 			qos[WSCInitializer.TIME] = input.maxTime;
 			qos[WSCInitializer.AVAILABILITY] = 1.0;
@@ -90,29 +125,37 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			// the fitness better be SimpleFitness!
 			SimpleFitness f = ((SimpleFitness) ind.fitness);
 			//
-//			String fitnessStr = fitness + "";
-//			String f0 = "0.8407720512515939";
-//			if (fitnessStr.startsWith(f0)) {
-//				double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY], qos[WSCInitializer.RELIABILITY],
-//						qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
-//				double smvalue = calculateSM(mt, dst, init);
-//				state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" + smvalue, 0);
-//
-////				for (Service s : input.seenServices) {
-////					qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
-////					qos[WSCInitializer.AVAILABILITY] *= s.qos[WSCInitializer.AVAILABILITY];
-////					qos[WSCInitializer.RELIABILITY] *= s.qos[WSCInitializer.RELIABILITY];
-////				}
-//
-//				input.seenServices.forEach(ser -> System.out.print(ser.getServiceID() + ";"));
-//				for (ServiceEdge semanticQuality : semanticEdges) {
-//					System.out.println(semanticQuality.getSourceService() + "->" + semanticQuality.getTargetService()
-//							+ ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" + semanticQuality.getAvgsdt());
-//
-//				}
-//				state.output.println("Where is the fucking wrong Individual:" + gpInd.toString(), 0);
-//
-//			}
+			// String fitnessStr = fitness + "";
+			// String f0 = "0.8407720512515939";
+			// if (fitnessStr.startsWith(f0)) {
+			// double qosvalue = calculateQoS(qos[WSCInitializer.AVAILABILITY],
+			// qos[WSCInitializer.RELIABILITY],
+			// qos[WSCInitializer.TIME], qos[WSCInitializer.COST], init);
+			// double smvalue = calculateSM(mt, dst, init);
+			// state.output.println(fitness + ";" + "QoS" + qosvalue + ";SM" +
+			// smvalue, 0);
+			//
+			//// for (Service s : input.seenServices) {
+			//// qos[WSCInitializer.COST] += s.qos[WSCInitializer.COST];
+			//// qos[WSCInitializer.AVAILABILITY] *=
+			// s.qos[WSCInitializer.AVAILABILITY];
+			//// qos[WSCInitializer.RELIABILITY] *=
+			// s.qos[WSCInitializer.RELIABILITY];
+			//// }
+			//
+			// input.seenServices.forEach(ser ->
+			// System.out.print(ser.getServiceID() + ";"));
+			// for (ServiceEdge semanticQuality : semanticEdges) {
+			// System.out.println(semanticQuality.getSourceService() + "->" +
+			// semanticQuality.getTargetService()
+			// + ";avgmt:" + semanticQuality.getAvgmt() + ";avgdst:" +
+			// semanticQuality.getAvgsdt());
+			//
+			// }
+			// state.output.println("Where is the fucking wrong Individual:" +
+			// gpInd.toString(), 0);
+			//
+			// }
 
 			f.setFitness(state, fitness, false);
 			// f.setStandardizedFitness(state, fitness);

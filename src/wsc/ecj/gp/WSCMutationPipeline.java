@@ -8,7 +8,9 @@ import java.util.Set;
 import ec.BreedingPipeline;
 import ec.EvolutionState;
 import ec.Individual;
+import ec.gp.GPIndividual;
 import ec.gp.GPNode;
+import ec.gp.GPProblem;
 import ec.util.Parameter;
 import wsc.graph.ServiceGraph;
 import wsc.graph.ServiceInput;
@@ -142,7 +144,9 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// Replace the old tree with the new one
 			tree.replaceNode4Mutation(selectedNode, tree4Mutation);
-			 System.out.println("new mutation tree:"+tree.toString());;
+			
+			
+//			 System.out.println("new mutation tree:"+tree.toString());;
 //			 System.out.println("_________________________________________________________________________________________________________");
 
 			 

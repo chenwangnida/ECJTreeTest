@@ -225,6 +225,19 @@ public class WSCIndividual extends GPIndividual {
 
 	// Get All Nodes from GPNode
 
+	public GPNode getAvaibleTopNode(){
+		GPNode node = null ;
+		for(GPNode child : trees[0].child.children){
+			if(!(child instanceof ServiceGPNode)){
+				node = child;
+			}
+		}
+		return node;
+	}
+	
+	
+	
+	
 	public List<GPNode> getAllTreeNodes(GPNode gpNode) {
 		List<GPNode> allNodes = new ArrayList<GPNode>();
 		// AddChildNodes(trees[0].child, allNodes);

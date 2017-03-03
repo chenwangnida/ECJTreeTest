@@ -29,13 +29,13 @@ public class WSCSpecies extends Species {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		// Generate Graph
 		ServiceGraph graph = generateGraph(init);
-//		 state.output.println(graph.toString(), 0);
+		 state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
 		GPNode treeRoot = toSemanticTree2("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
 //		String Str = "digraph x { 833272193";
 //		if (tree.toString().startsWith(Str)) {
-//			state.output.println(tree.toString(), 0);
+			state.output.println(tree.toString(), 0);
 //		}
 		// GPNode treeRoot = createNewTree(state, init.taskInput,
 		// init.taskOutput); // XXX

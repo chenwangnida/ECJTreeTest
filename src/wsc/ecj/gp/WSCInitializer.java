@@ -43,6 +43,8 @@ public class WSCInitializer extends GPInitializer {
 	//temporary crossoverTimes
 	public int crossoverTimess=0;
 	public int mutationTimess=0;
+	public int evaluationTimes=0;
+
 	
 
 	private static final long serialVersionUID = 1L;

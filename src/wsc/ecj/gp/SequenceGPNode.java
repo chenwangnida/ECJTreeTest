@@ -148,22 +148,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 		overallOutputs.addAll(rChildOutputs);
 
-//		List<ServiceOutput> removedOutputs = new ArrayList<ServiceOutput>();
-//
-//		for (ServiceInput serInput : rChildInputs) {
-//			isContainedIfromO(serInput, lChildOutputs, init, removedOutputs);
-//		}
-//		if (removedOutputs != null) {
-//			for (ServiceOutput serOutput4remove : removedOutputs) {
-//				Iterator<ServiceOutput> iterator = lChildOutputs.iterator();
-//				while (iterator.hasNext()) {
-//					ServiceOutput serInput = iterator.next();
-//					if ((serInput.getOutput()).equals(serOutput4remove.getOutput())) {
-//						iterator.remove();
-//					}
-//				}
-//			}
-//		}
 
 		if (lChildOutputs != null) {
 			overallOutputs.addAll(lChildOutputs);
@@ -192,9 +176,9 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 	}
 
 	// check there is inputs produced by the services Outputs or not
-	private List isContainedOfromI(ServiceOutput serOutput, List<ServiceInput> overallInputs, WSCInitializer init,
+	private List isContainedOfromI(ServiceOutput serOutput, List<ServiceInput> rChildInputs, WSCInitializer init,
 			List<ServiceInput> overallInputsRemoved) {
-		for (ServiceInput serInputs : overallInputs) {
+		for (ServiceInput serInputs : rChildInputs) {
 
 			OWLClass givenClass = WSCInitializer.initialWSCPool.getSemanticsPool().getOwlClassHashMap()
 					.get(WSCInitializer.initialWSCPool.getSemanticsPool().getOwlInstHashMap().get(serOutput.getOutput())
@@ -213,7 +197,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
 				overallInputsRemoved.add(serInputs);
-				return overallInputsRemoved;
+//				return overallInputsRemoved;
 			}
 		}
 		return overallInputsRemoved;
