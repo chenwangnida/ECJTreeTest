@@ -2,6 +2,7 @@ package wsc.ecj.gp;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import org.jgrapht.DirectedGraph;
 
@@ -13,6 +14,7 @@ import ec.Species;
 import ec.gp.GPNode;
 import ec.util.Parameter;
 import wsc.graph.ServiceGraph;
+import wsc.graph.GraphUtils;
 import wsc.graph.ServiceEdge;
 
 public class WSCSpecies extends Species {
@@ -29,14 +31,14 @@ public class WSCSpecies extends Species {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		// Generate Graph
 		ServiceGraph graph = generateGraph(init);
-		 state.output.println(graph.toString(), 0);
+		state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
 		GPNode treeRoot = toSemanticTree2("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
-//		String Str = "digraph x { 833272193";
-//		if (tree.toString().startsWith(Str)) {
-			state.output.println(tree.toString(), 0);
-//		}
+		// String Str = "digraph x { 833272193";
+		// if (tree.toString().startsWith(Str)) {
+		state.output.println(tree.toString(), 0);
+		// }
 		// GPNode treeRoot = createNewTree(state, init.taskInput,
 		// init.taskOutput); // XXX
 
@@ -76,7 +78,50 @@ public class WSCSpecies extends Species {
 			removeCurrentdangle(graph, dangleVerticeList);
 		}
 		graph.removeEdge("startNode", "endNode");
+		optimiseGraph(graph);
 		return graph;
+	}
+
+	
+	   /**
+	    * remove the edge  between the node and it direct successors that also consumed by successors of direct successors
+	    * @param serviceGraph
+	    */
+	private void optimiseGraph(ServiceGraph graph) {
+		for (String vertice : graph.vertexSet()) {
+			if (graph.outDegreeOf(vertice) > 2) {
+				Set<ServiceEdge> outgoingEdges = graph.outgoingEdgesOf(vertice);
+
+				for (Iterator<ServiceEdge> it = outgoingEdges.iterator(); it.hasNext();) {
+					ServiceEdge outgoingedge = it.next();
+					if (graph.getEdgeTarget(outgoingedge).equals("endNode")) {
+						// Remove the output node from the children list
+						outgoingEdges.remove(outgoingedge);
+						break;
+					}
+
+				}
+
+				if (outgoingEdges.size() > 2) {
+					// save the direct successors
+					Set<String> directSuccesors = new HashSet<String>();
+					Set<String> allTargets = new HashSet<String>();
+
+					outgoingEdges.forEach(outgoingedge -> directSuccesors.add(graph.getEdgeTarget(outgoingedge)));
+
+					for (String succesor : directSuccesors) {
+						Set<String> targets = GraphUtils.getOutgoingVertices(graph, succesor);
+						allTargets.addAll(targets);
+					}
+
+					for (String succesor : directSuccesors) {
+						if (allTargets.contains(succesor)) {
+							graph.removeEdge(vertice, succesor);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public ServiceGraph Graph4Mutation(WSCInitializer init, List<String> combinedInputs, List<String> combinedOuputs) {
