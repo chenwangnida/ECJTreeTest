@@ -42,9 +42,9 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			// state.output.println("Evaluate new Individual:" +
 			// gpInd.toString(), 0);
 			 init.evaluationTimes++;
-//			 if(init.evaluationTimes == 118){
-//			 System.out.println("degbug entry~"+init.evaluationTimes);
-//			 }
+			 if(init.evaluationTimes == 355){
+			 System.out.println("degbug entry~"+init.evaluationTimes);
+			 }
 //			 System.out.println("evaluationTimes: TIMES~"+init.evaluationTimes);
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);

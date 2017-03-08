@@ -37,11 +37,11 @@ public class WSCMutationPipeline extends BreedingPipeline {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		
 		
-//		 init.mutationTimess++;
-//		 if(init.mutationTimess == 184){
-//		 System.out.println("degbug entry~"+init.mutationTimess);
-//		 }
-//		 System.out.println("mutation: TIMES~"+init.mutationTimess);
+		 init.mutationTimess++;
+		 if(init.mutationTimess == 12){
+		 System.out.println("degbug entry~"+init.mutationTimess);
+		 }
+		 System.out.println("mutation: TIMES~"+init.mutationTimess);
 		
 
 		int n = sources[0].produce(min, max, start, subpopulation, inds, state, thread);
@@ -139,14 +139,14 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// GPNode tree4Mutation = species.toTree4Mutation("startNode",
 			// graph4Mutation);
-			GPNode tree4Mutation = species.toSemanticTree2("startNode", graph4Mutation);
+			GPNode tree4Mutation = species.toSemanticTree("startNode", graph4Mutation);
 //			System.out.println(tree4Mutation.toString());
 
 			// Replace the old tree with the new one
 			tree.replaceNode4Mutation(selectedNode, tree4Mutation);
 			
 			
-//			 System.out.println("new mutation tree:"+tree.toString());;
+			 System.out.println("new mutation tree:"+tree.toString());;
 //			 System.out.println("_________________________________________________________________________________________________________");
 
 			 

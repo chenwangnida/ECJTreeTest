@@ -772,7 +772,7 @@ public class WSCIndividual extends GPIndividual {
 					}
 				}
 
-				// replace the endNode with appedixNode
+				// replace the endNode with appedixNode, However we do not clone the appedixNode in when more than one endNode are considered.
 				// replaceNode(endNode, appedixNode);
 				for (GPNode endNode : endNodeList) {
 

@@ -88,11 +88,11 @@ public class WSCCrossoverPipeline extends BreedingPipeline {
 
 				t1.replaceNode4Crossover1(nodeT1, replacementT2);
 
-				// state.output.println(" new A:"+t1.toString(), 0);
+//				 state.output.println(" new A:"+t1.toString(), 0);
 
 				t2.replaceNode4Crossover1(replacementT2, nodeT1);
 
-				// state.output.println(" new B:"+t2.toString(), 0);
+//				 state.output.println(" new B:"+t2.toString(), 0);
 //			} else {
 
 				// if there is no exact match for swap, then check the

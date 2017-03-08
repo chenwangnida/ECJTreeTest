@@ -31,13 +31,13 @@ public class WSCSpecies extends Species {
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		// Generate Graph
 		ServiceGraph graph = generateGraph(init);
-		state.output.println(graph.toString(), 0);
+//		state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
-		GPNode treeRoot = toSemanticTree2("startNode", graph);
+		GPNode treeRoot = toSemanticTree("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
 		// String Str = "digraph x { 833272193";
 		// if (tree.toString().startsWith(Str)) {
-		state.output.println(tree.toString(), 0);
+//		state.output.println(tree.toString(), 0);
 		// }
 		// GPNode treeRoot = createNewTree(state, init.taskInput,
 		// init.taskOutput); // XXX
@@ -78,7 +78,10 @@ public class WSCSpecies extends Species {
 			removeCurrentdangle(graph, dangleVerticeList);
 		}
 		graph.removeEdge("startNode", "endNode");
+//		System.out.println("original  DAG:"+graph.toString());
 		optimiseGraph(graph);
+//		System.out.println("optimised DAG:"+graph.toString());
+
 		return graph;
 	}
 
@@ -89,11 +92,12 @@ public class WSCSpecies extends Species {
 	    */
 	private void optimiseGraph(ServiceGraph graph) {
 		for (String vertice : graph.vertexSet()) {
-			if (graph.outDegreeOf(vertice) > 2) {
-				Set<ServiceEdge> outgoingEdges = graph.outgoingEdgesOf(vertice);
+			if (graph.outDegreeOf(vertice) > 1) {
+				List<ServiceEdge> outgoingEdges = new ArrayList<ServiceEdge>();
 
-				for (Iterator<ServiceEdge> it = outgoingEdges.iterator(); it.hasNext();) {
-					ServiceEdge outgoingedge = it.next();
+				outgoingEdges.addAll(graph.outgoingEdgesOf(vertice));
+ 
+				for(ServiceEdge outgoingedge:outgoingEdges){
 					if (graph.getEdgeTarget(outgoingedge).equals("endNode")) {
 						// Remove the output node from the children list
 						outgoingEdges.remove(outgoingedge);
@@ -102,7 +106,7 @@ public class WSCSpecies extends Species {
 
 				}
 
-				if (outgoingEdges.size() > 2) {
+				if (outgoingEdges.size() > 1) {
 					// save the direct successors
 					Set<String> directSuccesors = new HashSet<String>();
 					Set<String> allTargets = new HashSet<String>();
@@ -141,6 +145,8 @@ public class WSCSpecies extends Species {
 		}
 
 		graph.removeEdge("startNode", "endNode");
+		
+		optimiseGraph(graph);
 
 		return graph;
 	}
@@ -341,8 +347,8 @@ public class WSCSpecies extends Species {
 				if (graph.getEdgeTarget(outgoingedge).equals("endNode")) {
 					outputEdge = outgoingedge;
 					// Create sequenceNode associated with endNode
-					List<ServiceEdge> outgoingEdgeSet = new ArrayList<ServiceEdge>();
-					outgoingEdgeSet.add(outputEdge);
+//					List<ServiceEdge> outgoingEdgeSet = new ArrayList<ServiceEdge>();
+//					outgoingEdgeSet.add(outputEdge);
 					ServiceGPNode sgp = new ServiceGPNode();
 					sgp.setSerName(vertice);
 					ServiceGPNode endNode = new ServiceGPNode();
@@ -801,7 +807,7 @@ public class WSCSpecies extends Species {
 		}
 		// Otherwise, make next node's subtree the right child
 		else
-			result = toSemanticTree2(nextvertice, graph);
+			result = toSemanticTree(nextvertice, graph);
 		return result;
 	}
 
