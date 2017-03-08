@@ -24,7 +24,17 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
 	private List<ServiceEdge> semanticEdges;
+	
+	private List<ServiceInput> providedInputs;
 
+
+	public List<ServiceInput> getProvidedInputs() {
+		return providedInputs;
+	}
+
+	public void setProvidedInputs(List<ServiceInput> providedInputs) {
+		this.providedInputs = providedInputs;
+	}
 
 	@Override
 	public List<ServiceInput> getInputs() {

@@ -27,6 +27,16 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 	private List<ServicePostcondition> postconditions;
 	private List<ServiceEdge> semanticEdges;
 
+	private List<ServiceInput> providedInputs;
+
+	public List<ServiceInput> getProvidedInputs() {
+		return providedInputs;
+	}
+
+	public void setProvidedInputs(List<ServiceInput> providedInputs) {
+		this.providedInputs = providedInputs;
+	}
+
 	public ServiceGPNode() {
 		children = new GPNode[0];
 	}
@@ -103,6 +113,11 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 			// Store input and output information in this node
 			serName = rd.serviceId;
 			semanticEdges = rd.semanticEdges;
+			if (serName.equals("startNode")) {
+				List<ServiceInput> TaskIlist = new ArrayList<ServiceInput>();
+				WSCInitializer.taskInput.forEach(taskI -> TaskIlist.add(new ServiceInput(taskI, false)));
+				this.providedInputs = TaskIlist;
+			}
 
 		} else {
 			Service service = WSCInitializer.serviceMap.get(serName);

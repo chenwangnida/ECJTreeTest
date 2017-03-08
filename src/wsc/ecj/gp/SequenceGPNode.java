@@ -29,6 +29,17 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 	private List<ServicePostcondition> postconditions;
 	private List<ServiceEdge> semanticEdges;
 
+	private List<ServiceInput> providedInputs;
+
+	
+	public List<ServiceInput> getProvidedInputs() {
+		return providedInputs;
+	}
+
+	public void setProvidedInputs(List<ServiceInput> providedInputs) {
+		this.providedInputs = providedInputs;
+	}
+
 	@Override
 	public List<ServiceInput> getInputs() {
 		return inputs;
@@ -87,6 +98,18 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		WSCData rd = ((WSCData) (input));
+		
+		//if the neighbor node is not null, get neighbourNode and pass the provided Inputs
+		
+		if(this.parent!=null){
+ 			GPNode pNode=(GPNode) this.parent;
+ 			for(GPNode child: pNode.children){
+ 				if(child!= (GPNode)this){
+ 				
+ 				}
+ 			}
+ 			
+		}
 
 		// leftChild
 		children[0].eval(state, thread, input, stack, individual, problem);
@@ -105,6 +128,10 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			lChildOutputs.addAll(rd.outputs);
 
 		}
+		// set up the provided input of the GP node
+		providedInputs =  ((InOutNode)children[0]).getProvidedInputs();
+		
+		
 		children[1].eval(state, thread, input, stack, individual, problem);
 
 		if (!rd.serviceId.equals("startNode") && !rd.serviceId.equals("endNode")) {

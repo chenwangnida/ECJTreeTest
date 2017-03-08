@@ -39,7 +39,7 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			GPIndividual gpInd = (GPIndividual) ind;
 
-			// state.output.println("Evaluate new Individual:" +
+			// state.output.println("Evaluate new Individual:5" +
 			// gpInd.toString(), 0);
 			 init.evaluationTimes++;
 			 if(init.evaluationTimes == 355){
