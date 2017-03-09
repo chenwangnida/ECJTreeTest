@@ -33,16 +33,16 @@ public class WSCMutationPipeline extends BreedingPipeline {
 	@Override
 	public int produce(int min, int max, int start, int subpopulation, Individual[] inds, EvolutionState state,
 			int thread) {
-		
+
 		WSCInitializer init = (WSCInitializer) state.initializer;
-		
-		
+
+
 		 init.mutationTimess++;
-		 if(init.mutationTimess == 12){
+		 if(init.mutationTimess == 3){
 		 System.out.println("degbug entry~"+init.mutationTimess);
 		 }
 		 System.out.println("mutation: TIMES~"+init.mutationTimess);
-		
+
 
 		int n = sources[0].produce(min, max, start, subpopulation, inds, state, thread);
 
@@ -96,16 +96,17 @@ public class WSCMutationPipeline extends BreedingPipeline {
 			Set<String> combinedInputs = new HashSet<String>();
 			Set<String> combinedoutputs = new HashSet<String>();
 
-			for (ServiceInput iNode : ioNode.getInputs()) {
+			//get provided inputs for mutation, rather than using required inputs for muatation
+			for (ServiceInput iNode : ioNode.getProvidedInputs()) {
 				combinedInputs.add(iNode.getInput());
 			}
 
-			for (String tskInp : WSCInitializer.taskInput) {
-				if (!combinedInputs.contains(tskInp)) {
-					combinedInputs.add(tskInp);
-				}
-
-			}
+//			for (String tskInp : WSCInitializer.taskInput) {
+//				if (!combinedInputs.contains(tskInp)) {
+//					combinedInputs.add(tskInp);
+//				}
+//
+//			}
 
 			//required outputs
 
@@ -144,14 +145,14 @@ public class WSCMutationPipeline extends BreedingPipeline {
 
 			// Replace the old tree with the new one
 			tree.replaceNode4Mutation(selectedNode, tree4Mutation);
-			
-			
+
+
 			 System.out.println("new mutation tree:"+tree.toString());;
 //			 System.out.println("_________________________________________________________________________________________________________");
 
-			 
-			 
-			 
+
+
+
 			tree.evaluated = false;
 
 		}

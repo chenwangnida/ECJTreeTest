@@ -31,7 +31,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 	private List<ServiceInput> providedInputs;
 
-	
 	public List<ServiceInput> getProvidedInputs() {
 		return providedInputs;
 	}
@@ -98,17 +97,19 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 		WSCInitializer init = (WSCInitializer) state.initializer;
 		WSCData rd = ((WSCData) (input));
-		
-		//if the neighbor node is not null, get neighbourNode and pass the provided Inputs
-		
-		if(this.parent!=null){
- 			GPNode pNode=(GPNode) this.parent;
- 			for(GPNode child: pNode.children){
- 				if(child!= (GPNode)this){
- 				
- 				}
- 			}
- 			
+
+		// check whether it is the top sequence node, if yes, assign it with
+		// task Input for this node and its left child
+		if (this.parent == null) {
+			List<ServiceInput> TaskIlist = new ArrayList<ServiceInput>();
+			WSCInitializer.taskInput.forEach(taskI -> TaskIlist.add(new ServiceInput(taskI, false)));
+			// assign to top node
+			this.setProvidedInputs(TaskIlist);
+			// assign to start node
+			((InOutNode) children[0]).setProvidedInputs(TaskIlist);
+			// assign to RChild node
+			((InOutNode) children[1]).setProvidedInputs(TaskIlist);
+
 		}
 
 		// leftChild
@@ -128,10 +129,34 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			lChildOutputs.addAll(rd.outputs);
 
 		}
-		// set up the provided input of the GP node
-		providedInputs =  ((InOutNode)children[0]).getProvidedInputs();
-		
-		
+
+
+		if (this.parent != null) {
+			//assign provided inputs to direct LChild
+			((InOutNode) children[0]).setProvidedInputs(this.getProvidedInputs());
+			List<ServiceInput> providedI4LChild = new ArrayList<ServiceInput>();
+			//assign provided inputs to direct RChild
+			//add sequence node provided inputs
+			providedI4LChild.addAll(this.getProvidedInputs());
+			//add leftchild outputs as part of provided inputs
+			((InOutNode) children[0]).getOutputs().forEach(output-> providedI4LChild.add(new ServiceInput(output.getOutput(),false)));
+			((InOutNode) children[1]).setProvidedInputs(providedI4LChild);
+		}
+
+
+//		// check whether it is the top sequence node, then assign the provided
+//		// inputs from either
+//
+//		if (this.parent != null) {
+//			GPNode pNode = (GPNode) this.parent;
+//			for (GPNode child : pNode.children) {
+//				if (child != (GPNode) this) {
+//					// assign provided inputs from neighbour service node
+//					this.setProvidedInputs(((InOutNode) child).getProvidedInputs());
+//				}
+//			}
+//		}
+
 		children[1].eval(state, thread, input, stack, individual, problem);
 
 		if (!rd.serviceId.equals("startNode") && !rd.serviceId.equals("endNode")) {
@@ -175,17 +200,16 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 
 		overallOutputs.addAll(rChildOutputs);
 
-
 		if (lChildOutputs != null) {
 			overallOutputs.addAll(lChildOutputs);
 		}
 
 		List<Service> seenServices1 = new ArrayList<Service>(seenServices);
-//		List<ServiceInput> overallInputs1 = new ArrayList<ServiceInput>(overallInputs);
-//		List<ServiceOutput> overallOutputs1 = new ArrayList<ServiceOutput>(overallOutputs);
-		
-		
-		
+		// List<ServiceInput> overallInputs1 = new
+		// ArrayList<ServiceInput>(overallInputs);
+		// List<ServiceOutput> overallOutputs1 = new
+		// ArrayList<ServiceOutput>(overallOutputs);
+
 		// Finally, set the data with the overall values before exiting the
 		// evaluation
 		rd.maxTime = maxTime;
@@ -193,6 +217,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		rd.inputs = overallInputs;
 		rd.outputs = overallOutputs;
 		rd.serviceId = "Sequence";
+		rd.providedInputs = providedInputs;
 
 		// Store input and output information in this node
 		inputs = rd.inputs;
@@ -218,13 +243,13 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 			String b = relatedClass.getID();
 			// System.out.println(giveninput+" concept of "+a+";"+existInput+"
 			// concept of" +b);
-//			if(a.equals("book")&&b.equals("novel")){
-//				System.out.println("enter debug");
-//			}
+			// if(a.equals("book")&&b.equals("novel")){
+			// System.out.println("enter debug");
+			// }
 
 			if (WSCInitializer.semanticMatrix.get(a, b) != null) {
 				overallInputsRemoved.add(serInputs);
-//				return overallInputsRemoved;
+				// return overallInputsRemoved;
 			}
 		}
 		return overallInputsRemoved;

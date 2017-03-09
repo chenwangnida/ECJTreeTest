@@ -41,44 +41,56 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			// state.output.println("Evaluate new Individual:5" +
 			// gpInd.toString(), 0);
-			 init.evaluationTimes++;
-			 if(init.evaluationTimes == 355){
-			 System.out.println("degbug entry~"+init.evaluationTimes);
-			 }
-//			 System.out.println("evaluationTimes: TIMES~"+init.evaluationTimes);
+			init.evaluationTimes++;
+			if (init.evaluationTimes == 355) {
+				System.out.println("degbug entry~" + init.evaluationTimes);
+			}
+			// System.out.println("evaluationTimes:
+			// TIMES~"+init.evaluationTimes);
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
 
-			// evaluate correctness
-			// evaluate the correctness after mutation for debug use
-			InOutNode io = (InOutNode) ((WSCIndividual) gpInd).getAvaibleTopNode();
-			Set<String> inputStr = new HashSet<String>();
-			Set<String> outputStr = new HashSet<String>();
+			List<GPNode> node = getAllTreeNodes(gpInd.trees[0].child);
+			for (GPNode n : node) {
+				if (((InOutNode) n).getProvidedInputs() == null) {
+					System.err.println("provided inputs is null~" + init.evaluationTimes);
 
-			io.getInputs().forEach(serInput -> inputStr.add(serInput.getInput()));
-			io.getOutputs().forEach(serOutput -> outputStr.add(serOutput.getOutput()));
-
-			boolean iFlag = true;
-			boolean oFlag = true;
-
-			for (String inp : inputStr) {
-				for (String taskI : WSCInitializer.taskInput) {
-					if (WSCInitializer.semanticMatrix.get(taskI, inp) == null) {
-						iFlag = false;
-						System.err.println("uncorrect individual for INPUT,evaluationTimes:"+init.evaluationTimes);
-
-					}
 				}
 			}
+			// evaluate correctness
+			// evaluate the correctness after mutation for debug use
+			// InOutNode io = (InOutNode) ((WSCIndividual)
+			// gpInd).getAvaibleTopNode();
+			// Set<String> inputStr = new HashSet<String>();
+			// Set<String> outputStr = new HashSet<String>();
+			//
+			// io.getInputs().forEach(serInput ->
+			// inputStr.add(serInput.getInput()));
+			// io.getOutputs().forEach(serOutput ->
+			// outputStr.add(serOutput.getOutput()));
+			//
+			// boolean iFlag = true;
+			// boolean oFlag = true;
+			//
+			// for (String inp : inputStr) {
+			// for (String taskI : WSCInitializer.taskInput) {
+			// if (WSCInitializer.semanticMatrix.get(taskI, inp) == null) {
+			// iFlag = false;
+			// System.err.println("uncorrect individual for
+			// INPUT,evaluationTimes:"+init.evaluationTimes);
+			//
+			// }
+			// }
+			// }
 
-//			for (String taskOut : WSCInitializer.taskOutput) {
-//				for (String outp : outputStr) {
-//					if (WSCInitializer.semanticMatrix.get(outp, taskOut) == null) {
-//						oFlag = false;
-//						System.err.println("uncorrect individual for INPUT");
-//					}
-//				}
-//			}
+			// for (String taskOut : WSCInitializer.taskOutput) {
+			// for (String outp : outputStr) {
+			// if (WSCInitializer.semanticMatrix.get(outp, taskOut) == null) {
+			// oFlag = false;
+			// System.err.println("uncorrect individual for INPUT");
+			// }
+			// }
+			// }
 
 			// evaluate semantic matchmaking quality
 			Set<ServiceEdge> semanticEdges = calculateSemanticQuality(gpInd);
@@ -449,6 +461,47 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 			edge.setAvgsdt(sumdst / count);
 		}
 		return serEdgeList;
+
+	}
+
+	public List<GPNode> getAllTreeNodes(GPNode gpNode) {
+		List<GPNode> allNodes = new ArrayList<GPNode>();
+		AddFiltedChildNodes(gpNode, allNodes);
+
+		List<GPNode> removedNodeList = new ArrayList<GPNode>();
+		for (int i = 0; i < allNodes.size(); i++) {
+			GPNode filteredChild = allNodes.get(i);
+			if (filteredChild instanceof ServiceGPNode) {
+				ServiceGPNode sgp = (ServiceGPNode) filteredChild;
+				if (sgp.getSerName().equals("startNode")) {
+					// initial variable rootNode
+					removedNodeList.add((GPNode) sgp.parent);
+					// remove startNode
+					removedNodeList.add(allNodes.get(i));
+				}
+				if (sgp.getSerName().equals("endNode")) {
+					// initial variable endParentNodeList
+					removedNodeList.add((GPNode) sgp.parent);
+					// remove endNode
+					removedNodeList.add(allNodes.get(i));
+				}
+			}
+		}
+
+		allNodes.removeAll(removedNodeList);
+
+		return allNodes;
+	}
+
+	public List<GPNode> AddFiltedChildNodes(GPNode gpChild, List<GPNode> allNodes) {
+
+		GPNode current = gpChild;
+		allNodes.add(current);
+		if (current.children != null) {
+			for (GPNode child : current.children)
+				AddFiltedChildNodes(child, allNodes);
+		}
+		return allNodes;
 
 	}
 }

@@ -24,7 +24,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 	private List<ServicePrecondition> preconditions;
 	private List<ServicePostcondition> postconditions;
 	private List<ServiceEdge> semanticEdges;
-	
+
 	private List<ServiceInput> providedInputs;
 
 
@@ -90,6 +90,13 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 
 		WSCData rd = ((WSCData) (input));
 
+
+		//assign provided inputs to all its direct children nodes
+		for (GPNode child : children) {
+			((InOutNode)child).setProvidedInputs(this.getProvidedInputs());
+		}
+
+
 		for (GPNode child : children) {
 			child.eval(state, thread, input, stack, individual, problem);
 
@@ -111,7 +118,7 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 //		List<ServiceInput> overallInputs1 = new ArrayList<ServiceInput>(overallInputs);
 //		List<ServiceOutput> overallOutputs1 = new ArrayList<ServiceOutput>(overallOutputs);
 
-		
+
 		// Finally, set the data with the overall values before exiting the
 		// evaluation
 		rd.maxTime = maxTime;
@@ -119,6 +126,8 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		rd.inputs = overallInputs;
 		rd.outputs = overallOutputs;
 		rd.serviceId = "Parallel";
+		rd.providedInputs = providedInputs;
+
 
 		// Store input and output information in this node
 		inputs = overallInputs;

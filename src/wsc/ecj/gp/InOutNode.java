@@ -15,6 +15,9 @@ public interface InOutNode {
 	public List<ServicePrecondition> getPreconditions();
 
 	public List<ServicePostcondition> getPostconditions();
-	
+
 	public List<ServiceInput> getProvidedInputs();
+
+	public void setProvidedInputs(List<ServiceInput> providedInputs);
+
 }
