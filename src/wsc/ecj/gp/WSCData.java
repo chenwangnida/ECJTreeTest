@@ -21,7 +21,6 @@ public class WSCData extends GPData {
 	public List<ServicePrecondition> preconditions;
 	public List<ServicePostcondition> postconditions;
 	public List<ServiceEdge> semanticEdges;
-	public List<ServiceInput> providedInputs;
 
 	@Override
 	public void copyTo(final GPData gpd) {
@@ -34,6 +33,5 @@ public class WSCData extends GPData {
 		wscd.preconditions = preconditions;
 		wscd.postconditions = postconditions;
 		wscd.semanticEdges = semanticEdges;
-		wscd.providedInputs =providedInputs;
 	}
 }

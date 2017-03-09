@@ -41,22 +41,22 @@ public class WSC extends GPProblem implements SimpleProblemForm {
 
 			// state.output.println("Evaluate new Individual:5" +
 			// gpInd.toString(), 0);
-			init.evaluationTimes++;
-			if (init.evaluationTimes == 355) {
-				System.out.println("degbug entry~" + init.evaluationTimes);
-			}
+//			init.evaluationTimes++;
+//			if (init.evaluationTimes == 355) {
+//				System.out.println("degbug entry~" + init.evaluationTimes);
+//			}
 			// System.out.println("evaluationTimes:
 			// TIMES~"+init.evaluationTimes);
 
 			gpInd.trees[0].child.eval(state, threadnum, input, stack, ((GPIndividual) ind), this);
 
-			List<GPNode> node = getAllTreeNodes(gpInd.trees[0].child);
-			for (GPNode n : node) {
-				if (((InOutNode) n).getProvidedInputs() == null) {
-					System.err.println("provided inputs is null~" + init.evaluationTimes);
-
-				}
-			}
+//			List<GPNode> node = getAllTreeNodes(gpInd.trees[0].child);
+//			for (GPNode n : node) {
+//				if (((InOutNode) n).getProvidedInputs() == null) {
+//					System.err.println("provided inputs is null~" + init.evaluationTimes);
+//
+//				}
+//			}
 			// evaluate correctness
 			// evaluate the correctness after mutation for debug use
 			// InOutNode io = (InOutNode) ((WSCIndividual)

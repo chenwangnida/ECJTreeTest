@@ -109,7 +109,6 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 			// evaluated in their parentNodes
 			rd.serviceId = serName;
 			rd.semanticEdges = this.semanticEdges;
-			rd.providedInputs = providedInputs;
 
 
 			// Store input and output information in this node
@@ -138,7 +137,6 @@ public class ServiceGPNode extends GPNode implements InOutNode {
 			rd.preconditions = service.getPreconditionList();
 			rd.postconditions = service.getPostconditionList();
 			rd.semanticEdges = this.semanticEdges;
-			rd.providedInputs = providedInputs;
 
 
 			// Store input and output information in this node

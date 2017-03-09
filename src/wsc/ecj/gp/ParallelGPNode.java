@@ -126,13 +126,13 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		rd.inputs = overallInputs;
 		rd.outputs = overallOutputs;
 		rd.serviceId = "Parallel";
-		rd.providedInputs = providedInputs;
 
 
 		// Store input and output information in this node
 		inputs = overallInputs;
 		outputs = overallOutputs;
 		semanticEdges = rd.semanticEdges;
+
 
 //		for (ServiceInput i : overallInputs) {
 //			state.output.println("Parallel:I:" + i.getInput(), 0);
@@ -197,6 +197,8 @@ public class ParallelGPNode extends GPNode implements InOutNode {
 		newNode.outputs = outputs;
 		newNode.preconditions = preconditions;
 		newNode.postconditions = postconditions;
+		newNode.providedInputs = providedInputs;
+
 		return newNode;
 	}
 }

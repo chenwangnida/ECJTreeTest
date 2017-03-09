@@ -217,7 +217,6 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		rd.inputs = overallInputs;
 		rd.outputs = overallOutputs;
 		rd.serviceId = "Sequence";
-		rd.providedInputs = providedInputs;
 
 		// Store input and output information in this node
 		inputs = rd.inputs;
@@ -225,6 +224,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		preconditions = rd.preconditions;
 		postconditions = rd.postconditions;
 		semanticEdges = rd.semanticEdges;
+
 	}
 
 	// check there is inputs produced by the services Outputs or not
@@ -338,6 +338,7 @@ public class SequenceGPNode extends GPNode implements InOutNode {
 		newNode.outputs = outputs;
 		newNode.preconditions = preconditions;
 		newNode.postconditions = postconditions;
+		newNode.providedInputs = providedInputs;
 		return newNode;
 	}
 }
