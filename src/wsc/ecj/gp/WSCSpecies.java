@@ -33,7 +33,7 @@ public class WSCSpecies extends Species {
 		ServiceGraph graph = generateGraph(init);
 //		state.output.println(graph.toString(), 0);
 		// Generate Tree from Graph
-		GPNode treeRoot = toSemanticTree("startNode", graph);
+		GPNode treeRoot = toSemanticTree2("startNode", graph);
 		WSCIndividual tree = new WSCIndividual(treeRoot);
 		// String Str = "digraph x { 833272193";
 		// if (tree.toString().startsWith(Str)) {
@@ -807,7 +807,7 @@ public class WSCSpecies extends Species {
 		}
 		// Otherwise, make next node's subtree the right child
 		else
-			result = toSemanticTree(nextvertice, graph);
+			result = toSemanticTree2(nextvertice, graph);
 		return result;
 	}
 

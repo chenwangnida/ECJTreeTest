@@ -195,7 +195,7 @@ public class SemanticsPool {
 				pConn.setMatchType(1);
 				pConn.setSimilarity(s);
 			} else {
-				pConn.setMatchType(0.75);
+				pConn.setMatchType(0.5);
 				pConn.setSimilarity(s);
 
 			}
