@@ -24,7 +24,7 @@ public class GraphStatistics extends SimpleShortStatistics {
             state.output.print("" + (System.currentTimeMillis()-lastTime) + " ",  statisticslog);
             }
 
-//        // gather timings
+        // gather timings
 //        if (output && doTime)
 //            {
 //        	long time = System.currentTimeMillis()-lastTime;
